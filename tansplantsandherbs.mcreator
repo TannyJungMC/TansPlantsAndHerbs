@@ -1,0 +1,60 @@
+{
+  "mod_elements": [
+    {
+      "name": "Test",
+      "type": "plant",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "test",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/tansplantsandherbs/models/item/test.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/test.json",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/test.json",
+          "src/main/resources/assets/tansplantsandherbs/models/block/test.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/TestBlock.java"
+        ]
+      }
+    }
+  ],
+  "variable_elements": [],
+  "sound_elements": [],
+  "tag_elements": {},
+  "tab_element_order": {},
+  "language_map": {
+    "en_us": {
+      "block.tansplantsandherbs.test": "Test"
+    }
+  },
+  "metadata": {
+    "files": [
+      "src/main/java/tannyjung/tansplantsandherbs/init/TansplantsandherbsModBlocks.java",
+      "src/main/java/tannyjung/tansplantsandherbs/init/TansplantsandherbsModItems.java",
+      "src/main/resources/META-INF/mods.toml",
+      "src/main/java/tannyjung/tansplantsandherbs/TansplantsandherbsMod.java",
+      "src/main/resources/pack.mcmeta",
+      "src/main/java/tannyjung/tansplantsandherbs/init/TansplantsandherbsModTabs.java"
+    ]
+  },
+  "foldersRoot": {
+    "name": "~",
+    "children": []
+  },
+  "workspaceSettings": {
+    "modid": "tansplantsandherbs",
+    "modName": "Tan\u0027s Plants and Herbs",
+    "version": "1.0.0",
+    "author": "TannyJung",
+    "websiteURL": "https://legacy.curseforge.com/members/tannyjung/projects",
+    "license": "All Rights Reserved",
+    "serverSideOnly": false,
+    "requiredMods": [],
+    "dependencies": [],
+    "dependants": [],
+    "mcreatorDependencies": [],
+    "currentGenerator": "forge-1.20.1",
+    "credits": "Created with IntelliJ and MCreator",
+    "modElementsPackage": "tannyjung.tansplantsandherbs"
+  },
+  "mcreatorVersion": 202500345720
+}

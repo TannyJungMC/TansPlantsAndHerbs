@@ -1,0 +1,27 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="tansplantsandherbs"
+version="1.0.0"
+displayName="Tan's Plants and Herbs"
+displayURL="https://legacy.curseforge.com/members/tannyjung/projects"
+credits="Created with IntelliJ and MCreator"
+authors="TannyJung"
+
+# Start of user code block mod configuration
+# End of user code block mod configuration
+
+[[dependencies.tansplantsandherbs]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1]"
+    ordering="AFTER"
+    side="BOTH"
+
+
+
+
+# Start of user code block dependencies configuration
+# End of user code block dependencies configuration
