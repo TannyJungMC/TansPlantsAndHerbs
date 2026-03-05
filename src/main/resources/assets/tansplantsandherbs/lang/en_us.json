@@ -1,3 +1,5 @@
 {
-  "block.tansplantsandherbs.test": "Test"
+  "item_group.tansplantsandherbs.tab": "Tan\u0027s Plants and Herbs",
+  "block.tansplantsandherbs.plant_cattail": "Cattail",
+  "block.tansplantsandherbs.plant_bush_big": "Bush (Big)"
 }

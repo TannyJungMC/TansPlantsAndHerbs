@@ -1,20 +1,48 @@
 {
   "mod_elements": [
     {
-      "name": "Test",
+      "name": "Tab",
+      "type": "tab",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "tab",
+      "metadata": {
+        "files": []
+      }
+    },
+    {
+      "name": "PlantCattail",
       "type": "plant",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "test",
+      "registry_name": "plant_cattail",
       "metadata": {
         "files": [
-          "src/main/resources/assets/tansplantsandherbs/models/item/test.json",
-          "src/main/resources/assets/tansplantsandherbs/blockstates/test.json",
-          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/test.json",
-          "src/main/resources/assets/tansplantsandherbs/models/block/test.json",
-          "src/main/java/tannyjung/tansplantsandherbs/block/TestBlock.java"
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantCattailBlock.java",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_cattail.json",
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_cattail.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_cattail.json",
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_cattail.json"
         ]
-      }
+      },
+      "path": "~/Plants"
+    },
+    {
+      "name": "PlantBushBig",
+      "type": "plant",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "plant_bush_big",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_bush_big.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantBushBigBlock.java",
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_bush_big.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_bush_big.json",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_bush_big.json"
+        ]
+      },
+      "path": "~/Plants"
     }
   ],
   "variable_elements": [],
@@ -23,7 +51,9 @@
   "tab_element_order": {},
   "language_map": {
     "en_us": {
-      "block.tansplantsandherbs.test": "Test"
+      "item_group.tansplantsandherbs.tab": "Tan\u0027s Plants and Herbs",
+      "block.tansplantsandherbs.plant_cattail": "Cattail",
+      "block.tansplantsandherbs.plant_bush_big": "Bush (Big)"
     }
   },
   "metadata": {
@@ -38,7 +68,12 @@
   },
   "foldersRoot": {
     "name": "~",
-    "children": []
+    "children": [
+      {
+        "name": "Plants",
+        "children": []
+      }
+    ]
   },
   "workspaceSettings": {
     "modid": "tansplantsandherbs",

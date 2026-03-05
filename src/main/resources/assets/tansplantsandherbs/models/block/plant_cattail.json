@@ -1,0 +1,9 @@
+{
+  "parent": "tansplantsandherbs:custom/plant",
+  "textures": {
+    "all": "tansplantsandherbs:block/plant_cattail",
+    "particle": "tansplantsandherbs:block/plant_cattail",
+    "0": "tansplantsandherbs:block/plant_cattail"
+  },
+  "render_type": "cutout"
+}

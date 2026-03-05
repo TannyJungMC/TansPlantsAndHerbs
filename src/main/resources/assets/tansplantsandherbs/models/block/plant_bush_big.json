@@ -1,0 +1,9 @@
+{
+  "parent": "tansplantsandherbs:custom/plant",
+  "textures": {
+    "all": "tansplantsandherbs:block/plant_bush_big",
+    "particle": "tansplantsandherbs:block/plant_bush_big",
+    "0": "tansplantsandherbs:block/plant_bush_big"
+  },
+  "render_type": "cutout"
+}

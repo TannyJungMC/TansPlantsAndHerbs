@@ -1,6 +1,6 @@
 {
   "type": "minecraft:block",
-  "random_sequence": "tansplantsandherbs:blocks/test",
+  "random_sequence": "tansplantsandherbs:blocks/plant_bush_big",
   "pools": [
     {
       "rolls": 1.0,
@@ -12,7 +12,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "tansplantsandherbs:test"
+          "name": "tansplantsandherbs:plant_bush_big"
         }
       ]
     }

@@ -15,9 +15,11 @@ import net.minecraft.world.item.BlockItem;
 
 public class TansplantsandherbsModItems {
 	public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, TansplantsandherbsMod.MODID);
-	public static final RegistryObject<Item> TEST;
+	public static final RegistryObject<Item> PLANT_CATTAIL;
+	public static final RegistryObject<Item> PLANT_BUSH_BIG;
 	static {
-		TEST = block(TansplantsandherbsModBlocks.TEST);
+		PLANT_CATTAIL = block(TansplantsandherbsModBlocks.PLANT_CATTAIL);
+		PLANT_BUSH_BIG = block(TansplantsandherbsModBlocks.PLANT_BUSH_BIG);
 	}
 
 	// Start of user code block custom items

@@ -44,6 +44,7 @@ public class TansplantsandherbsMod {
 		TansplantsandherbsModItems.REGISTRY.register(bus);
 		TansplantsandherbsModTabs.REGISTRY.register(bus);
 		// Start of user code block mod init
+		tannyjung.tansplantsandherbs_core.Core.start(bus);
 		// End of user code block mod init
 	}
 

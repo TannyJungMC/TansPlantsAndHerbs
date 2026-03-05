@@ -2,10 +2,10 @@
   "_fv": 79,
   "_type": "plant",
   "definition": {
-    "renderType": 12,
-    "texture": "minecraft:amethyst_cluster",
+    "renderType": 2,
+    "texture": "plant_cattail",
     "textureBottom": "",
-    "customModelName": "Cross model",
+    "customModelName": "plant:cattail",
     "itemTexture": "",
     "particleTexture": "",
     "tintType": "No tint",
@@ -28,26 +28,26 @@
     ],
     "growapableSpawnType": "Plains",
     "growapableMaxHeight": 3,
-    "customBoundingBox": false,
+    "customBoundingBox": true,
     "disableOffset": false,
     "boundingBoxes": [
       {
-        "mx": 0.0,
+        "mx": 4.0,
         "my": 0.0,
-        "mz": 0.0,
-        "Mx": 16.0,
-        "My": 16.0,
-        "Mz": 16.0,
+        "mz": 4.0,
+        "Mx": 8.0,
+        "My": 8.0,
+        "Mz": 8.0,
         "subtract": false
       }
     ],
-    "name": "Test",
+    "name": "Cattail",
     "specialInformation": {
       "fixedValue": []
     },
     "creativeTabs": [
       {
-        "value": "DECORATIONS"
+        "value": "CUSTOM:Tab"
       }
     ],
     "hardness": 0.0,
@@ -55,7 +55,7 @@
     "luminance": 0,
     "unbreakable": false,
     "isSolid": false,
-    "isWaterloggable": false,
+    "isWaterloggable": true,
     "hasBlockItem": true,
     "maxStackSize": 64,
     "rarity": "COMMON",

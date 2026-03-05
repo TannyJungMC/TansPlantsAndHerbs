@@ -5,23 +5,20 @@ package tannyjung.tansplantsandherbs.init;
 
 import tannyjung.tansplantsandherbs.TansplantsandherbsMod;
 
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 
-import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.registries.Registries;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class TansplantsandherbsModTabs {
 	public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, TansplantsandherbsMod.MODID);
-
-	@SubscribeEvent
-	public static void buildTabContentsVanilla(BuildCreativeModeTabContentsEvent tabData) {
-		if (tabData.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
-			tabData.accept(TansplantsandherbsModBlocks.TEST.get().asItem());
-		}
-	}
+	public static final RegistryObject<CreativeModeTab> TAB = REGISTRY.register("tab",
+			() -> CreativeModeTab.builder().title(Component.translatable("item_group.tansplantsandherbs.tab")).icon(() -> new ItemStack(Blocks.MANGROVE_PROPAGULE)).displayItems((parameters, tabData) -> {
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_CATTAIL.get().asItem());
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_BUSH_BIG.get().asItem());
+			}).build());
 }
