@@ -6,9 +6,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import org.apache.logging.log4j.Logger;
 import tannyjung.tansplantsandherbs_core.game.GameUtils;
 import tannyjung.tansplantsandherbs_core.game.world_gen.WorldGenStepBeforePlants;
-import tannyjung.tansplantsandherbs_core.game.world_gen.WorldGenStepPlants;
-import tannyjung.tansplantsandherbs_core.outside.CacheManager;
-import tannyjung.tansplantsandherbs_core.outside.CustomPackOrganizing;
+import tannyjung.tansplantsandherbs_core.game.world_gen.WorldGenStepLast;
 import tannyjung.tansplantsandherbs_core.outside.OutsideUtils;
 import tannyjung.tansplantsandherbs_handcode.Handcode;
 import tannyjung.tansplantsandherbs_handcode.DataMigration;
@@ -134,7 +132,7 @@ public class Core {
 
                         if (detail_info == true) {
 
-                            GameUtils.Misc.sendChatMessage(level_server, "@a", "Restarted and cleared main caches, about " + CacheManager.clear() + " MB. / gray");
+                            GameUtils.Misc.sendChatMessage(level_server, "@a", "Restarted and cleared main caches, about " + CacheManager.clear() + ". / gray");
 
                         }
 
@@ -276,7 +274,7 @@ public class Core {
 
             Handcode.registry();
             features.put("world_gen_before_plants", WorldGenStepBeforePlants::new);
-            features.put("world_gen_plants", WorldGenStepPlants::new);
+            features.put("world_gen_last", WorldGenStepLast::new);
 
             // Feature
             {

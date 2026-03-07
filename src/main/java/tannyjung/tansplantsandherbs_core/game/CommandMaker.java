@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import tannyjung.tansplantsandherbs_core.Core;
 import tannyjung.tansplantsandherbs_core.outside.OutsideUtils;
-import tannyjung.tansplantsandherbs_core.outside.TannyPackManager;
+import tannyjung.tansplantsandherbs_core.TannyPackManager;
 
 import java.util.function.Consumer;
 

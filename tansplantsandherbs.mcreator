@@ -11,35 +11,69 @@
       }
     },
     {
-      "name": "PlantCattail",
-      "type": "plant",
+      "name": "PlantLargeCattail",
+      "type": "block",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "plant_cattail",
+      "registry_name": "plant_large_cattail",
       "metadata": {
         "files": [
-          "src/main/java/tannyjung/tansplantsandherbs/block/PlantCattailBlock.java",
-          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_cattail.json",
-          "src/main/resources/assets/tansplantsandherbs/models/block/plant_cattail.json",
-          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_cattail.json",
-          "src/main/resources/assets/tansplantsandherbs/models/item/plant_cattail.json"
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_large_cattail.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantLargeCattailBlock.java",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_large_cattail.json",
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_large_cattail.json",
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_large_cattail.json"
         ]
       },
       "path": "~/Plants"
     },
     {
-      "name": "PlantBushBig",
-      "type": "plant",
+      "name": "PlantLargeReed",
+      "type": "block",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "plant_bush_big",
+      "registry_name": "plant_large_reed",
       "metadata": {
         "files": [
-          "src/main/resources/assets/tansplantsandherbs/models/block/plant_bush_big.json",
-          "src/main/java/tannyjung/tansplantsandherbs/block/PlantBushBigBlock.java",
-          "src/main/resources/assets/tansplantsandherbs/models/item/plant_bush_big.json",
-          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_bush_big.json",
-          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_bush_big.json"
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantLargeReedBlock.java",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_large_reed.json",
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_large_reed.json",
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_large_reed.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_large_reed.json"
+        ]
+      },
+      "path": "~/Plants"
+    },
+    {
+      "name": "PlantLargeGrass",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "plant_large_grass",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_large_grass.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_large_grass.json",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_large_grass.json",
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_large_grass.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantLargeGrassBlock.java"
+        ]
+      },
+      "path": "~/Plants"
+    },
+    {
+      "name": "PlantAquaticDuckweed",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "plant_aquatic_duckweed",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_aquatic_duckweed.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantAquaticDuckweedBlock.java",
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_aquatic_duckweed.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_aquatic_duckweed.json",
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_aquatic_duckweed.json"
         ]
       },
       "path": "~/Plants"
@@ -47,13 +81,21 @@
   ],
   "variable_elements": [],
   "sound_elements": [],
-  "tag_elements": {},
+  "tag_elements": {
+    "BLOCKS:mod:air_blocks": [
+      "Blocks.AIR",
+      "Blocks.VOID_AIR",
+      "Blocks.CAVE_AIR"
+    ]
+  },
   "tab_element_order": {},
   "language_map": {
     "en_us": {
       "item_group.tansplantsandherbs.tab": "Tan\u0027s Plants and Herbs",
-      "block.tansplantsandherbs.plant_cattail": "Cattail",
-      "block.tansplantsandherbs.plant_bush_big": "Bush (Big)"
+      "block.tansplantsandherbs.plant_large_cattail": "Cattail",
+      "block.tansplantsandherbs.plant_large_reed": "Reed",
+      "block.tansplantsandherbs.plant_large_grass": "Grass",
+      "block.tansplantsandherbs.plant_aquatic_duckweed": "Duckweed"
     }
   },
   "metadata": {

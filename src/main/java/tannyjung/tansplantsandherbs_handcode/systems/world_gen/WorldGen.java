@@ -13,13 +13,13 @@ public class WorldGen {
 
     }
 
-    public static void stepPlants (LevelAccessor level_accessor, ServerLevel level_server, ChunkGenerator chunk_generator, String dimension, int chunkX, int chunkZ) {
+    public static void stepLast (LevelAccessor level_accessor, ServerLevel level_server, ChunkGenerator chunk_generator, String dimension, int chunkX, int chunkZ) {
 
         PlantPlacer.start(level_accessor, level_server, new ChunkPos(chunkX, chunkZ));
 
     }
 
-    public static void stepLast (String dimension, ChunkPos chunk_pos) {
+    public static void stepEnd (String dimension, ChunkPos chunk_pos) {
 
 
 

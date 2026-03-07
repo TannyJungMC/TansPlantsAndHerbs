@@ -1,0 +1,9 @@
+{
+  "parent": "tansplantsandherbs:custom/plant_large",
+  "textures": {
+    "all": "tansplantsandherbs:block/plant_large_cattail",
+    "particle": "tansplantsandherbs:block/plant_large_cattail",
+    "0": "tansplantsandherbs:block/plant_large_cattail"
+  },
+  "render_type": "cutout"
+}

@@ -1,5 +1,7 @@
 {
   "item_group.tansplantsandherbs.tab": "Tan\u0027s Plants and Herbs",
-  "block.tansplantsandherbs.plant_cattail": "Cattail",
-  "block.tansplantsandherbs.plant_bush_big": "Bush (Big)"
+  "block.tansplantsandherbs.plant_large_cattail": "Cattail",
+  "block.tansplantsandherbs.plant_large_reed": "Reed",
+  "block.tansplantsandherbs.plant_large_grass": "Grass",
+  "block.tansplantsandherbs.plant_aquatic_duckweed": "Duckweed"
 }

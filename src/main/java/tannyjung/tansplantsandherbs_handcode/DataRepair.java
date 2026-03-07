@@ -1,6 +1,6 @@
 package tannyjung.tansplantsandherbs_handcode;
 
-import tannyjung.tansplantsandherbs_core.outside.CustomPackOrganizing;
+import tannyjung.tansplantsandherbs_core.CustomPackOrganizing;
 import tannyjung.tansplantsandherbs_handcode.config.FileConfig;
 import tannyjung.tansplantsandherbs_core.outside.ConfigWorldGen;
 

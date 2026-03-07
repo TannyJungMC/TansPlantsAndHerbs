@@ -9,11 +9,10 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.storage.LevelResource;
 
 import tannyjung.tansplantsandherbs_core.Core;
-import tannyjung.tansplantsandherbs_core.game.world_gen.WorldGenStepLast;
-import tannyjung.tansplantsandherbs_core.outside.CustomPackOrganizing;
-import tannyjung.tansplantsandherbs_core.outside.TannyPackManager;
+import tannyjung.tansplantsandherbs_core.game.world_gen.WorldGenStepEnd;
+import tannyjung.tansplantsandherbs_core.CustomPackOrganizing;
+import tannyjung.tansplantsandherbs_core.TannyPackManager;
 import tannyjung.tansplantsandherbs_handcode.DataMigration;
-import tannyjung.tansplantsandherbs_handcode.DataRepair;
 import tannyjung.tansplantsandherbs_handcode.config.FileConfig;
 import tannyjung.tansplantsandherbs_handcode.systems.Commands;
 import tannyjung.tansplantsandherbs_handcode.systems.Events;
@@ -130,7 +129,7 @@ public class EventCenter {
                 String dimension = GameUtils.Space.getDimensionID(level_server).replace(":", "-");
                 ChunkPos chunk_pos = event.getChunk().getPos();
 
-                WorldGenStepLast.start(dimension, chunk_pos);
+                WorldGenStepEnd.start(dimension, chunk_pos);
 
             }
 

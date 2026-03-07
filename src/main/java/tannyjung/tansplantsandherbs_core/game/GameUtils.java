@@ -30,7 +30,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.*;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -40,7 +39,7 @@ import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import net.minecraftforge.registries.ForgeRegistries;
 // import tannyjung.tanshugetrees.init.TanshugetreesModMenus;
 import tannyjung.tansplantsandherbs_core.Core;
-import tannyjung.tansplantsandherbs_core.outside.CacheManager;
+import tannyjung.tansplantsandherbs_core.CacheManager;
 import tannyjung.tansplantsandherbs_core.outside.FileManager;
 import tannyjung.tansplantsandherbs_core.outside.OutsideUtils;
 
@@ -83,7 +82,7 @@ public class GameUtils {
 
                 String biome_centerID = Space.getBiomeID(biome);
 
-				if (CacheManager.SaveData.existLogic("biome_test", biome + " | " + test) == false) {
+				if (CacheManager.Results.containLogic("biome_test", biome + " | " + test) == false) {
 
 					boolean result = false;
 
@@ -143,11 +142,11 @@ public class GameUtils {
 
 					}
 
-					CacheManager.SaveData.setLogic("biome_test", biome + " | " + test, result);
+					CacheManager.Results.setLogic("biome_test", biome + " | " + test, result);
 
 				}
 
-				return CacheManager.SaveData.getLogic("biome_test", biome + " | " + test);
+				return CacheManager.Results.getLogic("biome_test", biome + " | " + test);
 
             }
 
@@ -161,7 +160,7 @@ public class GameUtils {
 
 			} else {
 
-				if (CacheManager.SaveData.existLogic("block_test", block + " | " + test) == false) {
+				if (CacheManager.Results.containLogic("block_test", block + " | " + test) == false) {
 
 					boolean result = false;
 
@@ -266,11 +265,11 @@ public class GameUtils {
 
 					}
 
-					CacheManager.SaveData.setLogic("block_test", block + " | " + test, result);
+					CacheManager.Results.setLogic("block_test", block + " | " + test, result);
 
 				}
 
-				return CacheManager.SaveData.getLogic("block_test", block + " | " + test);
+				return CacheManager.Results.getLogic("block_test", block + " | " + test);
 
 			}
 
