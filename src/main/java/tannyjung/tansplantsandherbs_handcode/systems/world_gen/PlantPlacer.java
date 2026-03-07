@@ -1,18 +1,19 @@
 package tannyjung.tansplantsandherbs_handcode.systems.world_gen;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.Vec3;
 import tannyjung.tansplantsandherbs_core.game.GameUtils;
 import tannyjung.tansplantsandherbs_core.game.TXTFunction;
 import tannyjung.tansplantsandherbs_core.outside.ConfigWorldGen;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PlantPlacer {
 
@@ -26,50 +27,37 @@ public class PlantPlacer {
 
         int start_posX = chunk_pos.x * 16;
         int start_posZ = chunk_pos.z * 16;
-        int testX = 0;
-        int testZ = 0;
-        int height = 0;
-        List<BlockPos> list_pos_land = new ArrayList<>();
-        List<BlockPos> list_pos_water = new ArrayList<>();
+        Map<String, Integer> height = new HashMap<>();
+        int posX = 0;
+        int posZ = 0;
+        BlockPos pos = null;
 
-        // Get Land and Water Pos
+        Map<BlockPos, Holder<Biome>> land_biomes = new HashMap<>();
+        List<BlockPos> water_locations = new ArrayList<>();
+
+        // Get Some Data
         {
 
-            BlockPos pos = null;
+            int originalY = 0;
 
             for (int scanX = -16; scanX < 32; scanX++) {
 
                 for (int scanZ = -16; scanZ < 32; scanZ++) {
 
-                    testX = start_posX + scanX;
-                    testZ = start_posZ + scanZ;
-                    height = level_accessor.getHeight(Heightmap.Types.OCEAN_FLOOR, testX, testZ);
+                    posX = start_posX + scanX;
+                    posZ = start_posZ + scanZ;
+                    originalY = level_accessor.getHeight(Heightmap.Types.WORLD_SURFACE_WG, posX, posZ);
 
-                    for (int scanY = 16; scanY > -16; scanY--) {
+                    height.put(posX + "/" + posZ, originalY);
+                    pos = new BlockPos(posX, originalY, posZ);
 
-                        pos = new BlockPos(testX, height + scanY, testZ);
+                    if (level_accessor.isWaterAt(pos.below()) == false) {
 
-                        if (level_accessor.getBlockState(pos).canBeReplaced() == true) {
+                        land_biomes.put(pos, GameUtils.Space.getBiomeAt(level_server, pos));
 
-                            if (level_accessor.getBlockState(pos.above()).canBeReplaced() == true && level_accessor.isWaterAt(pos.above()) == false) {
+                    } else {
 
-                                if (level_accessor.isWaterAt(pos) == false) {
-
-                                    if (level_accessor.getBlockState(pos.below()).canBeReplaced() == false) {
-
-                                        list_pos_land.add(pos);
-
-                                    }
-
-                                } else {
-
-                                    list_pos_water.add(pos);
-
-                                }
-
-                            }
-
-                        }
+                        water_locations.add(pos);
 
                     }
 
@@ -82,81 +70,93 @@ public class PlantPlacer {
         // Select and Place
         {
 
-            boolean can_waterside = list_pos_water.isEmpty() == false && data.containsKey("waterside") == true;
-            boolean can_landside = list_pos_land.isEmpty() == false && data.containsKey("landside") == true;
-            double distance_water = 0.0;
-            double distance_land = 0.0;
-            BlockPos nearest_land = null;
+            boolean can_normal = data.containsKey("normal") == true && land_biomes.isEmpty() == false;
+            boolean can_cave = data.containsKey("cave") == true && land_biomes.isEmpty() == false;
+            boolean can_waterside = data.containsKey("waterside") == true && water_locations.isEmpty() == false;
+            boolean can_landside = data.containsKey("landside") == true && land_biomes.isEmpty() == false;
+            boolean can_aquatic_landside = data.containsKey("aquatic_landside") == true && land_biomes.isEmpty() == false;
+            int originalY = 0;
 
             for (int scanX = 0; scanX < 16; scanX++) {
 
                 for (int scanZ = 0; scanZ < 16; scanZ++) {
 
-                    testX = start_posX + scanX;
-                    testZ = start_posZ + scanZ;
+                    posX = start_posX + scanX;
+                    posZ = start_posZ + scanZ;
+                    originalY = height.get(posX + "/" + posZ);
 
-                    for (int scanY = 16; scanY > -16; scanY--) {
+                    for (int scanY = 32; scanY > -32; scanY--) {
 
-                        BlockPos pos = new BlockPos(testX, height + scanY, testZ);
+                        // Up-Down Fading
+                        {
+
+                            if (Math.random() < (double) Math.abs(scanY) / 32.0) {
+
+                                continue;
+
+                            }
+
+                        }
+
+                        pos = new BlockPos(posX, height.get(posX + "/" + posZ) + scanY, posZ);
 
                         if (level_accessor.getBlockState(pos).canBeReplaced() == true) {
 
-                            if (level_accessor.getBlockState(pos.below()).canBeReplaced() == false) {
+                            {
 
-                                if (level_accessor.getBlockState(pos.above()).canBeReplaced() == true && level_accessor.isWaterAt(pos.above()) == false) {
+                                if (level_accessor.getBlockState(pos.below()).canBeReplaced() == false) {
 
-                                    // Convert Land and Water Pos
-                                    {
+                                    if (level_accessor.getBlockState(pos.above()).isAir() == true) {
 
-                                        if (can_waterside == true) {
-
-                                            distance_water = list_pos_water.stream().mapToDouble(sort -> sort.getCenter().distanceTo(pos.getCenter())).min().getAsDouble();
-
-                                        }
-
-                                        if (can_landside == true) {
-
-                                            nearest_land = list_pos_land.stream().min(Comparator.comparingDouble(sort -> sort.getCenter().distanceTo(pos.getCenter()))).get();
-                                            distance_land = pos.getCenter().distanceTo(nearest_land.getCenter());
-
-                                        }
-
-                                    }
-
-                                    if (level_accessor.isWaterAt(pos) == false) {
-
-                                        if (can_waterside == true) {
+                                        if (originalY <= pos.getY()) {
 
                                             // Waterside
                                             {
 
-                                                if (place(level_accessor, level_server, pos, pos, data, "waterside", true, distance_water) == true) {
+                                                if (can_waterside == true) {
 
-                                                    continue;
+                                                    place(level_accessor, level_server, data, land_biomes, originalY, pos, "waterside", "water", water_locations);
 
                                                 }
 
                                             }
 
-                                        }
-
-                                        // Normal
-                                        {
-
-                                            place(level_accessor, level_server, pos, pos, data, "normal", false, 0);
-
-                                        }
-
-                                    } else {
-
-                                        if (can_landside == true) {
-
-                                            // Landside
+                                            // Normal
                                             {
 
-                                                if (place(level_accessor, level_server, pos, nearest_land, data, "landside", true, distance_land) == true) {
+                                                if (can_normal == true) {
 
-                                                    continue;
+                                                    place(level_accessor, level_server, data, land_biomes, originalY, pos, "normal", "", null);
+
+                                                }
+
+                                            }
+
+                                        } else {
+
+                                            if (level_accessor.isWaterAt(pos) == true) {
+
+                                                // Landside
+                                                {
+
+                                                    if (can_landside == true) {
+
+                                                        place(level_accessor, level_server, data, land_biomes, originalY, pos, "landside", "land", null);
+
+                                                    }
+
+                                                }
+
+                                            } else {
+
+                                                // Cave
+                                                {
+
+                                                    if (can_cave == true) {
+
+                                                        place(level_accessor, level_server, data, land_biomes, originalY, pos, "cave", "", null);
+
+                                                    }
 
                                                 }
 
@@ -166,38 +166,20 @@ public class PlantPlacer {
 
                                     }
 
-                                }
+                                } else {
 
-                            } else {
+                                    if (level_accessor.isWaterAt(pos.below()) == true) {
 
-                                if (level_accessor.isWaterAt(pos.below()) == true) {
+                                        if (level_accessor.getBlockState(pos).isAir() == true) {
 
-                                    if (level_accessor.isWaterAt(pos) == false) {
-
-                                        if (can_landside == true) {
-
-                                            // Convert Land and Water Pos
+                                            // Aquatic Landside
                                             {
 
-                                                if (can_waterside == true) {
+                                                if (can_aquatic_landside == true) {
 
-                                                    distance_water = list_pos_water.stream().mapToDouble(sort -> sort.getCenter().distanceTo(pos.getCenter())).min().getAsDouble();
-
-                                                }
-
-                                                if (can_landside == true) {
-
-                                                    nearest_land = list_pos_land.stream().min(Comparator.comparingDouble(sort -> sort.getCenter().distanceTo(pos.getCenter()))).get();
-                                                    distance_land = pos.getCenter().distanceTo(nearest_land.getCenter());
+                                                    place(level_accessor, level_server, data, land_biomes, originalY, pos, "aquatic_landside", "land", null);
 
                                                 }
-
-                                            }
-
-                                            // Floating Landside
-                                            {
-
-                                                place(level_accessor, level_server, pos, nearest_land, data, "floating_landside", true, distance_land);
 
                                             }
 
@@ -221,50 +203,147 @@ public class PlantPlacer {
 
     }
 
-    private static boolean place (LevelAccessor level_accessor, ServerLevel level_server, BlockPos pos, BlockPos pos_biome, Map<String, Map<String, Map<String, String>>> data, String spawn_type, boolean side_test, double side_distance) {
+    private static void place (LevelAccessor level_accessor, ServerLevel level_server, Map<String, Map<String, Map<String, String>>> data, Map<BlockPos, Holder<Biome>> land_biomes, int originalY, BlockPos pos, String spawn_type, String test_surrounding_area, List<BlockPos> water_locations) {
 
         if (data.containsKey(spawn_type) == true) {
 
-            double distance_test = 0;
+            double nearest_water = 0.0;
+            Map<Holder<Biome>, Double> nearest_land = new HashMap<>();
+
+            // Get Nearest Water and Land
+            {
+
+                Vec3 vec3_originalY = pos.atY(originalY).getCenter();
+
+                if (test_surrounding_area.equals("water") == true) {
+
+                    nearest_water = water_locations.stream().min(Comparator.comparingDouble(sort -> sort.getCenter().distanceTo(vec3_originalY))).get().getCenter().distanceTo(vec3_originalY);
+
+                } else if (test_surrounding_area.equals("land") == true) {
+
+                    {
+
+                        double distance = 0.0;
+
+                        for (Map.Entry<BlockPos, Holder<Biome>> entry : land_biomes.entrySet()) {
+
+                            distance = vec3_originalY.distanceTo(entry.getKey().getCenter());
+
+                            if (nearest_land.getOrDefault(entry.getValue(), 64.0) > distance) {
+
+                                nearest_land.put(entry.getValue(), distance);
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            double distance = 0.0;
+            double distance_test = 0.0;
+            BlockPos biome_pos = pos.atY(originalY);
 
             for (Map.Entry<String, Map<String, String>> entry : data.get(spawn_type).entrySet()) {
 
-                if (entry.getValue().get("enable").equals("true") == false) {
-
-                    continue;
-
-                }
-
-                if (side_test == true) {
-
-                    distance_test = Double.parseDouble(entry.getValue().get("land_water_distance")) + 1.0;
-
-                    if (side_distance > distance_test) {
-
-                        continue;
-
-                    }
-
-                    if (side_distance > 2.0 && Math.random() > 1.0 - (side_distance / distance_test)) {
-
-                        continue;
-
-                    }
-
-                }
-
                 // Test
                 {
+
+                    if (entry.getValue().get("enable").equals("true") == false) {
+
+                        continue;
+
+                    }
 
                     if (Math.random() >= Double.parseDouble(entry.getValue().get("rarity")) * 0.01) {
 
                         continue;
 
-                    } else if (GameUtils.Misc.testCustomBiome(GameUtils.Space.getBiomeAt(level_server, pos_biome), entry.getValue().get("biome")) == false) {
+                    }
 
-                        continue;
+                    if (test_surrounding_area.isEmpty() == true) {
 
-                    } else if (spawn_type.startsWith("floating") == false && GameUtils.Misc.testCustomBlock(level_accessor.getBlockState(pos.below()), entry.getValue().get("ground_block")) == false) {
+                        if (land_biomes.containsKey(biome_pos) == false || GameUtils.Misc.testCustomBiome(land_biomes.get(biome_pos), entry.getValue().get("biome")) == false) {
+
+                            continue;
+
+                        }
+
+                    } else {
+
+                        // Surrounding Area Testing
+                        {
+
+                            if (test_surrounding_area.equals("land") == true) {
+
+                                {
+
+                                    distance = 64.0;
+
+                                    for (Holder<Biome> biome : nearest_land.keySet()) {
+
+                                        if (GameUtils.Misc.testCustomBiome(biome, entry.getValue().get("biome")) == true) {
+
+                                            distance = Math.min(distance, nearest_land.get(biome));
+
+                                        }
+
+                                    }
+
+                                    if (distance == 64.0) {
+
+                                        continue;
+
+                                    }
+
+                                }
+
+                            } else if (test_surrounding_area.equals("water") == true) {
+
+                                {
+
+                                    if (land_biomes.containsKey(biome_pos) == false || GameUtils.Misc.testCustomBiome(land_biomes.get(biome_pos), entry.getValue().get("biome")) == false) {
+
+                                        continue;
+
+                                    }
+
+                                    distance = nearest_water;
+
+                                }
+
+                            } else if (test_surrounding_area.equals("cave") == true) {
+
+                                {
+
+                                    distance = originalY - pos.getY();
+
+                                }
+
+                            }
+
+                            distance_test = Double.parseDouble(entry.getValue().get("surrounding_test_distance")) + 1.0;
+
+                            if (distance > distance_test) {
+
+                                continue;
+
+                            }
+
+                            if (distance > 1.0 && Math.random() < distance / distance_test) {
+
+                                continue;
+
+                            }
+
+                        }
+
+                    }
+
+                    if (GameUtils.Misc.testCustomBlock(level_accessor.getBlockState(pos.below()), entry.getValue().get("ground_block")) == false) {
 
                         continue;
 
@@ -273,13 +352,10 @@ public class PlantPlacer {
                 }
 
                 TXTFunction.run(level_accessor, level_server, pos, "presets/" + entry.getValue().get("path_settings"), true);
-                return true;
 
             }
 
         }
-
-        return false;
 
     }
 
