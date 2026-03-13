@@ -18,12 +18,14 @@ public class TansplantsandherbsModItems {
 	public static final RegistryObject<Item> PLANT_LARGE_CATTAIL;
 	public static final RegistryObject<Item> PLANT_LARGE_REED;
 	public static final RegistryObject<Item> PLANT_LARGE_GRASS;
-	public static final RegistryObject<Item> PLANT_AQUATIC_DUCKWEED;
+	public static final RegistryObject<Item> PLANT_FLOATING_DUCKWEED;
+	public static final RegistryObject<Item> PLANT_SMALL;
 	static {
 		PLANT_LARGE_CATTAIL = block(TansplantsandherbsModBlocks.PLANT_LARGE_CATTAIL);
 		PLANT_LARGE_REED = block(TansplantsandherbsModBlocks.PLANT_LARGE_REED);
 		PLANT_LARGE_GRASS = block(TansplantsandherbsModBlocks.PLANT_LARGE_GRASS);
-		PLANT_AQUATIC_DUCKWEED = block(TansplantsandherbsModBlocks.PLANT_AQUATIC_DUCKWEED);
+		PLANT_FLOATING_DUCKWEED = block(TansplantsandherbsModBlocks.PLANT_FLOATING_DUCKWEED);
+		PLANT_SMALL = block(TansplantsandherbsModBlocks.PLANT_SMALL);
 	}
 
 	// Start of user code block custom items

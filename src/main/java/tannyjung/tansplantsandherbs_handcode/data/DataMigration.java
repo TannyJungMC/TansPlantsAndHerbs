@@ -1,8 +1,7 @@
-package tannyjung.tansplantsandherbs_handcode;
+package tannyjung.tansplantsandherbs_handcode.data;
 
 import tannyjung.tansplantsandherbs_core.Core;
 import tannyjung.tansplantsandherbs_core.outside.FileManager;
-import tannyjung.tansplantsandherbs_core.outside.OutsideUtils;
 
 import java.io.*;
 

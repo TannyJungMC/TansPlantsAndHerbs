@@ -1,8 +1,6 @@
 package tannyjung.tansplantsandherbs_handcode;
 
 import tannyjung.tansplantsandherbs_core.Core;
-import tannyjung.tansplantsandherbs_core.game.GameUtils;
-import tannyjung.tansplantsandherbs_handcode.config.FileConfig;
 
 public class Handcode {
 

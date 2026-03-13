@@ -2,14 +2,14 @@
   "_fv": 79,
   "_type": "block",
   "definition": {
-    "texture": "plant_aquatic_duckweed",
+    "texture": "plant_floating_duckweed",
     "textureTop": "",
     "textureLeft": "",
     "textureFront": "",
     "textureRight": "",
     "textureBack": "",
     "renderType": 2,
-    "customModelName": "plant_aquatic:duckweed",
+    "customModelName": "plant_floating:duckweed",
     "rotationMode": 1,
     "enablePitch": false,
     "emissiveRendering": false,
@@ -97,7 +97,7 @@
     "isNotColidable": true,
     "isCustomSoundType": false,
     "soundOnStep": {
-      "value": "PLANT"
+      "value": "LILY_PADS"
     },
     "breakSound": {
       "value": ""

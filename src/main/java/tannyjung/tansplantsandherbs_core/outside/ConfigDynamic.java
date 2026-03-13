@@ -10,17 +10,17 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ConfigWorldGen {
+public class ConfigDynamic {
 
-    public static void reorganize () {
+    public static void reorganize (String name, String scan_at) {
 
-        File file = new File(Core.path_config + "/config_worldgen.txt");
-        File file_temp = new File(Core.path_config + "/config_worldgen_temp.txt");
+        File file = new File(Core.path_config + "/config_" + name + ".txt");
+        File file_temp = new File(Core.path_config + "/config_" + name + "_temp.txt");
 
         // Create Temp
         {
 
-            if (file.exists() == true && file.isDirectory() == false) {
+            if (file.exists() == true) {
 
                 try {
 
@@ -36,12 +36,12 @@ public class ConfigWorldGen {
 
         }
 
-        create();
+        create(name, scan_at);
 
         // Delete Temp
         {
 
-            if (file_temp.exists() == true && file_temp.isDirectory() == false) {
+            if (file_temp.exists() == true) {
 
                 try {
 
@@ -59,13 +59,13 @@ public class ConfigWorldGen {
 
     }
 
-    private static void create () {
+    private static void create (String name, String scan_at) {
 
-        File file_organized = new File(Core.path_config + "/#dev/#temporary/world_gen");
+        File file_organized = new File(Core.path_config + "/#dev/#temporary/" + scan_at);
 
         if (file_organized.exists() == true && file_organized.isDirectory() == true) {
 
-            File file = new File(Core.path_config + "/config_worldgen.txt");
+            File file = new File(Core.path_config + "/config_" + name + ".txt");
 
             // Re-Create The File
             {
@@ -112,7 +112,7 @@ public class ConfigWorldGen {
 
                         if (source.toFile().isDirectory() == false) {
 
-                            write(source);
+                            write(name, scan_at, source);
 
                         }
 
@@ -132,14 +132,14 @@ public class ConfigWorldGen {
 
     }
 
-    private static void write (Path source) {
+    private static void write (String name, String scan_at, Path source) {
 
-        String name = Path.of(Core.path_config + "/#dev/#temporary/world_gen").relativize(source).toString().replace("\\", " > ").replace(".txt", "");;
+        String path = Path.of(Core.path_config + "/#dev/#temporary/" + scan_at).relativize(source).toString().replace("\\", " > ").replace(".txt", "");;
         boolean incompatible = false;
 
-        if (name.contains("[INCOMPATIBLE] ") == true) {
+        if (path.contains("[INCOMPATIBLE] ") == true) {
 
-            name = name.replace("[INCOMPATIBLE] ", "");
+            path = path.replace("[INCOMPATIBLE] ", "");
             incompatible = true;
 
         }
@@ -149,11 +149,11 @@ public class ConfigWorldGen {
         // Test is it locked
         {
 
-            for (String read_all : FileManager.readTXT(Core.path_config + "/config_worldgen_temp.txt")) {
+            for (String read_all : FileManager.readTXT(Core.path_config + "/config_" + name + "_temp.txt")) {
 
                 {
 
-                    if (read_all.startsWith("[") == true && read_all.endsWith("] " + name) == true) {
+                    if (read_all.startsWith("[") == true && read_all.endsWith("] " + path) == true) {
 
                         if (read_all.replace("[INCOMPATIBLE] ", "").startsWith("[LOCK] ") == true) {
 
@@ -198,7 +198,7 @@ public class ConfigWorldGen {
 
                 }
 
-                write.append(name);
+                write.append(path);
                 write.append("\n");
                 write.append("----------------------------------------------------------------------------------------------------");
                 write.append("\n");
@@ -222,7 +222,7 @@ public class ConfigWorldGen {
                             // Get Old Value
                             {
 
-                                File file_temp = new File(Core.path_config + "/config_worldgen_temp.txt");
+                                File file_temp = new File(Core.path_config + "/config_" + name + "_temp.txt");
                                 boolean thisID = false;
                                 option = read_all.substring(0, read_all.indexOf(" = "));
 
@@ -234,7 +234,7 @@ public class ConfigWorldGen {
 
                                             if (read_all_temp.startsWith("[") == true) {
 
-                                                if (read_all_temp.endsWith(name) == true) {
+                                                if (read_all_temp.endsWith(path) == true) {
 
                                                     thisID = true;
 
@@ -277,11 +277,11 @@ public class ConfigWorldGen {
 
         }
 
-        FileManager.writeTXT(Core.path_config + "/config_worldgen.txt", write.toString(), true);
+        FileManager.writeTXT(Core.path_config + "/config_" + name + ".txt", write.toString(), true);
 
     }
 
-    public static Map<String, Map<String, Map<String, String>>> getData () {
+    public static Map<String, Map<String, Map<String, String>>> getData (String name, String by_category) {
 
         Map<String, Map<String, Map<String, String>>> data = new HashMap<>();
         Map<String, String> settings = new HashMap<>();
@@ -291,7 +291,7 @@ public class ConfigWorldGen {
         boolean skip = true;
         boolean after_this = false;
 
-        for (String read_all : FileManager.readTXT(Core.path_config + "/config_worldgen.txt")) {
+        for (String read_all : FileManager.readTXT(Core.path_config + "/config_" + name + ".txt")) {
 
             if (read_all.isEmpty() == false) {
 
@@ -321,7 +321,7 @@ public class ConfigWorldGen {
                         } else if (after_this == true) {
 
                             after_this = false;
-                            data.computeIfAbsent(settings.get("spawn_type"), test -> new HashMap<>()).put(id, new HashMap<>(settings));
+                            data.computeIfAbsent(settings.get(by_category), test -> new HashMap<>()).put(id, new HashMap<>(settings));
                             settings.clear();
 
                         }

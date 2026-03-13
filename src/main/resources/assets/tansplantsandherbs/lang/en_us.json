@@ -3,5 +3,6 @@
   "block.tansplantsandherbs.plant_large_cattail": "Cattail",
   "block.tansplantsandherbs.plant_large_reed": "Reed",
   "block.tansplantsandherbs.plant_large_grass": "Grass",
-  "block.tansplantsandherbs.plant_aquatic_duckweed": "Duckweed"
+  "block.tansplantsandherbs.plant_floating_duckweed": "Duckweed",
+  "block.tansplantsandherbs.plant_small": "Reed"
 }

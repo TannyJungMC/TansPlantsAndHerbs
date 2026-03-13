@@ -10,10 +10,10 @@ import net.minecraft.world.level.storage.LevelResource;
 
 import tannyjung.tansplantsandherbs_core.Core;
 import tannyjung.tansplantsandherbs_core.game.world_gen.WorldGenStepEnd;
-import tannyjung.tansplantsandherbs_core.CustomPackOrganizing;
-import tannyjung.tansplantsandherbs_core.TannyPackManager;
-import tannyjung.tansplantsandherbs_handcode.DataMigration;
-import tannyjung.tansplantsandherbs_handcode.config.FileConfig;
+import tannyjung.tansplantsandherbs_core.outside.CustomPackOrganizing;
+import tannyjung.tansplantsandherbs_core.outside.TannyPackManager;
+import tannyjung.tansplantsandherbs_handcode.data.DataMigration;
+import tannyjung.tansplantsandherbs_handcode.data.FileConfig;
 import tannyjung.tansplantsandherbs_handcode.systems.Commands;
 import tannyjung.tansplantsandherbs_handcode.systems.Events;
 import tannyjung.tansplantsandherbs_handcode.systems.Overlays;

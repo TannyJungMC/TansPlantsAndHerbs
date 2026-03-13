@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import tannyjung.tansplantsandherbs_core.Core;
 import tannyjung.tansplantsandherbs_core.outside.OutsideUtils;
-import tannyjung.tansplantsandherbs_core.TannyPackManager;
+import tannyjung.tansplantsandherbs_core.outside.TannyPackManager;
 
 import java.util.function.Consumer;
 
@@ -23,6 +23,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 */
 import net.minecraftforge.event.RegisterCommandsEvent;
+import tannyjung.tansplantsandherbs_core.outside.TXTFunction;
 
 public class CommandMaker {
 

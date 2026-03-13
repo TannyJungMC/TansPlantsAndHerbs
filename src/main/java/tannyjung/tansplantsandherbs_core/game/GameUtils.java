@@ -39,7 +39,7 @@ import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import net.minecraftforge.registries.ForgeRegistries;
 // import tannyjung.tanshugetrees.init.TanshugetreesModMenus;
 import tannyjung.tansplantsandherbs_core.Core;
-import tannyjung.tansplantsandherbs_core.CacheManager;
+import tannyjung.tansplantsandherbs_core.outside.CacheManager;
 import tannyjung.tansplantsandherbs_core.outside.FileManager;
 import tannyjung.tansplantsandherbs_core.outside.OutsideUtils;
 
@@ -82,7 +82,7 @@ public class GameUtils {
 
                 String biome_centerID = Space.getBiomeID(biome);
 
-				if (CacheManager.Results.containLogic("biome_test", biome + " | " + test) == false) {
+				if (CacheManager.Result.existLogic("biome_test", biome + " | " + test) == false) {
 
 					boolean result = false;
 
@@ -142,11 +142,11 @@ public class GameUtils {
 
 					}
 
-					CacheManager.Results.setLogic("biome_test", biome + " | " + test, result);
+					CacheManager.Result.setLogic("biome_test", biome + " | " + test, result);
 
 				}
 
-				return CacheManager.Results.getLogic("biome_test", biome + " | " + test);
+				return CacheManager.Result.getLogic("biome_test", biome + " | " + test);
 
             }
 
@@ -160,7 +160,7 @@ public class GameUtils {
 
 			} else {
 
-				if (CacheManager.Results.containLogic("block_test", block + " | " + test) == false) {
+				if (CacheManager.Result.existLogic("block_test", block + " | " + test) == false) {
 
 					boolean result = false;
 
@@ -265,11 +265,11 @@ public class GameUtils {
 
 					}
 
-					CacheManager.Results.setLogic("block_test", block + " | " + test, result);
+					CacheManager.Result.setLogic("block_test", block + " | " + test, result);
 
 				}
 
-				return CacheManager.Results.getLogic("block_test", block + " | " + test);
+				return CacheManager.Result.getLogic("block_test", block + " | " + test);
 
 			}
 
@@ -286,11 +286,11 @@ public class GameUtils {
 
 			}
 
-            Command.run(level_server, new Vec3(0, 0, 0), "tellraw " + target + " [{\"text\":\"\"}," + Data.createText("[" + Core.mod_id_short + "] / " + prefix_color + " / This message was sent from " + Core.mod_name + " mod |   | " + data) + "]");
+            Command.run(level_server, Vec3.ZERO, "tellraw " + target + " [{\"text\":\"\"}," + Data.createText("[" + Core.mod_id_short + "] / " + prefix_color + " / This message was sent from " + Core.mod_name + " mod |   | " + data) + "]");
 
         }
 
-		public static void spawnParticle (ServerLevel level_server, double posX, double posY, double posZ, double spreadX, double spreadY, double spreadZ, double speed, int count, String id) {
+		public static void spawnParticle (ServerLevel level_server, Vec3 vec3, double spreadX, double spreadY, double spreadZ, double speed, int count, String id) {
 
 			ParticleType<?> particle = ForgeRegistries.PARTICLE_TYPES.getValue(ResourceLocation.parse(id));
 
@@ -298,7 +298,7 @@ public class GameUtils {
 
 				for (ServerPlayer player : level_server.players()) {
 
-					level_server.sendParticles(player, (ParticleOptions) particle, true, posX, posY, posZ, count, spreadX, spreadY, spreadZ, speed);
+					level_server.sendParticles(player, (ParticleOptions) particle, true, vec3.x, vec3.y, vec3.z, count, spreadX, spreadY, spreadZ, speed);
 
 				}
 
@@ -306,13 +306,13 @@ public class GameUtils {
 
 		}
 
-		public static void playSound (ServerLevel level_server, double posX, double posY, double posZ, float volume, float pitch, String id) {
+		public static void playSound (ServerLevel level_server, BlockPos pos, float volume, float pitch, String id) {
 
 			SoundEvent sound = ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse(id));
 
 			if (sound != null) {
 
-				level_server.playSound(null, BlockPos.containing(posX, posY, posZ), sound, SoundSource.NEUTRAL, volume, pitch);
+				level_server.playSound(null, pos, sound, SoundSource.NEUTRAL, volume, pitch);
 
 			}
 
@@ -350,7 +350,7 @@ public class GameUtils {
 
 		}
 
-		public static boolean result (ServerLevel level_server, double posX, double posY, double posZ, String command) {
+		public static boolean result (ServerLevel level_server, Vec3 vec3, String command) {
 
 			StringBuilder result = new StringBuilder();
 
@@ -380,11 +380,11 @@ public class GameUtils {
 
 			/*
 			(1.20.1) (1.21.1)
-			level_server.getServer().getCommands().performPrefixedCommand(new CommandSourceStack(data_consumer, new Vec3(posX, posY, posZ), Vec2.ZERO, level_server, 4, "", Component.literal(""), level_server.getServer(), null), command);
+			level_server.getServer().getCommands().performPrefixedCommand(new CommandSourceStack(data_consumer, vec3, Vec2.ZERO, level_server, 4, "", Component.literal(""), level_server.getServer(), null), command);
 			(1.21.8)
-			level_server.getServer().getCommands().performPrefixedCommand(new CommandSourceStack(data_consumer, new Vec3(posX, posY, posZ), Vec2.ZERO, level_server, PermissionSet.ALL_PERMISSIONS, "", Component.literal(""), level_server.getServer(), null), command);
+			level_server.getServer().getCommands().performPrefixedCommand(new CommandSourceStack(data_consumer, vec3, Vec2.ZERO, level_server, PermissionSet.ALL_PERMISSIONS, "", Component.literal(""), level_server.getServer(), null), command);
 			*/
-			level_server.getServer().getCommands().performPrefixedCommand(new CommandSourceStack(data_consumer, new Vec3(posX, posY, posZ), Vec2.ZERO, level_server, 4, "", Component.literal(""), level_server.getServer(), null), command);
+			level_server.getServer().getCommands().performPrefixedCommand(new CommandSourceStack(data_consumer, vec3, Vec2.ZERO, level_server, 4, "", Component.literal(""), level_server.getServer(), null), command);
 
 			return result.toString().equals("pass");
 
@@ -960,10 +960,18 @@ public class GameUtils {
 
 		public static Holder<Biome> getBiomeAt (ServerLevel level_server, BlockPos pos) {
 
-			int quartX = pos.getX() >> 2;
-			int quartY = pos.getY() >> 2;
-			int quartZ = pos.getZ() >> 2;
-			return level_server.getChunkSource().getGenerator().getBiomeSource().getNoiseBiome(quartX, quartY, quartZ, level_server.getChunkSource().randomState().sampler());
+			if (level_server.isLoaded(pos) == true) {
+
+				return level_server.getBiome(pos);
+
+			} else {
+
+				int quartX = pos.getX() >> 2;
+				int quartY = pos.getY() >> 2;
+				int quartZ = pos.getZ() >> 2;
+				return level_server.getChunkSource().getGenerator().getBiomeSource().getNoiseBiome(quartX, quartY, quartZ, level_server.getChunkSource().randomState().sampler());
+
+			}
 
 		}
 

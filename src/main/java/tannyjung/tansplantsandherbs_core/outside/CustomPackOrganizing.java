@@ -1,11 +1,10 @@
-package tannyjung.tansplantsandherbs_core;
+package tannyjung.tansplantsandherbs_core.outside;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
+import tannyjung.tansplantsandherbs_core.Core;
 import tannyjung.tansplantsandherbs_core.game.GameUtils;
-import tannyjung.tansplantsandherbs_core.outside.FileManager;
-import tannyjung.tansplantsandherbs_core.outside.OutsideUtils;
-import tannyjung.tansplantsandherbs_handcode.config.FileConfig;
+import tannyjung.tansplantsandherbs_handcode.data.FileConfig;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -17,7 +16,7 @@ public class CustomPackOrganizing {
     private static final Map<String, String> cache_pack_ids = new HashMap<>();
     private static final Map<String, Map<String, List<String>>> cache_errors = new HashMap<>();
 
-    public static void start (String pack_separation_single, String pack_separation_multiple) {
+    public static void start (String pack_separate_multiple) {
 
         cache_errors.clear();
 
@@ -25,7 +24,7 @@ public class CustomPackOrganizing {
         FileManager.createEmptyFile(Core.path_config + "/#dev/#temporary", true);
         FileManager.createEmptyFile(Core.path_config + "/custom_packs", true);
 
-        // Rename All Packs Back
+        // Rename All Back
         {
 
             File[] packs = new File(Core.path_config + "/custom_packs").listFiles();
@@ -34,7 +33,7 @@ public class CustomPackOrganizing {
 
                 for (File pack : packs) {
 
-                    pack.renameTo(new File(pack.getParentFile().toPath() + "/" + pack.getName().replace("[INCOMPATIBLE] ", "")));
+                    FileManager.rename(pack.getPath(), pack.getName().replace("[INCOMPATIBLE] ", ""));
 
                 }
 
@@ -42,12 +41,12 @@ public class CustomPackOrganizing {
 
         }
 
-        // Extract ZIP
-        {
+        File[] packs = new File(Core.path_config + "/custom_packs").listFiles();
 
-            File[] packs = new File(Core.path_config + "/custom_packs").listFiles();
+        if (packs != null) {
 
-            if (packs != null) {
+            // Extract ZIP
+            {
 
                 for (File pack : packs) {
 
@@ -61,14 +60,8 @@ public class CustomPackOrganizing {
 
             }
 
-        }
-
-        // Organizing Info
-        {
-
-            File[] packs = new File(Core.path_config + "/custom_packs").listFiles();
-
-            if (packs != null) {
+            // Organize Info
+            {
 
                 File file = null;
 
@@ -84,7 +77,7 @@ public class CustomPackOrganizing {
 
                     }
 
-                    if (file.exists() == true && file.isDirectory() == false) {
+                    if (file.exists() == true) {
 
                         FileManager.copy(file.getPath(), Core.path_config + "/#dev/#temporary/info/" + pack.getName() + ".txt", false);
 
@@ -94,33 +87,26 @@ public class CustomPackOrganizing {
 
             }
 
-        }
+            getPackID();
+            testInfo();
+            pack_separate_multiple = "/" + pack_separate_multiple + "/";
 
-        getPackID();
-        testInfo();
-        pack_separation_single = "/" + pack_separation_single + "/";
-        pack_separation_multiple = "/" + pack_separation_multiple + "/";
-
-        // Organizing Data
-        {
-
-            File[] packs = new File(Core.path_config + "/custom_packs").listFiles();
-
-            if (packs != null) {
+            // Organizing Data
+            {
 
                 File tanny_pack = TannyPackManager.getCurrentFile();
 
                 if (tanny_pack.exists() == true) {
 
-                    organizingData(tanny_pack, pack_separation_single, pack_separation_multiple);
+                    organize(tanny_pack, pack_separate_multiple);
 
                 }
 
                 for (File pack : packs) {
 
-                    if (pack != tanny_pack) {
+                    if (pack.getName().equals(tanny_pack.getName()) == false) {
 
-                        organizingData(pack, pack_separation_single, pack_separation_multiple);
+                        organize(pack, pack_separate_multiple);
 
                     }
 
@@ -128,147 +114,8 @@ public class CustomPackOrganizing {
 
             }
 
-        }
-
-        // Organizing Replacement
-        {
-
-            File[] packs = new File(Core.path_config + "/custom_packs").listFiles();
-
-            if (packs != null) {
-
-                for (File pack : packs) {
-
-                    if (pack.getName().startsWith("[INCOMPATIBLE] ") == false) {
-
-                        if (pack.getName().endsWith(".zip") == true) {
-
-                            pack = new File(Core.path_config + "/#dev/#temporary/pack_zip/" + pack.getName().replace(".zip", ""));
-
-                        }
-
-                        File file = new File(pack.getPath() + "/replace");
-
-                        if (file.exists() == true && file.isDirectory() == true) {
-
-                            {
-
-                                try {
-
-                                    Files.walk(file.toPath()).forEach(source -> {
-
-                                        {
-
-                                            if (source.toFile().isDirectory() == false) {
-
-                                                String replace_to = Path.of(Core.path_config + "/#dev/#temporary").resolve(file.toPath().relativize(source)).toString();
-
-                                                if (source.toString().endsWith(".txt") == true) {
-
-                                                    // Replace TXT with Mode
-                                                    {
-
-                                                        String[] data_old = FileManager.readTXT(replace_to);
-                                                        String[] data_new = FileManager.readTXT(source.toString());
-                                                        String[] data = new String[0];
-                                                        boolean specific = false;
-
-                                                        // Get Mode
-                                                        {
-
-                                                            for (String read_all : data_new) {
-
-                                                                if (read_all.equals("# SPECIFIC") == true) {
-
-                                                                    specific = true;
-                                                                    break;
-
-                                                                }
-
-                                                            }
-
-                                                        }
-
-                                                        if (specific == false) {
-
-                                                            data = data_new;
-
-                                                        } else {
-
-                                                            data = data_old;
-                                                            int line = 0;
-                                                            String name = "";
-
-                                                            for (String read_all : data_new) {
-
-                                                                if (read_all.isEmpty() == false) {
-
-                                                                    if (read_all.contains(" = ") == true) {
-
-                                                                        name = read_all.substring(0, read_all.indexOf(" = ") + 3);
-                                                                        line = 0;
-
-                                                                        for (String read_all_old : data) {
-
-                                                                            if (read_all_old.startsWith(name) == true) {
-
-                                                                                data[line] = read_all;
-                                                                                break;
-
-                                                                            }
-
-                                                                            line = line + 1;
-
-                                                                        }
-
-                                                                    }
-
-                                                                }
-
-                                                            }
-
-                                                        }
-
-                                                        FileManager.writeTXT(replace_to, String.join("\n", data), false);
-
-                                                    }
-
-                                                } else {
-
-                                                    FileManager.copy(source.toString(), replace_to, false);
-
-                                                }
-
-                                            }
-
-                                        }
-
-                                    });
-
-                                } catch (Exception exception) {
-
-                                    OutsideUtils.exception(new Exception(), exception, "");
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        // Organizing Dev
-        {
-
-            File[] packs = new File(Core.path_config + "/custom_packs").listFiles();
-
-            if (packs != null) {
+            // Organizing Dev
+            {
 
                 for (File pack : packs) {
 
@@ -317,6 +164,55 @@ public class CustomPackOrganizing {
 
         }
 
+        // Edit
+        {
+
+            File file = new File(Core.path_config + "/#dev/#temporary/edit");
+
+            if (file.listFiles() != null) {
+
+                try {
+
+                    Files.walk(file.toPath()).forEach(source -> {
+
+                        if (source.toFile().isDirectory() == false) {
+
+                            Path path_to = file.toPath().relativize(source);
+                            path_to = Path.of(Core.path_config + "/#dev/#temporary").resolve(path_to);
+
+                            if (path_to.toFile().exists() == true) {
+
+                                // Edit
+                                {
+
+                                    if (source.toString().endsWith(".txt") == true) {
+
+                                        FileManager.mergeTXT(source.toFile(), path_to.toFile());
+
+                                    } else {
+
+                                        FileManager.copy(source.toString(), path_to.toString(), false);
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    });
+
+                } catch (Exception exception) {
+
+                    OutsideUtils.exception(new Exception(), exception, "");
+
+                }
+
+            }
+
+        }
+
         FileManager.delete(Core.path_config + "/#dev/#temporary/pack_zip");
         testSettings();
         testWorldGen();
@@ -333,7 +229,7 @@ public class CustomPackOrganizing {
 
             for (File file : files) {
 
-                if (file.exists() == true && file.isDirectory() == false) {
+                if (file.exists() == true) {
 
                     for (String read_all : FileManager.readTXT(file.getPath())) {
 
@@ -371,7 +267,7 @@ public class CustomPackOrganizing {
 
                 file = new File(Core.path_config + "/#dev/#temporary/info/" + pack.getName() + ".txt");
 
-                if (file.exists() == true && file.isDirectory() == false) {
+                if (file.exists() == true) {
 
                     // Get Data
                     {
@@ -666,81 +562,83 @@ public class CustomPackOrganizing {
 
     }
 
-    private static void organizingData (File pack, String pack_separation_single, String pack_separation_multiple) {
+    private static void organize (File file_pack, String pack_separate_multiple) {
 
-        boolean incompatible = pack.getName().startsWith("[INCOMPATIBLE] ");
+        boolean incompatible = file_pack.getName().startsWith("[INCOMPATIBLE] ") == true;
+        File[] files = file_pack.listFiles();
 
-        if (incompatible == true) {
+        // Get Real Pack Path
+        {
 
-            pack = new File(pack.getParent() + "/" + pack.getName().replace("[INCOMPATIBLE] ", ""));
+            if (file_pack.getName().endsWith(".zip") == true) {
 
-        }
+                file_pack = new File(Core.path_config + "/#dev/#temporary/pack_zip/" + file_pack.getName().replace(".zip", ""));
 
-        String pack_name = pack.getName();
-
-        if (pack.getName().endsWith(".zip") == true) {
-
-            pack = new File(Core.path_config + "/#dev/#temporary/pack_zip/" + pack.getName().replace(".zip", ""));
+            }
 
         }
 
-        File[] inside = pack.listFiles();
+        if (files != null) {
 
-        if (inside != null) {
+            File file_pack_final = file_pack;
+            boolean is_separate_multiple = false;
 
-            String path_pack = pack.getPath();
+            for (File file : files) {
 
-            for (File file : inside) {
+                if (file.isDirectory() == true) {
 
-                if (pack_separation_single.contains("/" + file.getName() + "/") == true) {
+                    is_separate_multiple = pack_separate_multiple.contains("/" + file.getName() + "/") == true;
+                    boolean is_separate_multiple_final = is_separate_multiple;
 
-                    // Single Separation
-                    {
+                    try {
 
-                        if (incompatible == false) {
+                        Files.walk(file.toPath()).forEach(source -> {
 
-                            FileManager.copy(file.getPath(), Core.path_config + "/#dev/#temporary/" + file.getName(), true);
+                            if (source.toFile().isDirectory() == false) {
 
-                        }
+                                Path path_copy_to = Path.of(Core.path_config + "/#dev/#temporary/" + file.getName());
 
-                    }
+                                // Convert Path
+                                {
 
-                } else if (pack_separation_multiple.contains("/" + file.getName() + "/") == true) {
+                                    if (is_separate_multiple_final == true) {
 
-                    // Multiple Separation
-                    {
+                                        path_copy_to = path_copy_to.resolve(file_pack_final.getName());
 
-                        Path path_to = Path.of(Core.path_config + "/#dev/#temporary/" + file.getName() + "/" + cache_pack_ids.get(pack_name));
+                                    }
 
-                        {
+                                    path_copy_to = path_copy_to.resolve(file_pack_final.toPath().resolve(file.getName()).relativize(source));
 
-                            try {
+                                    if (incompatible == true) {
 
-                                Files.walk(file.toPath()).forEach(source -> {
+                                        path_copy_to = path_copy_to.getParent().resolve("[INCOMPATIBLE] " + path_copy_to.toFile().getName());
 
-                                    if (source.toFile().isDirectory() == false) {
+                                    }
 
-                                        Path path_copy_to = path_to.resolve(Path.of(path_pack).resolve(file.getName()).relativize(source));
+                                }
 
-                                        if (incompatible == true) {
+                                // Copy
+                                {
 
-                                            path_copy_to = path_copy_to.getParent().resolve("[INCOMPATIBLE] " + path_copy_to.toFile().getName());
+                                    if (source.toString().endsWith(".txt") == true) {
 
-                                        }
+                                        FileManager.mergeTXT(source.toFile(), path_copy_to.toFile());
+
+                                    } else {
 
                                         FileManager.copy(source.toString(), path_copy_to.toString(), false);
 
                                     }
 
-                                });
-
-                            } catch (Exception exception) {
-
-                                OutsideUtils.exception(new Exception(), exception, "");
+                                }
 
                             }
 
-                        }
+                        });
+
+                    } catch (Exception exception) {
+
+                        OutsideUtils.exception(new Exception(), exception, "");
 
                     }
 

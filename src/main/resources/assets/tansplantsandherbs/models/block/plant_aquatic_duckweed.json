@@ -1,9 +1,0 @@
-{
-  "parent": "tansplantsandherbs:custom/plant_aquatic",
-  "textures": {
-    "all": "tansplantsandherbs:block/plant_aquatic_duckweed",
-    "particle": "tansplantsandherbs:block/plant_aquatic_duckweed",
-    "0": "tansplantsandherbs:block/plant_aquatic_duckweed"
-  },
-  "render_type": "cutout"
-}

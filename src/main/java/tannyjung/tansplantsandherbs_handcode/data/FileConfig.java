@@ -1,4 +1,4 @@
-package tannyjung.tansplantsandherbs_handcode.config;
+package tannyjung.tansplantsandherbs_handcode.data;
 
 import tannyjung.tansplantsandherbs_core.Core;
 import tannyjung.tansplantsandherbs_core.outside.ConfigMain;

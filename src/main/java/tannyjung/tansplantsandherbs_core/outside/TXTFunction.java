@@ -1,4 +1,4 @@
-package tannyjung.tansplantsandherbs_core.game;
+package tannyjung.tansplantsandherbs_core.outside;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import tannyjung.tansplantsandherbs_core.Core;
-import tannyjung.tansplantsandherbs_core.CacheManager;
+import tannyjung.tansplantsandherbs_core.game.GameUtils;
 
 public class TXTFunction {
 
@@ -299,57 +299,61 @@ public class TXTFunction {
 
                                                                 }
 
-                                                                if (random.nextDouble() < chance && variable_block != Blocks.AIR.defaultBlockState()) {
+                                                                if (random.nextDouble() < chance) {
 
-                                                                    // Get Pos
-                                                                    {
+                                                                    if (variable_block != Blocks.AIR.defaultBlockState()) {
 
-                                                                        try {
+                                                                        // Get Pos
+                                                                        {
 
-                                                                            offset_pos = get[1].split("/");
-                                                                            offset_posX = Integer.parseInt(offset_pos[0]);
-                                                                            offset_posY = Integer.parseInt(offset_pos[1]);
-                                                                            offset_posZ = Integer.parseInt(offset_pos[2]);
+                                                                            try {
 
-                                                                            min_max = get[2].split("/");
-                                                                            minX = Integer.parseInt(min_max[0]);
-                                                                            minY = Integer.parseInt(min_max[1]);
-                                                                            minZ = Integer.parseInt(min_max[2]);
-                                                                            maxX = Integer.parseInt(min_max[3]);
-                                                                            maxY = Integer.parseInt(min_max[4]);
-                                                                            maxZ = Integer.parseInt(min_max[5]);
+                                                                                offset_pos = get[1].split("/");
+                                                                                offset_posX = Integer.parseInt(offset_pos[0]);
+                                                                                offset_posY = Integer.parseInt(offset_pos[1]);
+                                                                                offset_posZ = Integer.parseInt(offset_pos[2]);
 
-                                                                        } catch (Exception ignored) {
+                                                                                min_max = get[2].split("/");
+                                                                                minX = Integer.parseInt(min_max[0]);
+                                                                                minY = Integer.parseInt(min_max[1]);
+                                                                                minZ = Integer.parseInt(min_max[2]);
+                                                                                maxX = Integer.parseInt(min_max[3]);
+                                                                                maxY = Integer.parseInt(min_max[4]);
+                                                                                maxZ = Integer.parseInt(min_max[5]);
 
-                                                                            return;
+                                                                            } catch (Exception ignored) {
+
+                                                                                return;
+
+                                                                            }
 
                                                                         }
 
-                                                                    }
+                                                                        for (int testX = minX; testX <= maxX; testX++) {
 
-                                                                    for (int testX = minX; testX <= maxX; testX++) {
+                                                                            for (int testY = minY; testY <= maxY; testY++) {
 
-                                                                        for (int testY = minY; testY <= maxY; testY++) {
+                                                                                for (int testZ = minZ; testZ <= maxZ; testZ++) {
 
-                                                                            for (int testZ = minZ; testZ <= maxZ; testZ++) {
+                                                                                    pos_convert = pos.offset(offset_posX, offset_posY, offset_posZ);
 
-                                                                                pos_convert = pos.offset(offset_posX, offset_posY, offset_posZ);
+                                                                                    if (level_accessor.hasChunk(pos_convert.getX() >> 4, pos_convert.getZ() >> 4) == true) {
 
-                                                                                if (level_accessor.hasChunk(pos_convert.getX() >> 4, pos_convert.getZ() >> 4) == true) {
+                                                                                        if (GameUtils.Misc.testCustomBlock(level_accessor.getBlockState(pos_convert), variable_text) == false) {
 
-                                                                                    if (GameUtils.Misc.testCustomBlock(level_accessor.getBlockState(pos_convert), variable_text) == false) {
+                                                                                            continue;
 
-                                                                                        continue;
+                                                                                        }
+
+                                                                                        if (level_accessor.isWaterAt(pos_convert) == true) {
+
+                                                                                            variable_block = GameUtils.Tile.setPropertyLogic(variable_block, "waterlogged", true);
+
+                                                                                        }
+
+                                                                                        level_accessor.setBlock(pos_convert, variable_block, 2);
 
                                                                                     }
-
-                                                                                    if (level_accessor.isWaterAt(pos_convert) == true) {
-
-                                                                                        variable_block = GameUtils.Tile.setPropertyLogic(variable_block, "waterlogged", true);
-
-                                                                                    }
-
-                                                                                    level_accessor.setBlock(pos_convert, variable_block, 2);
 
                                                                                 }
 

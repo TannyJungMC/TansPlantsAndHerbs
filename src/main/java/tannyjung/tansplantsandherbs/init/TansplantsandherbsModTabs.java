@@ -21,6 +21,7 @@ public class TansplantsandherbsModTabs {
 				tabData.accept(TansplantsandherbsModBlocks.PLANT_LARGE_CATTAIL.get().asItem());
 				tabData.accept(TansplantsandherbsModBlocks.PLANT_LARGE_REED.get().asItem());
 				tabData.accept(TansplantsandherbsModBlocks.PLANT_LARGE_GRASS.get().asItem());
-				tabData.accept(TansplantsandherbsModBlocks.PLANT_AQUATIC_DUCKWEED.get().asItem());
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_FLOATING_DUCKWEED.get().asItem());
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_SMALL.get().asItem());
 			}).build());
 }

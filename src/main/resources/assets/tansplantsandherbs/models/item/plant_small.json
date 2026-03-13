@@ -1,5 +1,5 @@
 {
-  "parent": "tansplantsandherbs:block/plant_aquatic_duckweed",
+  "parent": "tansplantsandherbs:block/plant_small",
   "display": {
     "thirdperson": {
       "rotation": [

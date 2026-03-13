@@ -25,7 +25,7 @@
           "src/main/resources/assets/tansplantsandherbs/models/block/plant_large_cattail.json"
         ]
       },
-      "path": "~/Plants"
+      "path": "~/Plants and Mushrooms"
     },
     {
       "name": "PlantLargeReed",
@@ -42,7 +42,7 @@
           "src/main/resources/assets/tansplantsandherbs/blockstates/plant_large_reed.json"
         ]
       },
-      "path": "~/Plants"
+      "path": "~/Plants and Mushrooms"
     },
     {
       "name": "PlantLargeGrass",
@@ -59,24 +59,41 @@
           "src/main/java/tannyjung/tansplantsandherbs/block/PlantLargeGrassBlock.java"
         ]
       },
-      "path": "~/Plants"
+      "path": "~/Plants and Mushrooms"
     },
     {
-      "name": "PlantAquaticDuckweed",
+      "name": "PlantFloatingDuckweed",
       "type": "block",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "plant_aquatic_duckweed",
+      "registry_name": "plant_floating_duckweed",
       "metadata": {
         "files": [
-          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_aquatic_duckweed.json",
-          "src/main/java/tannyjung/tansplantsandherbs/block/PlantAquaticDuckweedBlock.java",
-          "src/main/resources/assets/tansplantsandherbs/models/item/plant_aquatic_duckweed.json",
-          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_aquatic_duckweed.json",
-          "src/main/resources/assets/tansplantsandherbs/models/block/plant_aquatic_duckweed.json"
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_floating_duckweed.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantFloatingDuckweedBlock.java",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_floating_duckweed.json",
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_floating_duckweed.json",
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_floating_duckweed.json"
         ]
       },
-      "path": "~/Plants"
+      "path": "~/Plants and Mushrooms"
+    },
+    {
+      "name": "PlantSmall",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "plant_small",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_small.json",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_small.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantSmallBlock.java",
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_small.json",
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_small.json"
+        ]
+      },
+      "path": "~/Plants and Mushrooms"
     }
   ],
   "variable_elements": [],
@@ -95,7 +112,8 @@
       "block.tansplantsandherbs.plant_large_cattail": "Cattail",
       "block.tansplantsandherbs.plant_large_reed": "Reed",
       "block.tansplantsandherbs.plant_large_grass": "Grass",
-      "block.tansplantsandherbs.plant_aquatic_duckweed": "Duckweed"
+      "block.tansplantsandherbs.plant_floating_duckweed": "Duckweed",
+      "block.tansplantsandherbs.plant_small": "Reed"
     }
   },
   "metadata": {
@@ -112,7 +130,7 @@
     "name": "~",
     "children": [
       {
-        "name": "Plants",
+        "name": "Plants and Mushrooms",
         "children": []
       }
     ]
