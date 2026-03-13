@@ -5,6 +5,8 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import org.apache.logging.log4j.Logger;
 import tannyjung.tansplantsandherbs_core.game.GameUtils;
+import tannyjung.tansplantsandherbs_core.game.world_gen.FeatureAreaDirt;
+import tannyjung.tansplantsandherbs_core.game.world_gen.FeatureAreaGrass;
 import tannyjung.tansplantsandherbs_core.game.world_gen.WorldGenStepBeforePlants;
 import tannyjung.tansplantsandherbs_core.game.world_gen.WorldGenStepLast;
 import tannyjung.tansplantsandherbs_core.outside.CacheManager;
@@ -277,6 +279,8 @@ public class Core {
             Handcode.registry();
             features.put("world_gen_before_plants", WorldGenStepBeforePlants::new);
             features.put("world_gen_last", WorldGenStepLast::new);
+            Core.Registries.features.put("area_grass", FeatureAreaGrass::new);
+            Core.Registries.features.put("area_dirt", FeatureAreaDirt::new);
 
             // Feature
             {

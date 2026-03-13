@@ -1,0 +1,9 @@
+{
+  "feature": "tansplantsandherbs:area_dirt",
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 1
+    }
+  ]
+}

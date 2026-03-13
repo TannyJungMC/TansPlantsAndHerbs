@@ -37,7 +37,7 @@ public class PlantPlacer {
                 posZ = start_posZ + scanZ;
                 originalY = height.get(posX + "/" + posZ);
 
-                for (int scanY = 0; scanY > -64; scanY--) {
+                for (int scanY = 0; scanY > -32; scanY--) {
 
                     pos = new BlockPos(posX, originalY + scanY, posZ);
                     type = LivingMechanics.getAreaType(level_accessor, pos, originalY, water_locations.isEmpty() == false, land_biomes.isEmpty() == false);
@@ -50,9 +50,17 @@ public class PlantPlacer {
 
                                 for (Map.Entry<String, Map<String, String>> entry : data.get(type_test).entrySet()) {
 
-                                    if (LivingMechanics.test(level_accessor, level_server, entry.getValue(), height, water_locations, land_biomes, pos, originalY, true) == true) {
+                                    if (entry.getValue().get("enable_world_gen").equals("true") == true) {
 
-                                        LivingMechanics.place(level_accessor, level_server, pos, entry.getKey(), true);
+                                        if (Math.random() < Double.parseDouble(entry.getValue().get("rarity"))) {
+
+                                            if (LivingMechanics.test(level_accessor, entry.getValue(), type_test, height, water_locations, land_biomes, pos, originalY, true) == true) {
+
+                                                LivingMechanics.place(level_accessor, level_server, pos, entry.getKey(), true);
+
+                                            }
+
+                                        }
 
                                     }
 

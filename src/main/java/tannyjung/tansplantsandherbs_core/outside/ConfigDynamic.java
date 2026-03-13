@@ -290,6 +290,7 @@ public class ConfigDynamic {
         String id = "";
         boolean skip = true;
         boolean after_this = false;
+        String category = "";
 
         for (String read_all : FileManager.readTXT(Core.path_config + "/config_" + name + ".txt")) {
 
@@ -316,12 +317,21 @@ public class ConfigDynamic {
 
                             after_this = true;
                             value = read_all.split(" = ");
-                            settings.put(value[0], value[1]);
+
+                            if (by_category.equals(value[0]) == false) {
+
+                                settings.put(value[0], value[1]);
+
+                            } else {
+
+                                category = value[1];
+
+                            }
 
                         } else if (after_this == true) {
 
+                            data.computeIfAbsent(category, test -> new HashMap<>()).put(id, new HashMap<>(settings));
                             after_this = false;
-                            data.computeIfAbsent(settings.get(by_category), test -> new HashMap<>()).put(id, new HashMap<>(settings));
                             settings.clear();
 
                         }
