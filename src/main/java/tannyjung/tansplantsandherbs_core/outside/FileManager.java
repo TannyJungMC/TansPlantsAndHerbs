@@ -150,16 +150,16 @@ public class FileManager {
 
 	}
 
-	public static String[] readTXT (String path) {
+	public static List<String> readTXT (String path) {
 
-		String[] return_array = new String[0];
+        List<String> return_array = new ArrayList<>();
 		File file = new File(path);
 
 		if (file.exists() == true) {
 
 			try {
 
-				return_array = Files.readAllLines(file.toPath()).toArray(new String[0]);
+				return_array = Files.readAllLines(file.toPath());
 
 			} catch (Exception exception) {
 
@@ -389,13 +389,13 @@ public class FileManager {
 
         } else {
 
-            String[] data_new = FileManager.readTXT(file_from.getPath());
+            List<String> data_new = FileManager.readTXT(file_from.getPath());
 
-            if (data_new[0].equals("[REPLACE]") == true) {
+            if (data_new.get(0).equals("[REPLACE]") == true) {
 
                 StringBuilder write = new StringBuilder();
 
-                for (String read_all : Arrays.stream(data_new).toList().subList(1, data_new.length)) {
+                for (String read_all : data_new.subList(1, data_new.size())) {
 
                     write.append(read_all).append("\n");
 
@@ -405,7 +405,7 @@ public class FileManager {
 
             } else {
 
-                String[] data_old = FileManager.readTXT(file_to.getPath());
+                List<String> data_old = FileManager.readTXT(file_to.getPath());
                 Map<String, String> data = new HashMap<>();
                 String[] split = new String[0];
 

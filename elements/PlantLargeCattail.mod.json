@@ -139,6 +139,15 @@
     "isFluidTank": false,
     "fluidCapacity": 8000,
     "fluidRestrictions": [],
+    "onRightClicked": {
+      "name": "PlantBlockWhenClick"
+    },
+    "onNeighbourBlockChanges": {
+      "name": "PlantBlockWhenNeighbourUpdate"
+    },
+    "onBlockPlayedBy": {
+      "name": "PlantBlockWhenPlace"
+    },
     "generateFeature": false,
     "restrictionBiomes": [],
     "blocksToReplace": [

@@ -1,10 +1,13 @@
 package tannyjung.tansplantsandherbs_core.game;
 
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.*;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -20,8 +23,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.*;
@@ -306,15 +311,46 @@ public class GameUtils {
 
 		}
 
-		public static void playSound (ServerLevel level_server, BlockPos pos, float volume, float pitch, String id) {
+		public static void playSound (ServerLevel level_server, BlockPos pos, double volume, double pitch, String id) {
 
 			SoundEvent sound = ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse(id));
 
 			if (sound != null) {
 
-				level_server.playSound(null, pos, sound, SoundSource.NEUTRAL, volume, pitch);
+				level_server.playSound(null, pos, sound, SoundSource.NEUTRAL, (float) volume, (float) pitch);
 
 			}
+
+		}
+
+		public static Entity summonText (ServerLevel level_server, Vec3 vec3, double size, String data, boolean temporary) {
+
+			Entity entity = GameUtils.Mob.summon(level_server, vec3, "minecraft:text_display", "Display Text", Core.mod_id_big + "-display_text", "{see_through:1b,alignment:\"left\",brightness:{block:15, sky:15},line_width:1000,transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[" + size + "f," + size + "f," + size + "f]},billboard:vertical,text:'" + Data.createText(data) + "'}");
+
+			if (temporary == true) {
+
+				Core.DelayedWorks.create(false, 200, () -> {
+
+					for (Entity scan : Mob.getAtArea(level_server, vec3, 1, true, 0, "minecraft:text_display", Core.mod_id_big + "-display_text")) {
+
+						GameUtils.Mob.remove(scan, false);
+
+					}
+
+				});
+
+			}
+
+			return entity;
+
+		}
+
+		public static Entity summonBlock (ServerLevel level_server, Vec3 vec3, String name, String tag, double offsetX, double offsetY, double offsetZ, double sizeX, double sizeY, double sizeZ, int rotate_horizontal, int rotate_vertical, String id) {
+
+			offsetX = offsetX - 0.5;
+			offsetY = offsetY - 0.5;
+			offsetZ = offsetZ - 0.5;
+			return GameUtils.Mob.summon(level_server, vec3, "minecraft:block_display", name, tag, "{transformation:{left_rotation:[0.0f,0.0f,0.0f,1.0f],right_rotation:[0.0f,0.0f,0.0f,1.0f],translation:[" + offsetX + "f," + offsetY + "f," + offsetZ + "f],scale:[" + sizeX + "f," + sizeY + "f," + sizeZ + "f]},Rotation:[" + rotate_horizontal + "f," + rotate_vertical + "f],block_state:{Name:\"" + id + "\"}}");
 
 		}
 
@@ -431,6 +467,25 @@ public class GameUtils {
 	}
 
 	public static class Tile {
+
+		public static void set (LevelAccessor level_accessor, BlockPos pos, BlockState block) {
+
+			level_accessor.setBlock(pos, block, 3);
+
+		}
+
+		public static void remove (LevelAccessor level_accessor, BlockPos pos) {
+
+			level_accessor.removeBlock(pos, false);
+
+		}
+
+		public static void removeDrop (LevelAccessor level_accessor, ServerLevel level_server, BlockPos pos) {
+
+			GameUtils.Item.spawn(level_server, pos.getCenter(), level_accessor.getBlockState(pos).getBlock().asItem().getDefaultInstance());
+			remove(level_accessor, pos);
+
+		}
 
 		public static boolean isTaggedAs (BlockState block, String tag) {
 
@@ -652,17 +707,15 @@ public class GameUtils {
 
 	public static class Mob {
 
-		public static List<Entity> getAtArea (ServerLevel level_server, double posX, double posY, double posZ, int distance, boolean is_box, int count, String id, String tag) {
+		public static List<Entity> getAtArea (ServerLevel level_server, Vec3 vec3, int distance, boolean is_box, int count, String id, String tag) {
 
-			Vec3 center = new Vec3(posX, posY, posZ);
-			int distance_power = distance * distance;
 			List<String> tags = Arrays.stream(tag.split(" / ")).toList();
 
-			List<Entity> entities = level_server.getEntitiesOfClass(Entity.class, new AABB(center, center).inflate(distance), entity -> {
+			List<Entity> entities = level_server.getEntitiesOfClass(Entity.class, new AABB(vec3, vec3).inflate(distance), entity -> {
 
 				boolean test = false;
 
-				if (is_box == true || entity.distanceToSqr(center) <= distance_power) {
+				if (is_box == true || entity.position().distanceTo(vec3) <= distance) {
 
 					if (id.isEmpty() == true || EntityType.getKey(entity.getType()).toString().equals(id) == true) {
 
@@ -682,7 +735,7 @@ public class GameUtils {
 
 			if (distance > 0) {
 
-				entities = entities.stream().sorted(Comparator.comparingDouble(entity -> entity.distanceToSqr(center))).toList();
+				entities = entities.stream().sorted(Comparator.comparingDouble(entity -> entity.position().distanceTo(vec3))).toList();
 
 			}
 
@@ -723,9 +776,9 @@ public class GameUtils {
 
 		}
 
-		public static Entity getAtAreaOne (ServerLevel level_server, double posX, double posY, double posZ, int distance, boolean is_box, String id, String tag) {
+		public static Entity getAtAreaOne (ServerLevel level_server, Vec3 vec3, int distance, boolean is_box, String id, String tag) {
 
-			List<Entity> entities = GameUtils.Mob.getAtArea(level_server, posX, posY, posZ, distance, is_box, 1, id, tag);
+			List<Entity> entities = GameUtils.Mob.getAtArea(level_server, vec3, distance, is_box, 1, id, tag);
 
 			if (entities.isEmpty() == false) {
 
@@ -803,6 +856,26 @@ public class GameUtils {
 
 		}
 
+		public static void remove (Entity entity, boolean is_kill_style) {
+
+			if (is_kill_style == false) {
+
+				entity.discard();
+
+			} else {
+
+				entity.kill();
+
+			}
+
+		}
+
+		public static boolean canTickingAt (ServerLevel level_server, BlockPos pos) {
+
+			return level_server.isPositionEntityTicking(pos);
+
+		}
+
 		public static boolean isCreativeMode (Entity entity) {
 
 			if (entity instanceof Player player) {
@@ -815,9 +888,15 @@ public class GameUtils {
 
 		}
 
-		public static boolean canTickingAt (ServerLevel level_server, BlockPos pos) {
+		public static boolean isSneaking (Entity entity) {
 
-			return level_server.isPositionEntityTicking(pos);
+			if (entity instanceof Player player) {
+
+				return player.isShiftKeyDown();
+
+			}
+
+			return false;
 
 		}
 
@@ -834,6 +913,12 @@ public class GameUtils {
 			}
 
 			return ItemStack.EMPTY;
+
+		}
+
+		public static boolean isTaggedAs (ItemStack item, String tag) {
+
+			return item.is(ItemTags.create(ResourceLocation.parse(tag))) == true;
 
 		}
 
@@ -856,6 +941,48 @@ public class GameUtils {
 				item.setCount(item.getCount() + value);
 
 			}
+
+		}
+
+		public static void setCooldown (Entity entity, ItemStack item, int tick) {
+
+			if (entity instanceof Player player) {
+
+				player.getCooldowns().addCooldown(item.getItem(), tick);
+
+			}
+
+		}
+
+		public static void addDamage (ItemStack item, int value) {
+
+			item.setDamageValue(item.getDamageValue() + value);
+
+			if (item.getMaxDamage() < item.getDamageValue()) {
+
+				item.shrink(1);
+
+			}
+
+		}
+
+		public static void spawn (ServerLevel level_server, Vec3 vec3, ItemStack item) {
+
+			ItemEntity entityToSpawn = new ItemEntity(level_server, vec3.x, vec3.y, vec3.z, item);
+			level_server.addFreshEntity(entityToSpawn);
+
+		}
+
+		public static String toID (ItemStack item) {
+
+			String id = item.getDescriptionId();
+			return id.substring(id.indexOf(".") + 1).replace(".", ":");
+
+		}
+
+		public static ItemStack fromID (String id) {
+
+			return ForgeRegistries.ITEMS.getValue(ResourceLocation.parse(id)).getDefaultInstance();
 
 		}
 

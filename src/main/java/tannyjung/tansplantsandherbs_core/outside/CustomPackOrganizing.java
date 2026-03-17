@@ -79,7 +79,7 @@ public class CustomPackOrganizing {
 
                     if (file.exists() == true) {
 
-                        FileManager.copy(file.getPath(), Core.path_config + "/#dev/#temporary/info/" + pack.getName() + ".txt", false);
+                        FileManager.copy(file.getPath(), Core.path_config + "/#dev/#temporary/#info/" + pack.getName() + ".txt", false);
 
                     }
 
@@ -167,7 +167,7 @@ public class CustomPackOrganizing {
         // Edit
         {
 
-            File file = new File(Core.path_config + "/#dev/#temporary/edit");
+            File file = new File(Core.path_config + "/#dev/#temporary/#edit");
 
             if (file.listFiles() != null) {
 
@@ -223,7 +223,7 @@ public class CustomPackOrganizing {
 
     private static void getPackID () {
 
-        File[] files = new File(Core.path_config + "/#dev/#temporary/info").listFiles();
+        File[] files = new File(Core.path_config + "/#dev/#temporary/#info").listFiles();
 
         if (files != null) {
 
@@ -265,7 +265,7 @@ public class CustomPackOrganizing {
 
             for (File pack : packs) {
 
-                file = new File(Core.path_config + "/#dev/#temporary/info/" + pack.getName() + ".txt");
+                file = new File(Core.path_config + "/#dev/#temporary/#info/" + pack.getName() + ".txt");
 
                 if (file.exists() == true) {
 
@@ -617,20 +617,7 @@ public class CustomPackOrganizing {
 
                                 }
 
-                                // Copy
-                                {
-
-                                    if (source.toString().endsWith(".txt") == true) {
-
-                                        FileManager.mergeTXT(source.toFile(), path_copy_to.toFile());
-
-                                    } else {
-
-                                        FileManager.copy(source.toString(), path_copy_to.toString(), false);
-
-                                    }
-
-                                }
+                                FileManager.copy(source.toString(), path_copy_to.toString(), false);
 
                             }
 

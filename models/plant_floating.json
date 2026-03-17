@@ -3,7 +3,7 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [2, 2],
 	"textures": {
-		"0": "plant_aquatic_duckweed"
+		"0": "plant_floating_duckweed"
 	},
 	"elements": [
 		{
@@ -38,23 +38,25 @@
 			"scale": [0.5, 0.5, 0.5]
 		},
 		"ground": {
-			"translation": [0, 10, 0]
+			"translation": [0, 25, 0]
 		},
 		"gui": {
 			"rotation": [90, 0, 0],
-			"scale": [0.75, 1, 0.75]
+			"scale": [0.3, 0, 0.3]
 		},
 		"head": {
-			"translation": [0, 13.75, 0],
-			"scale": [0.9, 0.9, 0.9]
+			"translation": [0, 8, 0],
+			"scale": [0.25, 0.25, 0.25]
 		},
 		"fixed": {
 			"rotation": [-90, 0, 0],
-			"translation": [0, 0, -7]
+			"translation": [0, 0, 0.75],
+			"scale": [0.4, 0, 0.4]
 		},
 		"on_shelf": {
 			"rotation": [90, 0, 0],
-			"translation": [0, 0, 4]
+			"translation": [0, 0, 4],
+			"scale": [0.25, 0, 0.25]
 		}
 	}
 }

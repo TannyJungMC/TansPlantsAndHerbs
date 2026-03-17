@@ -17,39 +17,24 @@ public class WorldGenStepEnd {
         {
 
             WorldGen.stepEnd(dimension, chunk_pos);
-            String path_prefix = Core.path_world_core + "/" + Core.data_structure_version_core;
             String path_suffix = dimension + "/" + (chunk_pos.x >> 5) + "," + (chunk_pos.z >> 5) + ".bin";
 
-            if (WorldGenStepEnd.testWorldGenFolderCleaner(path_prefix + "/world_gen/#regions/" + path_suffix) == true) {
+            File file = new File(Core.path_world_mod + "/world_gen/#regions/" + path_suffix);
+            List<String> test = new ArrayList<>();
+            test.add("b0");
+            FileManager.writeBIN(file.getPath(), test, true);
 
-                new File(path_prefix + "/world_gen/blacklist_chunks/" + path_suffix).delete();
+            if (FileManager.readBIN(file.getPath()).capacity() >= 1024) {
+
+                test.clear();
+                test.add("b0");
+                FileManager.writeBIN(file.getPath(), test, false);
+
+                new File(Core.path_world_mod + "/world_gen/blacklist_chunks/" + path_suffix).delete();
 
             }
 
-            new File(path_prefix + "/world_gen/pre_location_biome.bin").delete();
-
         }
-
-    }
-
-    public static boolean testWorldGenFolderCleaner (String path) {
-
-        File file = new File(path);
-        List<String> add = new ArrayList<>();
-        add.add("b0");
-        FileManager.writeBIN(file.getPath(), add, true);
-
-        if (FileManager.readBIN(file.getPath()).capacity() >= 1024) {
-
-            List<String> add_end = new ArrayList<>();
-            add_end.add("b1");
-            FileManager.writeBIN(file.getPath(), add_end, false);
-
-            return true;
-
-        }
-
-        return false;
 
     }
 

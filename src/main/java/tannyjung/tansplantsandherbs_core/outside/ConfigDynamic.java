@@ -292,7 +292,13 @@ public class ConfigDynamic {
         boolean after_this = false;
         String category = "";
 
-        for (String read_all : FileManager.readTXT(Core.path_config + "/config_" + name + ".txt")) {
+        if (CacheManager.SaveList.existText("config_" + name) == false) {
+
+            CacheManager.SaveList.setText("config_" + name, FileManager.readTXT(Core.path_config + "/config_" + name + ".txt"));
+
+        }
+
+        for (String read_all : CacheManager.SaveList.getText("config_" + name)) {
 
             if (read_all.isEmpty() == false) {
 
@@ -318,15 +324,13 @@ public class ConfigDynamic {
                             after_this = true;
                             value = read_all.split(" = ");
 
-                            if (by_category.equals(value[0]) == false) {
-
-                                settings.put(value[0], value[1]);
-
-                            } else {
+                            if (by_category.equals(value[0]) == true) {
 
                                 category = value[1];
 
                             }
+
+                            settings.put(value[0], value[1]);
 
                         } else if (after_this == true) {
 

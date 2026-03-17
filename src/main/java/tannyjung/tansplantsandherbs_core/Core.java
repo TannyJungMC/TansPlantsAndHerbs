@@ -5,8 +5,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import org.apache.logging.log4j.Logger;
 import tannyjung.tansplantsandherbs_core.game.GameUtils;
-import tannyjung.tansplantsandherbs_core.game.world_gen.FeatureAreaDirt;
-import tannyjung.tansplantsandherbs_core.game.world_gen.FeatureAreaGrass;
 import tannyjung.tansplantsandherbs_core.game.world_gen.WorldGenStepBeforePlants;
 import tannyjung.tansplantsandherbs_core.game.world_gen.WorldGenStepLast;
 import tannyjung.tansplantsandherbs_core.outside.CacheManager;
@@ -65,10 +63,11 @@ public class Core {
     public static String wiki = "";
 
     public static Logger logger = null;
-    public static final String path_game = FMLPaths.GAMEDIR.get().toString();
-    public static String path_config = "";
-    public static String path_world_core = "";
-    public static String path_world_mod = "";
+    public static String path_game = FMLPaths.GAMEDIR.get().toString();
+    public static String path_config = path_game + "/" + mod_id + "_error";
+    public static String path_world = path_game + "/" + mod_id + "_error";
+    public static String path_world_core = path_game + "/" + mod_id + "_error";
+    public static String path_world_mod = path_game + "/" + mod_id + "_error";
     public static final ExecutorService thread_main = Executors.newFixedThreadPool(1, name -> { Thread thread = new Thread(name); thread.setName(Core.mod_name); return thread; });
 
     public static boolean in_restarting = false;
@@ -76,13 +75,10 @@ public class Core {
     public static void start (IEventBus bus) {
 
         Handcode.start();
-
         mod_id_big = mod_id.toUpperCase();
         tanny_pack_type_original = tanny_pack_type;
-        path_config = path_game + "/config/" + mod_id;
-        path_world_core = path_game + "/saves/" + mod_id + "-error";
-        path_world_mod = path_game + "/saves/" + mod_id + "-error";
         logger = LogManager.getLogger(mod_id);
+        path_config = path_game + "/config/" + mod_id;
 
         Registries.start(bus);
         DataMigration.run("config");
@@ -279,8 +275,6 @@ public class Core {
             Handcode.registry();
             features.put("world_gen_before_plants", WorldGenStepBeforePlants::new);
             features.put("world_gen_last", WorldGenStepLast::new);
-            Core.Registries.features.put("area_grass", FeatureAreaGrass::new);
-            Core.Registries.features.put("area_dirt", FeatureAreaDirt::new);
 
             // Feature
             {

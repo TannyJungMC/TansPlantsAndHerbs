@@ -1,9 +1,0 @@
-{
-  "feature": "tansplantsandherbs:area_grass",
-  "placement": [
-    {
-      "type": "minecraft:count",
-      "count": 1
-    }
-  ]
-}

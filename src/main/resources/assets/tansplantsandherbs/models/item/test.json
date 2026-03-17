@@ -1,5 +1,5 @@
 {
-  "parent": "tansplantsandherbs:block/plant_small",
+  "parent": "tansplantsandherbs:block/test",
   "display": {
     "thirdperson": {
       "rotation": [

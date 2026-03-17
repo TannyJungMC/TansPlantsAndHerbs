@@ -6,7 +6,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
 import tannyjung.tansplantsandherbs_core.outside.ConfigDynamic;
+import tannyjung.tansplantsandherbs_handcode.systems.living_mechanics.LivingMechanics;
 
 import java.util.*;
 
@@ -26,8 +28,9 @@ public class PlantPlacer {
         BlockPos pos = null;
         int posX = 0;
         int posZ = 0;
-        String type = "";
         int originalY = 0;
+        String type = "";
+        BlockState ceil_block = null;
 
         for (int scanX = 0; scanX < 16; scanX++) {
 
@@ -42,6 +45,12 @@ public class PlantPlacer {
                     pos = new BlockPos(posX, originalY + scanY, posZ);
                     type = LivingMechanics.getAreaType(level_accessor, pos, originalY, water_locations.isEmpty() == false, land_biomes.isEmpty() == false);
 
+                    if (level_accessor.getBlockState(pos.above()).getCollisionShape(level_accessor, pos.above()).isEmpty() == false) {
+
+                        ceil_block = level_accessor.getBlockState(pos.above());
+
+                    }
+
                     if (type.isEmpty() == false) {
 
                         for (String type_test : type.substring(1, type.length() - 1).split("\\|")) {
@@ -54,7 +63,7 @@ public class PlantPlacer {
 
                                         if (Math.random() < Double.parseDouble(entry.getValue().get("rarity"))) {
 
-                                            if (LivingMechanics.test(level_accessor, entry.getValue(), type_test, height, water_locations, land_biomes, pos, originalY, true) == true) {
+                                            if (LivingMechanics.test(level_accessor, data.get(type_test), height, water_locations, land_biomes, pos, ceil_block, entry.getKey(), true).isEmpty() == true) {
 
                                                 LivingMechanics.place(level_accessor, level_server, pos, entry.getKey(), true);
 

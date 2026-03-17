@@ -61,6 +61,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 
+import java.util.AbstractMap;
+
 public class EventCenter {
     
     @Mod.EventBusSubscriber({Dist.CLIENT})
@@ -97,8 +99,10 @@ public class EventCenter {
         @SubscribeEvent
         public static void eventWorldAboutToStart (ServerAboutToStartEvent event) {
 
-            Core.path_world_core = event.getServer().getWorldPath(new LevelResource(".")) + "/data/tannyjung";
-            Core.path_world_mod = Core.path_world_core + "_" + Core.mod_id;
+            Core.path_world = event.getServer().getWorldPath(new LevelResource(".")).toString();
+            Core.path_world_core = Core.path_world + "/data/tannyjung/" + Core.data_structure_version_core;
+            Core.path_world_mod = Core.path_world + "/data/" + Core.mod_id;
+
             DataMigration.run("world");
             Core.Restart.run(null, "config", true);
 

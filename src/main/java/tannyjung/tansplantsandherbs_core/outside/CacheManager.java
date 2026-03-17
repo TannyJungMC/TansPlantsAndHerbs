@@ -8,10 +8,9 @@ import java.util.*;
 public class CacheManager {
 
     public static final Object lock = new Object();
-    public static final Map<String, Map<Integer, Object>> cache_dictionary = new HashMap<>();
     public static final Map<String, Map<String, String>> cache_map_string = new HashMap<>();
     public static final Map<String, Map<String, Boolean>> cache_map_logic = new HashMap<>();
-    public static final Map<String, Map<String, String[]>> cache_map_string_list = new HashMap<>();
+    public static final Map<String, Map<String, List<String>>> cache_map_string_list = new HashMap<>();
     public static final Map<String, Map<String, short[]>> cache_map_number_short_list = new HashMap<>();
     public static final Map<String, Map<String, int[]>> cache_map_number_int_list = new HashMap<>();
     public static final Map<String, List<String>> cache_list_text = new HashMap<>();
@@ -40,8 +39,8 @@ public class CacheManager {
                 size = size + SizeCalculation.getMapNumberInt(cache_map_number_int_list);
                 cache_map_number_int_list.clear();
 
-                // TODO -> size for object cache
-                cache_dictionary.clear();
+                size = size + SizeCalculation.getListText(cache_list_text);
+                cache_list_text.clear();
 
             }
 
@@ -89,7 +88,7 @@ public class CacheManager {
 
                 for (Map.Entry<String, short[]> entry2 : entry1.getValue().entrySet()) {
 
-                    return_number = return_number + entry2.getValue().length * Short.BYTES;
+                    return_number = return_number + (entry2.getValue().length * Short.BYTES);
 
                 }
 
@@ -107,7 +106,7 @@ public class CacheManager {
 
                 for (Map.Entry<String, int[]> entry2 : entry1.getValue().entrySet()) {
 
-                    return_number = return_number + entry2.getValue().length * Integer.BYTES;
+                    return_number = return_number + (entry2.getValue().length * Integer.BYTES);
 
                 }
 
@@ -125,7 +124,7 @@ public class CacheManager {
 
                 for (Map.Entry<String, String> entry2 : entry1.getValue().entrySet()) {
 
-                    return_number = return_number + entry2.getValue().length() * Character.BYTES;
+                    return_number = return_number + (entry2.getValue().length() * Character.BYTES);
 
                 }
 
@@ -135,15 +134,19 @@ public class CacheManager {
 
         }
 
-        public static int getMapTextList (Map<String, Map<String, String[]>> test) {
+        public static int getMapTextList (Map<String, Map<String, List<String>>> test) {
 
             int return_number = 0;
 
-            for (Map.Entry<String, Map<String, String[]>> entry1 : test.entrySet()) {
+            for (Map.Entry<String, Map<String, List<String>>> entry1 : test.entrySet()) {
 
-                for (Map.Entry<String, String[]> entry2 : entry1.getValue().entrySet()) {
+                for (Map.Entry<String, List<String>> entry2 : entry1.getValue().entrySet()) {
 
-                    return_number = return_number + entry2.getValue().length * Integer.BYTES;
+                    for (String read_all : entry2.getValue()) {
+
+                        return_number = return_number + (read_all.length() * Character.BYTES);
+
+                    }
 
                 }
 
@@ -153,13 +156,17 @@ public class CacheManager {
 
         }
 
-        public static int getArrayText (String[] test) {
+        public static int getListText (Map<String, List<String>> test) {
 
             int return_number = 0;
 
-            for (String get : test) {
+            for (Map.Entry<String, List<String>> entry : test.entrySet()) {
 
-                return_number = return_number + get.length() * Integer.BYTES;
+                for (String read_all : entry.getValue()) {
+
+                    return_number = return_number + (read_all.length() * Character.BYTES);
+
+                }
 
             }
 
@@ -183,7 +190,7 @@ public class CacheManager {
 
     }
 
-    public static String[] getFunction (String path) {
+    public static List<String> getFunction (String path) {
 
         synchronized (lock) {
 
@@ -195,7 +202,7 @@ public class CacheManager {
 
             if (cache_map_string_list.get("functions").containsKey(path) == false) {
 
-                String[] data = FileManager.readTXT(Core.path_config + "/#dev/#temporary/" + path + ".txt");
+                List<String> data = FileManager.readTXT(Core.path_config + "/#dev/#temporary/" + path + ".txt");
                 cache_map_string_list.get("functions").put(path, data);
 
             }
@@ -225,7 +232,7 @@ public class CacheManager {
                 {
 
                     String path = Core.path_world_mod + "/dictionary.txt";
-                    String[] data = FileManager.readTXT(path);
+                    List<String> data = FileManager.readTXT(path);
 
                     for (String read_all : data) {
 
@@ -263,7 +270,7 @@ public class CacheManager {
 
                         if (value_text.isEmpty() == false) {
 
-                            value_id = String.valueOf(data.length + 1);
+                            value_id = String.valueOf(data.size() + 1);
                             FileManager.writeTXT(path, value_id + "|" + value_text + "\n", true);
 
                         }

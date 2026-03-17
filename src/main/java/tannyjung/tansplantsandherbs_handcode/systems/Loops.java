@@ -2,7 +2,7 @@ package tannyjung.tansplantsandherbs_handcode.systems;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.LevelAccessor;
-import tannyjung.tansplantsandherbs_handcode.systems.world_gen.LivingMechanics;
+import tannyjung.tansplantsandherbs_handcode.systems.living_mechanics.LivingMechanics;
 
 public class Loops {
 

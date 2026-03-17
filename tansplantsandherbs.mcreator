@@ -25,7 +25,7 @@
           "src/main/resources/assets/tansplantsandherbs/models/block/plant_large_cattail.json"
         ]
       },
-      "path": "~/Plants and Mushrooms"
+      "path": "~/Plants and Mushrooms/Blocks"
     },
     {
       "name": "PlantLargeReed",
@@ -42,7 +42,7 @@
           "src/main/resources/assets/tansplantsandherbs/blockstates/plant_large_reed.json"
         ]
       },
-      "path": "~/Plants and Mushrooms"
+      "path": "~/Plants and Mushrooms/Blocks"
     },
     {
       "name": "PlantLargeGrass",
@@ -59,7 +59,7 @@
           "src/main/java/tannyjung/tansplantsandherbs/block/PlantLargeGrassBlock.java"
         ]
       },
-      "path": "~/Plants and Mushrooms"
+      "path": "~/Plants and Mushrooms/Blocks"
     },
     {
       "name": "PlantFloatingDuckweed",
@@ -76,24 +76,158 @@
           "src/main/resources/assets/tansplantsandherbs/models/block/plant_floating_duckweed.json"
         ]
       },
-      "path": "~/Plants and Mushrooms"
+      "path": "~/Plants and Mushrooms/Blocks"
     },
     {
-      "name": "PlantSmall",
-      "type": "block",
+      "name": "PlantBlockWhenPlace",
+      "type": "procedure",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "plant_small",
+      "registry_name": "plant_block_when_place",
       "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
         "files": [
-          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_small.json",
-          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_small.json",
-          "src/main/java/tannyjung/tansplantsandherbs/block/PlantSmallBlock.java",
-          "src/main/resources/assets/tansplantsandherbs/models/block/plant_small.json",
-          "src/main/resources/assets/tansplantsandherbs/models/item/plant_small.json"
+          "src/main/java/tannyjung/tansplantsandherbs/procedures/PlantBlockWhenPlaceProcedure.java"
         ]
       },
       "path": "~/Plants and Mushrooms"
+    },
+    {
+      "name": "PlantBlockWhenClick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "plant_block_when_click",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/tannyjung/tansplantsandherbs/procedures/PlantBlockWhenClickProcedure.java"
+        ]
+      },
+      "path": "~/Plants and Mushrooms"
+    },
+    {
+      "name": "PlantBlockWhenNeighbourUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "plant_block_when_neighbour_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/tannyjung/tansplantsandherbs/procedures/PlantBlockWhenNeighbourUpdateProcedure.java"
+        ]
+      },
+      "path": "~/Plants and Mushrooms"
+    },
+    {
+      "name": "TestOnBlockRightclicked",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "test_on_block_rightclicked",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/tannyjung/tansplantsandherbs/procedures/TestOnBlockRightclickedProcedure.java"
+        ]
+      }
+    },
+    {
+      "name": "Test",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "test",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/tansplantsandherbs/models/item/test.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/test.json",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/test.json",
+          "src/main/resources/assets/tansplantsandherbs/models/block/test.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/TestBlock.java"
+        ]
+      }
     }
   ],
   "variable_elements": [],
@@ -113,7 +247,7 @@
       "block.tansplantsandherbs.plant_large_reed": "Reed",
       "block.tansplantsandherbs.plant_large_grass": "Grass",
       "block.tansplantsandherbs.plant_floating_duckweed": "Duckweed",
-      "block.tansplantsandherbs.plant_small": "Reed"
+      "block.tansplantsandherbs.test": "Test"
     }
   },
   "metadata": {
@@ -131,7 +265,12 @@
     "children": [
       {
         "name": "Plants and Mushrooms",
-        "children": []
+        "children": [
+          {
+            "name": "Blocks",
+            "children": []
+          }
+        ]
       }
     ]
   },
