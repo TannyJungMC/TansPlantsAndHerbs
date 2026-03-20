@@ -6,13 +6,19 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import tannyjung.tansplantsandherbs_core.Core;
 import tannyjung.tansplantsandherbs_core.game.GameUtils;
+import tannyjung.tansplantsandherbs_core.outside.CacheManager;
 import tannyjung.tansplantsandherbs_core.outside.ConfigDynamic;
+import tannyjung.tansplantsandherbs_core.outside.FileManager;
+import tannyjung.tansplantsandherbs_core.outside.TXTFunction;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +34,93 @@ public class PlantBlock {
 
         ServerLevel level_server = (ServerLevel) level_accessor;
         ItemStack item = GameUtils.Item.getSlot(entity, EquipmentSlot.MAINHAND);
+        String id = GameUtils.Tile.toText(level_accessor.getBlockState(pos))[0].replace(":", "-");
+        boolean pass = false;
 
-        if (GameUtils.Item.isTaggedAs(item, "minecraft:shovels") == true) {
+        if (item.getItem() == Items.SHEARS) {
+
+            {
+
+                List<String> loot = getLootData(id);
+
+                if (loot.isEmpty() == false) {
+
+                    String[] split = new String[0];
+
+                    for (String read_all : CacheManager.SaveMap.getTextList("loot", id)) {
+
+                        split = read_all.split(" \\| ");
+
+                        if (Math.random() < Double.parseDouble(split[0])) {
+
+                            GameUtils.Item.spawn(level_server, pos.getCenter(), GameUtils.Item.fromID(split[1]));
+
+                        }
+
+                    }
+
+                    GameUtils.Misc.playSound(level_server, pos, 2.0, 1.0, "minecraft:entity.sheep.shear");
+                    pass = true;
+
+                }
+
+            }
+
+        } else {
+
+            if (GameUtils.Item.isTaggedAs(item, "minecraft:shovels") == true) {
+
+                {
+
+                    List<String> loot = getLootData(id);
+
+                    if (loot.isEmpty() == false) {
+
+                        if (level_accessor.getBlockState(pos.below()).getBlock() == Blocks.GRASS_BLOCK) {
+
+                            GameUtils.Tile.set(level_accessor, pos.below(), Blocks.DIRT.defaultBlockState());
+
+                        }
+
+                        GameUtils.Item.spawn(level_server, pos.getCenter(), level_accessor.getBlockState(pos).getBlock().asItem().getDefaultInstance());
+                        GameUtils.Misc.playSound(level_server, pos, 2.0, 0.0, "minecraft:item.shovel.flatten");
+                        pass = true;
+
+                    }
+
+                }
+
+            } else if (GameUtils.Item.isTaggedAs(item, "minecraft:swords") == true) {
+
+                {
+
+                    GameUtils.Misc.playSound(level_server, pos, 2.0, 2.0, "minecraft:entity.player.attack.sweep");
+                    GameUtils.Misc.playSound(level_server, pos, 2.0, 0.75, "minecraft:block.grass.break");
+                    pass = true;
+
+                }
+
+            } else if (GameUtils.Item.isTaggedAs(item, "minecraft:hoes") == true) {
+
+                {
+
+                    if (level_accessor.getBlockState(pos.below()).getBlock() == Blocks.GRASS_BLOCK) {
+
+                        GameUtils.Tile.set(level_accessor, pos.below(), Blocks.DIRT.defaultBlockState());
+
+                    }
+
+                    GameUtils.Misc.playSound(level_server, pos, 2.0, 0.0, "minecraft:item.hoe.till");
+                    GameUtils.Misc.playSound(level_server, pos, 2.0, 0.75, "minecraft:block.grass.break");
+                    pass = true;
+
+                }
+
+            }
+
+        }
+
+        if (pass == true) {
 
             GameUtils.Item.setCooldown(entity, item, 100);
 
@@ -39,15 +130,8 @@ public class PlantBlock {
 
             }
 
-            GameUtils.Tile.removeDrop(level_accessor, level_server, pos);
-            GameUtils.Misc.playSound(level_server, pos, 2.0, 0.0, "minecraft:item.shovel.flatten");
+            GameUtils.Tile.remove(level_accessor, pos);
             GameUtils.Misc.spawnParticle(level_server, pos.getCenter().add(0.0, -0.25, 0.0), 0.25, 0.25, 0.25, 0.01, 10, "minecraft:campfire_cosy_smoke");
-
-            if (level_accessor.getBlockState(pos.below()).getBlock() == Blocks.GRASS_BLOCK) {
-
-                GameUtils.Tile.set(level_accessor, pos.below(), Blocks.DIRT.defaultBlockState());
-
-            }
 
         }
 
@@ -61,19 +145,37 @@ public class PlantBlock {
 
         }
 
-        testPlace(level_accessor, pos, true, GameUtils.Mob.isCreativeMode(entity) == false);
+        String id = GameUtils.Tile.toText(level_accessor.getBlockState(pos))[0].replace(":", "-");
+
+        if (testPlace(level_accessor, pos, id, true, GameUtils.Mob.isCreativeMode(entity) == false) == true) {
+
+            ServerLevel level_server = (ServerLevel) level_accessor;
+            runCustomPlacement(level_accessor, level_server, pos, id);
+
+        }
 
     }
 
     public static void whenNeighbourUpdate (LevelAccessor level_accessor, BlockPos pos) {
 
-        testPlace(level_accessor, pos, false, false);
+        ServerLevel level_server = (ServerLevel) level_accessor;
 
-        // This will not summon message
+        if (GameUtils.Mob.canTickingAt(level_server, pos) == false) {
+
+            return;
+
+        }
+
+        Core.DelayedWorks.create(false, 5, () -> {
+
+            String id = GameUtils.Tile.toText(level_accessor.getBlockState(pos))[0].replace(":", "-");
+            testPlace(level_accessor, pos, id, false, false);
+
+        });
 
     }
 
-    private static void testPlace (LevelAccessor level_accessor, BlockPos pos, boolean message, boolean drop) {
+    private static boolean testPlace (LevelAccessor level_accessor, BlockPos pos, String id, boolean message, boolean drop) {
 
         ServerLevel level_server = (ServerLevel) level_accessor;
         String error = "";
@@ -94,7 +196,6 @@ public class PlantBlock {
             // Test
             {
 
-                String id = GameUtils.Tile.toText(level_accessor.getBlockState(pos))[0].replace(":", "-");
                 Map<String, Map<String, String>> data = ConfigDynamic.getData("settings", "id").get("");
 
                 if (data.containsKey(id) == false) {
@@ -109,9 +210,9 @@ public class PlantBlock {
                     Map<BlockPos, Holder<Biome>> land_biomes = (Map<BlockPos, Holder<Biome>>) surrounding_area_data[2];
 
                     String type = data.get(id).get("type");
-                    String area_type = LivingMechanics.getAreaType(level_accessor, pos, height.get(pos.getX() + "/" + pos.getZ()), water_locations.isEmpty() == false, land_biomes.isEmpty() == false);
+                    String type_area = LivingMechanics.getAreaType(level_accessor, pos, height.get(pos.getX() + "/" + pos.getZ()), water_locations.isEmpty() == false, land_biomes.isEmpty() == false);
 
-                    if (area_type.isEmpty() == true || area_type.contains("|" + type + "|") == false) {
+                    if (type.equals("special") == false && type_area.contains("|" + type + "|") == false) {
 
                         error = "unsupported environment";
 
@@ -165,7 +266,43 @@ public class PlantBlock {
 
             }
 
+            return false;
+
         }
+
+        return true;
+
+    }
+
+    private static List<String> getLootData (String id) {
+
+        if (CacheManager.SaveMap.existTextList("loot", id) == false) {
+
+            CacheManager.SaveMap.setTextList("loot", id, FileManager.readTXT(Core.path_config + "/#dev/#temporary/loots/" + id + ".txt"));
+
+        }
+
+        return CacheManager.SaveMap.getTextList("loot", id);
+
+    }
+
+    public static boolean runCustomPlacement (LevelAccessor level_accessor, ServerLevel level_server, BlockPos pos, String id) {
+
+        if (CacheManager.SaveMap.existLogic("custom_placement", id) == false) {
+
+            boolean custom = new File(Core.path_config + "/#dev/#temporary/custom_placement/" + id + ".txt").exists() == true;
+            CacheManager.SaveMap.setLogic("custom_placement", id, custom);
+
+        }
+
+        if (CacheManager.SaveMap.getLogic("custom_placement", id) == true) {
+
+            TXTFunction.run(level_accessor, level_server, pos, "custom_placement/" + id, true);
+            return true;
+
+        }
+
+        return false;
 
     }
 
