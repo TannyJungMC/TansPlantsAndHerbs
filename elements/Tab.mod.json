@@ -4,7 +4,7 @@
   "definition": {
     "name": "Tan's Plants and Herbs",
     "icon": {
-      "value": "Blocks.MANGROVE_PROPAGULE"
+      "value": "CUSTOM:PlantEmergentCattail"
     },
     "showSearch": false
   }

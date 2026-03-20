@@ -2,15 +2,15 @@
   "_fv": 79,
   "_type": "block",
   "definition": {
-    "texture": "minecraft:azalea_top",
+    "texture": "garden_soil",
     "textureTop": "",
     "textureLeft": "",
     "textureFront": "",
     "textureRight": "",
     "textureBack": "",
-    "renderType": 2,
-    "customModelName": "floating:duckweed",
-    "rotationMode": 1,
+    "renderType": 11,
+    "customModelName": "Single texture",
+    "rotationMode": 0,
     "enablePitch": false,
     "emissiveRendering": false,
     "displayFluidOverlay": false,
@@ -23,9 +23,9 @@
     },
     "tintType": "No tint",
     "isItemTinted": false,
-    "hasTransparency": true,
+    "hasTransparency": false,
     "connectedSides": false,
-    "transparencyType": "CUTOUT",
+    "transparencyType": "SOLID",
     "disableOffset": false,
     "boundingBoxes": [
       {
@@ -33,20 +33,24 @@
         "my": 0.0,
         "mz": 0.0,
         "Mx": 16.0,
-        "My": 4.0,
+        "My": 16.0,
         "Mz": 16.0,
         "subtract": false
       }
     ],
     "customProperties": [],
-    "name": "Duckweed",
+    "name": "Garden Soil",
     "specialInformation": {
-      "fixedValue": []
+      "fixedValue": [
+        "§8--------------------------------------------------",
+        "§8A soil block for Tan's Plants and Herbs mod. Use this to place plants for decoration.",
+        "§8--------------------------------------------------"
+      ]
     },
     "hardness": 1.0,
-    "resistance": 0.0,
+    "resistance": 10.0,
     "hasGravity": false,
-    "isWaterloggable": true,
+    "isWaterloggable": false,
     "hasBlockItem": true,
     "maxStackSize": 64,
     "rarity": "COMMON",
@@ -68,7 +72,7 @@
     "enchantPowerBonus": 0.0,
     "plantsGrowOn": false,
     "canRedstoneConnect": false,
-    "lightOpacity": 0,
+    "lightOpacity": 15,
     "tickRate": 0,
     "tickRandomly": false,
     "isReplaceable": false,
@@ -81,7 +85,7 @@
     "creativePickItem": {
       "value": ""
     },
-    "offsetType": "XYZ",
+    "offsetType": "NONE",
     "aiPathNodeType": "DEFAULT",
     "strippingResult": {
       "value": ""
@@ -94,10 +98,10 @@
     "speedFactor": 1.0,
     "jumpFactor": 1.0,
     "reactionToPushing": "NORMAL",
-    "isNotColidable": true,
+    "isNotColidable": false,
     "isCustomSoundType": false,
     "soundOnStep": {
-      "value": "LILY_PADS"
+      "value": "GROUND"
     },
     "breakSound": {
       "value": ""
@@ -140,13 +144,7 @@
     "fluidCapacity": 8000,
     "fluidRestrictions": [],
     "onRightClicked": {
-      "name": "PlantBlockWhenClick"
-    },
-    "onNeighbourBlockChanges": {
-      "name": "PlantBlockWhenNeighbourUpdate"
-    },
-    "onBlockPlayedBy": {
-      "name": "PlantBlockWhenPlace"
+      "name": "GardenSoilClick"
     },
     "generateFeature": false,
     "restrictionBiomes": [],

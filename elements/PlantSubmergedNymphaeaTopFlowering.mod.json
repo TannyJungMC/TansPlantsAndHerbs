@@ -9,7 +9,7 @@
     "textureRight": "",
     "textureBack": "",
     "renderType": 2,
-    "customModelName": "floating:duckweed",
+    "customModelName": "floating_flower:water_lily",
     "rotationMode": 1,
     "enablePitch": false,
     "emissiveRendering": false,
@@ -39,7 +39,7 @@
       }
     ],
     "customProperties": [],
-    "name": "Duckweed",
+    "name": "Nymphaea (Top Flowering)",
     "specialInformation": {
       "fixedValue": []
     },

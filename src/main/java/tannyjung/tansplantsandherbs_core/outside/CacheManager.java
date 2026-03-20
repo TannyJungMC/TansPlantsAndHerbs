@@ -8,9 +8,9 @@ import java.util.*;
 public class CacheManager {
 
     public static final Object lock = new Object();
-    public static final Map<String, Map<String, String>> cache_map_string = new HashMap<>();
+    public static final Map<String, Map<String, String>> cache_map_text = new HashMap<>();
+    public static final Map<String, Map<String, List<String>>> cache_map_text_list = new HashMap<>();
     public static final Map<String, Map<String, Boolean>> cache_map_logic = new HashMap<>();
-    public static final Map<String, Map<String, List<String>>> cache_map_string_list = new HashMap<>();
     public static final Map<String, Map<String, short[]>> cache_map_number_short_list = new HashMap<>();
     public static final Map<String, Map<String, int[]>> cache_map_number_int_list = new HashMap<>();
     public static final Map<String, List<String>> cache_list_text = new HashMap<>();
@@ -24,14 +24,14 @@ public class CacheManager {
 
             {
 
-                size = size + SizeCalculation.getMapText(cache_map_string);
-                cache_map_string.clear();
+                size = size + SizeCalculation.getMapText(cache_map_text);
+                cache_map_text.clear();
+
+                size = size + SizeCalculation.getMapTextList(cache_map_text_list);
+                cache_map_text_list.clear();
 
                 size = size + SizeCalculation.getMapLogic(cache_map_logic);
                 cache_map_logic.clear();
-
-                size = size + SizeCalculation.getMapTextList(cache_map_string_list);
-                cache_map_string_list.clear();
 
                 size = size + SizeCalculation.getMapNumberShort(cache_map_number_short_list);
                 cache_map_number_short_list.clear();
@@ -194,22 +194,22 @@ public class CacheManager {
 
         synchronized (lock) {
 
-            if (cache_map_string_list.containsKey("functions") == false) {
+            if (cache_map_text_list.containsKey("functions") == false) {
 
-                cache_map_string_list.put("functions", new HashMap<>());
+                cache_map_text_list.put("functions", new HashMap<>());
 
             }
 
-            if (cache_map_string_list.get("functions").containsKey(path) == false) {
+            if (cache_map_text_list.get("functions").containsKey(path) == false) {
 
                 List<String> data = FileManager.readTXT(Core.path_config + "/#dev/#temporary/" + path + ".txt");
-                cache_map_string_list.get("functions").put(path, data);
+                cache_map_text_list.get("functions").put(path, data);
 
             }
 
         }
 
-        return cache_map_string_list.get("functions").get(path);
+        return cache_map_text_list.get("functions").get(path);
 
     }
 
@@ -217,13 +217,13 @@ public class CacheManager {
 
         synchronized (lock) {
 
-            if (cache_map_string.containsKey("dictionary") == false) {
+            if (cache_map_text.containsKey("dictionary") == false) {
 
-                cache_map_string.put("dictionary", new HashMap<>());
+                cache_map_text.put("dictionary", new HashMap<>());
 
             }
 
-            if (cache_map_string.get("dictionary").containsKey(key) == false) {
+            if (cache_map_text.get("dictionary").containsKey(key) == false) {
 
                 String value_id = "";
                 String value_text = "";
@@ -279,14 +279,14 @@ public class CacheManager {
 
                 }
 
-                cache_map_string.get("dictionary").put(value_id, value_text);
-                cache_map_string.get("dictionary").put(value_text, value_id);
+                cache_map_text.get("dictionary").put(value_id, value_text);
+                cache_map_text.get("dictionary").put(value_text, value_id);
 
             }
 
         }
 
-        return cache_map_string.get("dictionary").get(key);
+        return cache_map_text.get("dictionary").get(key);
 
     }
 
@@ -351,6 +351,36 @@ public class CacheManager {
             synchronized (lock) {
 
                 cache_map_logic.computeIfAbsent(name, test -> new HashMap<>()).put(key, value);
+
+            }
+
+        }
+
+        public static boolean existTextList (String name, String key) {
+
+            synchronized (lock) {
+
+                return cache_map_text_list.containsKey(name) == true && cache_map_text_list.get(name).containsKey(key) == true;
+
+            }
+
+        }
+
+        public static List<String> getTextList (String name, String key) {
+
+            synchronized (lock) {
+
+                return cache_map_text_list.get(name).get(key);
+
+            }
+
+        }
+
+        public static void setTextList (String name, String key, List<String> value) {
+
+            synchronized (lock) {
+
+                cache_map_text_list.computeIfAbsent(name, test -> new HashMap<>()).put(key, value);
 
             }
 

@@ -9,8 +9,8 @@
     "textureRight": "",
     "textureBack": "",
     "renderType": 2,
-    "customModelName": "floating:duckweed",
-    "rotationMode": 1,
+    "customModelName": "large:water_lily",
+    "rotationMode": 0,
     "enablePitch": false,
     "emissiveRendering": false,
     "displayFluidOverlay": false,
@@ -39,11 +39,11 @@
       }
     ],
     "customProperties": [],
-    "name": "Duckweed",
+    "name": "Nymphaea",
     "specialInformation": {
       "fixedValue": []
     },
-    "hardness": 1.0,
+    "hardness": 2.5,
     "resistance": 0.0,
     "hasGravity": false,
     "isWaterloggable": true,
@@ -97,7 +97,7 @@
     "isNotColidable": true,
     "isCustomSoundType": false,
     "soundOnStep": {
-      "value": "LILY_PADS"
+      "value": "PLANT"
     },
     "breakSound": {
       "value": ""

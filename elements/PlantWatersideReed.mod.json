@@ -9,8 +9,8 @@
     "textureRight": "",
     "textureBack": "",
     "renderType": 2,
-    "customModelName": "floating:duckweed",
-    "rotationMode": 1,
+    "customModelName": "large:reed",
+    "rotationMode": 0,
     "enablePitch": false,
     "emissiveRendering": false,
     "displayFluidOverlay": false,
@@ -31,7 +31,7 @@
       {
         "mx": 0.0,
         "my": 0.0,
-        "mz": 0.0,
+        "mz": 4.0,
         "Mx": 16.0,
         "My": 4.0,
         "Mz": 16.0,
@@ -39,11 +39,11 @@
       }
     ],
     "customProperties": [],
-    "name": "Duckweed",
+    "name": "Reed",
     "specialInformation": {
       "fixedValue": []
     },
-    "hardness": 1.0,
+    "hardness": 2.5,
     "resistance": 0.0,
     "hasGravity": false,
     "isWaterloggable": true,
@@ -97,7 +97,7 @@
     "isNotColidable": true,
     "isCustomSoundType": false,
     "soundOnStep": {
-      "value": "LILY_PADS"
+      "value": "PLANT"
     },
     "breakSound": {
       "value": ""

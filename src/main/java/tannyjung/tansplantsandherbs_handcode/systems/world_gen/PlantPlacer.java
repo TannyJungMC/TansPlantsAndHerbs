@@ -29,7 +29,7 @@ public class PlantPlacer {
         int posX = 0;
         int posZ = 0;
         int originalY = 0;
-        String type = "";
+        String type_area = "";
         BlockState ceil_block = null;
 
         for (int scanX = 0; scanX < 16; scanX++) {
@@ -43,7 +43,7 @@ public class PlantPlacer {
                 for (int scanY = 0; scanY > -32; scanY--) {
 
                     pos = new BlockPos(posX, originalY + scanY, posZ);
-                    type = LivingMechanics.getAreaType(level_accessor, pos, originalY, water_locations.isEmpty() == false, land_biomes.isEmpty() == false);
+                    type_area = LivingMechanics.getAreaType(level_accessor, pos, originalY, water_locations.isEmpty() == false, land_biomes.isEmpty() == false);
 
                     if (level_accessor.getBlockState(pos.above()).getCollisionShape(level_accessor, pos.above()).isEmpty() == false) {
 
@@ -51,9 +51,9 @@ public class PlantPlacer {
 
                     }
 
-                    if (type.isEmpty() == false) {
+                    if (type_area.isEmpty() == false) {
 
-                        for (String type_test : type.substring(1, type.length() - 1).split("\\|")) {
+                        for (String type_test : type_area.substring(1, type_area.length() - 1).split("\\|")) {
 
                             if (data.containsKey(type_test) == true) {
 

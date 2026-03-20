@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -230,7 +231,7 @@ public class TXTFunction {
 
                                                                 pos_convert = pos.offset(offset_posX, offset_posY, offset_posZ);
 
-                                                                if (GameUtils.Misc.testCustomBiome(GameUtils.Space.getBiomeAt(level_server, pos_convert), variable_text) == true) {
+                                                                if (GameUtils.Misc.testCustomBiome(GameUtils.Space.getBiomeAt(level_accessor, level_server, pos_convert), variable_text) == true) {
 
                                                                     continue;
 
@@ -259,7 +260,7 @@ public class TXTFunction {
 
                                                                 pos_convert = pos.offset(offset_posX, offset_posY, offset_posZ);
 
-                                                                if (GameUtils.Space.testChunkStatus(level_accessor, pos_convert.getX() >> 4, pos_convert.getZ() >> 4, ChunkStatus.SURFACE) == true) {
+                                                                if (GameUtils.Space.testChunkStatus(level_accessor, new ChunkPos(pos_convert), ChunkStatus.SURFACE) == true) {
 
                                                                     if (GameUtils.Misc.testCustomBlock(level_accessor.getBlockState(pos_convert), variable_text) == true) {
 
@@ -351,7 +352,7 @@ public class TXTFunction {
 
                                                                                         }
 
-                                                                                        level_accessor.setBlock(pos_convert, variable_block, 2);
+                                                                                        level_accessor.setBlock(pos_convert, variable_block, 3);
 
                                                                                     }
 

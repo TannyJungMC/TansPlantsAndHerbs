@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "tansplantsandherbs:block/garden_soil",
+    "particle": "tansplantsandherbs:block/garden_soil"
+  },
+  "render_type": "solid"
+}

@@ -1,0 +1,22 @@
+{
+  "mappings": {
+    "default": {
+      "name": "default",
+      "map": {
+        "0": "minecraft:beacon"
+      }
+    },
+    "duckweed": {
+      "name": "duckweed",
+      "map": {
+        "0": "plant_floating_duckweed"
+      }
+    },
+    "water_lily": {
+      "name": "water_lily",
+      "map": {
+        "0": "plant_submerged_water_lily"
+      }
+    }
+  }
+}

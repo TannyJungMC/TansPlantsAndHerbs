@@ -1,0 +1,34 @@
+{
+  "mappings": {
+    "default": {
+      "name": "default",
+      "map": {
+        "0": "minecraft:beacon"
+      }
+    },
+    "cattail": {
+      "name": "cattail",
+      "map": {
+        "0": "plant_emergent_cattail"
+      }
+    },
+    "reed": {
+      "name": "reed",
+      "map": {
+        "0": "plant_waterside_reed"
+      }
+    },
+    "grass": {
+      "name": "grass",
+      "map": {
+        "0": "plant_waterside_grass"
+      }
+    },
+    "water_lily": {
+      "name": "water_lily",
+      "map": {
+        "0": "plant_submerged_water_lily"
+      }
+    }
+  }
+}

@@ -347,9 +347,9 @@ public class GameUtils {
 
 		public static Entity summonBlock (ServerLevel level_server, Vec3 vec3, String name, String tag, double offsetX, double offsetY, double offsetZ, double sizeX, double sizeY, double sizeZ, int rotate_horizontal, int rotate_vertical, String id) {
 
-			offsetX = offsetX - 0.5;
+			offsetX = offsetX - (sizeX / 2);
+			offsetZ = offsetZ - (sizeZ / 2);
 			offsetY = offsetY - 0.5;
-			offsetZ = offsetZ - 0.5;
 			return GameUtils.Mob.summon(level_server, vec3, "minecraft:block_display", name, tag, "{transformation:{left_rotation:[0.0f,0.0f,0.0f,1.0f],right_rotation:[0.0f,0.0f,0.0f,1.0f],translation:[" + offsetX + "f," + offsetY + "f," + offsetZ + "f],scale:[" + sizeX + "f," + sizeY + "f," + sizeZ + "f]},Rotation:[" + rotate_horizontal + "f," + rotate_vertical + "f],block_state:{Name:\"" + id + "\"}}");
 
 		}
@@ -1040,9 +1040,9 @@ public class GameUtils {
 
 		}
 
-		public static boolean testChunkStatus (LevelAccessor level_accessor, int chunkX, int chunkZ, ChunkStatus status) {
+		public static boolean testChunkStatus (LevelAccessor level_accessor, ChunkPos chunk_pos, ChunkStatus status) {
 
-			return level_accessor.hasChunk(chunkX, chunkZ) == true && level_accessor.getChunk(chunkX, chunkZ).getHighestGeneratedStatus().isOrAfter(status) == true;
+			return level_accessor.hasChunk(chunk_pos.x, chunk_pos.z) == true && level_accessor.getChunk(chunk_pos.x, chunk_pos.z).getHighestGeneratedStatus().isOrAfter(status) == true;
 
 		}
 
@@ -1085,9 +1085,9 @@ public class GameUtils {
 
 		}
 
-		public static Holder<Biome> getBiomeAt (ServerLevel level_server, BlockPos pos) {
+		public static Holder<Biome> getBiomeAt (LevelAccessor level_accessor, ServerLevel level_server, BlockPos pos) {
 
-			if (level_server.isLoaded(pos) == true) {
+			if (level_server.isLoaded(pos) == true || testChunkStatus(level_accessor, new ChunkPos(pos), ChunkStatus.BIOMES) == true) {
 
 				return level_server.getBiome(pos);
 
