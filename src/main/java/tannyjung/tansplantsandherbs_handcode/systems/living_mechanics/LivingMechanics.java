@@ -11,13 +11,9 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import tannyjung.tansplantsandherbs_core.Core;
 import tannyjung.tansplantsandherbs_core.game.GameUtils;
-import tannyjung.tansplantsandherbs_core.outside.CacheManager;
 import tannyjung.tansplantsandherbs_core.outside.ConfigDynamic;
-import tannyjung.tansplantsandherbs_core.outside.TXTFunction;
 
-import java.io.File;
 import java.util.*;
 
 public class LivingMechanics {
@@ -72,7 +68,8 @@ public class LivingMechanics {
                 int posX = 0;
                 int posZ = 0;
                 String id = "";
-                String area_type = "";
+                String type = "";
+                String type_area = "";
                 int originalY = 0;
                 BlockState ceil_block = null;
 
@@ -134,9 +131,10 @@ public class LivingMechanics {
                                         // Place
                                         {
 
-                                            area_type = getAreaType(level_accessor, pos_move, originalY, water_locations.isEmpty() == false, land_biomes.isEmpty() == false);
+                                            type = data.get(id).get("type");
+                                            type_area = getAreaType(level_accessor, pos_move, originalY, water_locations.isEmpty() == false, land_biomes.isEmpty() == false);
 
-                                            if (area_type.isEmpty() == false && area_type.contains("|" + data.get(id).get("type") + "|") == true) {
+                                            if (type.equals("special") == false && type_area.contains("|" + type + "|") == true) {
 
                                                 if (test(level_accessor, data, height, water_locations, land_biomes, pos_move, ceil_block, id, true).isEmpty() == true) {
 
@@ -206,7 +204,7 @@ public class LivingMechanics {
 
                 } else {
 
-                    land_biomes.put(pos, GameUtils.Space.getBiomeAt(level_server, pos));
+                    land_biomes.put(pos, GameUtils.Space.getBiomeAt(level_accessor, level_server, pos));
 
                 }
 
@@ -237,15 +235,15 @@ public class LivingMechanics {
 
                                     if (have_land_nearby == true) {
 
-                                        return "|submerged_sharrow|";
+                                        return "|submerged|";
 
                                     } else {
 
-                                        return "|submerged_deep|";
+                                        return "|marine|";
 
                                     }
 
-                                } else if (level_accessor.getBlockState(pos.above()).isAir() == false) {
+                                } else if (level_accessor.getBlockState(pos.above()).isAir() == true) {
 
                                     if (have_land_nearby == true) {
 
@@ -288,10 +286,6 @@ public class LivingMechanics {
 
                             if (have_land_nearby == true) {
 
-                                return "|floating_landside|";
-
-                            } else {
-
                                 return "|floating|";
 
                             }
@@ -331,7 +325,7 @@ public class LivingMechanics {
 
     }
 
-    public static String test (LevelAccessor level_accessor, Map<String, Map<String, String>> data, Map<String, Integer> height, List<BlockPos> water_locations, Map<BlockPos, Holder<Biome>> land_biomes, BlockPos pos, BlockState ceil_block, String id, boolean test_surrounding_area_distance) {
+    public static String test (LevelAccessor level_accessor, Map<String, Map<String, String>> data, Map<String, Integer> height, List<BlockPos> water_locations, Map<BlockPos, Holder<Biome>> land_biomes, BlockPos pos, BlockState ceil_block, String id, boolean test_chance) {
 
         String type = data.get(id).get("type");
         int originalY = height.get(pos.getX() + "/" + pos.getZ());
@@ -342,9 +336,9 @@ public class LivingMechanics {
 
         }
 
-        boolean test_waterside = false;
-        boolean test_landside = false;
-        boolean test_cave = false;
+        boolean test_area_waterside = false;
+        boolean test_area_landside = false;
+        boolean test_area_cave = false;
 
         // Get What To Test
         {
@@ -353,55 +347,60 @@ public class LivingMechanics {
 
                 if (level_accessor.isWaterAt(pos) == true) {
 
-                    if (land_biomes.isEmpty() == false) {
-
-                        test_landside = true;
-
-                    }
+                    test_area_landside = true;
 
                 } else {
 
-                    if (water_locations.isEmpty() == false && land_biomes.isEmpty() == false) {
-
-                        test_waterside = true;
-
-                    }
+                    test_area_waterside = true;
 
                 }
 
             } else if (type.equals("cave") == true) {
 
-                if (land_biomes.isEmpty() == false) {
-
-                    test_cave = true;
-
-                }
+                test_area_cave = true;
 
             } else if (type.equals("waterside") == true) {
 
-                if (water_locations.isEmpty() == false && land_biomes.isEmpty() == false) {
+                test_area_waterside = true;
 
-                    test_waterside = true;
+            } else if (type.equals("floating") == true) {
 
-                }
+                test_area_landside = true;
 
-            } else if (type.equals("floating_landside") == true) {
+            } else if (type.equals("submerged") == true) {
 
-                if (land_biomes.isEmpty() == false) {
-
-                    test_landside = true;
-
-                }
+                test_area_landside = true;
 
             }
 
         }
 
-        if (test_landside == false) {
+        // Test Map
+        {
 
-            if (land_biomes.containsKey(pos.atY(originalY)) == false || GameUtils.Misc.testCustomBiome(land_biomes.get(pos.atY(originalY)), data.get(id).get("biome")) == false) {
+            if (water_locations.isEmpty() == true) {
 
-                return "unsupported biome";
+                test_area_waterside = false;
+
+            } else if (land_biomes.isEmpty() == true) {
+
+                test_area_waterside = false;
+                test_area_landside = false;
+                test_area_cave = false;
+
+            }
+
+        }
+
+        if (test_area_landside == false) {
+
+            if (type.equals("special") == false) {
+
+                if (land_biomes.containsKey(pos.atY(originalY)) == false || GameUtils.Misc.testCustomBiome(land_biomes.get(pos.atY(originalY)), data.get(id).get("biome")) == false) {
+
+                    return "unsupported biome";
+
+                }
 
             }
 
@@ -413,7 +412,7 @@ public class LivingMechanics {
 
         }
 
-        if (test_cave == true) {
+        if (test_area_cave == true) {
 
             if (ceil_block != null && GameUtils.Misc.testCustomBlock(ceil_block, data.get(id).get("ground_block")) == false) {
 
@@ -423,13 +422,7 @@ public class LivingMechanics {
 
         }
 
-        if (test_surrounding_area_distance == true) {
-
-            return testSurroundingArea(data.get(id), height, water_locations, land_biomes, pos, test_waterside, test_landside, test_cave);
-
-        }
-
-        return "";
+        return testSurroundingArea(data.get(id), height, water_locations, land_biomes, pos, test_area_waterside, test_area_landside, test_area_cave, test_chance);
 
     }
 
@@ -437,7 +430,7 @@ public class LivingMechanics {
 
         String blacklist = "";
 
-        if (type.equals("normal") == true) {
+        if (type.equals("terrestrial") == true) {
 
             blacklist = "|waterside|emergent|";
 
@@ -463,13 +456,13 @@ public class LivingMechanics {
 
     }
 
-    private static String testSurroundingArea (Map<String, String> data, Map<String, Integer> height, List<BlockPos> water_locations, Map<BlockPos, Holder<Biome>> land_biomes, BlockPos pos, boolean test_waterside, boolean test_landside, boolean test_cave) {
+    private static String testSurroundingArea (Map<String, String> data, Map<String, Integer> height, List<BlockPos> water_locations, Map<BlockPos, Holder<Biome>> land_biomes, BlockPos pos, boolean test_area_waterside, boolean test_area_landside, boolean test_area_cave, boolean test_chance) {
 
-        if (test_waterside == true || test_landside == true || test_cave == true) {
+        if (test_area_waterside == true || test_area_landside == true || test_area_cave == true) {
 
             double distance = 0.0;
 
-            if (test_waterside == true) {
+            if (test_area_waterside == true) {
 
                 {
 
@@ -477,7 +470,7 @@ public class LivingMechanics {
 
                 }
 
-            } else if (test_landside == true) {
+            } else if (test_area_landside == true) {
 
                 {
 
@@ -563,9 +556,13 @@ public class LivingMechanics {
 
                 } else {
 
-                    if (Math.random() >= (1.0 - (distance / distance_test))) {
+                    if (test_chance == true) {
 
-                        return "chance";
+                        if (Math.random() >= (1.0 - (distance / distance_test))) {
+
+                            return "chance";
+
+                        }
 
                     }
 
@@ -581,18 +578,7 @@ public class LivingMechanics {
 
     public static void place (LevelAccessor level_accessor, ServerLevel level_server, BlockPos pos, String id, boolean is_world_gen) {
 
-        if (CacheManager.SaveMap.existLogic("custom_placement", id) == false) {
-
-            boolean custom = new File(Core.path_config + "/#dev/#temporary/custom_placement/" + id + ".txt").exists() == true;
-            CacheManager.SaveMap.setLogic("custom_placement", id, custom);
-
-        }
-
-        if (CacheManager.SaveMap.getLogic("custom_placement", id) == true) {
-
-            TXTFunction.run(level_accessor, level_server, pos, "custom_placement/" + id, true);
-
-        } else {
+        if (PlantBlock.runCustomPlacement(level_accessor, level_server, pos, id) == false) {
 
             int type = 0;
 
