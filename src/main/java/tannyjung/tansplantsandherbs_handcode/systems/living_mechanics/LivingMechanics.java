@@ -100,25 +100,30 @@ public class LivingMechanics {
 
                                         pos_move = pos.offset(Mth.nextInt(RandomSource.create(), -2, 2), 0, Mth.nextInt(RandomSource.create(), -2, 2));
 
-                                        if (data.get(id).get("type").startsWith("floating") == false) {
+                                        // Up-Down
+                                        {
 
-                                            while (level_accessor.getBlockState(pos_move.below()).getCollisionShape(level_accessor, pos_move.below()).isEmpty() == true) {
+                                            if (data.get(id).get("type").equals("free_floating") == false) {
 
-                                                pos_move = pos_move.below();
+                                                while (level_accessor.getBlockState(pos_move.below()).getCollisionShape(level_accessor, pos_move.below()).isEmpty() == true) {
+
+                                                    pos_move = pos_move.below();
+
+                                                }
+
+                                                while (level_accessor.getBlockState(pos_move).getCollisionShape(level_accessor, pos_move).isEmpty() == false) {
+
+                                                    pos_move = pos_move.above();
+
+                                                }
+
+                                                if (Math.abs(pos.getY() - pos_move.getY()) > 3) {
+
+                                                    continue;
+
+                                                }
 
                                             }
-
-                                            while (level_accessor.getBlockState(pos_move).getCollisionShape(level_accessor, pos_move).isEmpty() == false) {
-
-                                                pos_move = pos_move.above();
-
-                                            }
-
-                                        }
-
-                                        if (Math.abs(pos.getY() - pos_move.getY()) > 3) {
-
-                                            continue;
 
                                         }
 
@@ -138,7 +143,7 @@ public class LivingMechanics {
 
                                                 if (test(level_accessor, data, height, water_locations, land_biomes, pos_move, ceil_block, id, true).isEmpty() == true) {
 
-                                                    place(level_accessor, level_server, pos_move, id, false);
+                                                    PlantBlock.place(level_accessor, level_server, pos_move, id, false);
 
                                                 }
 
@@ -157,15 +162,13 @@ public class LivingMechanics {
 
                                 if (Math.random() < Double.parseDouble(data.get(id).get("dead_chance"))) {
 
-                                    level_accessor.removeBlock(pos, false);
+                                    GameUtils.Tile.remove(level_accessor, level_server, pos, false);
 
                                 }
 
                             }
 
                         }
-
-                        // GameUtils.Misc.spawnParticle(level_server, pos.getCenter(), 0, 0, 0, 0, 1, "minecraft:flash");
 
                     }
 
@@ -235,7 +238,7 @@ public class LivingMechanics {
 
                                     if (have_land_nearby == true) {
 
-                                        return "|submerged|";
+                                        return "|submergent|floating_leaved|";
 
                                     } else {
 
@@ -286,7 +289,7 @@ public class LivingMechanics {
 
                             if (have_land_nearby == true) {
 
-                                return "|floating|";
+                                return "|free_floating|";
 
                             }
 
@@ -301,11 +304,11 @@ public class LivingMechanics {
 
                                 if (have_water_nearby == true) {
 
-                                    return "|normal|waterside|emergent|";
+                                    return "|terrestrial|riparian|emergent|";
 
                                 } else {
 
-                                    return "|normal|";
+                                    return "|terrestrial|";
 
                                 }
 
@@ -359,15 +362,11 @@ public class LivingMechanics {
 
                 test_area_cave = true;
 
-            } else if (type.equals("waterside") == true) {
+            } else if (type.equals("riparian") == true) {
 
                 test_area_waterside = true;
 
-            } else if (type.equals("floating") == true) {
-
-                test_area_landside = true;
-
-            } else if (type.equals("submerged") == true) {
+            } else if (type.equals("submergent") == true || type.equals("floating_leaved") == true || type.equals("free_floating") == true) {
 
                 test_area_landside = true;
 
@@ -392,9 +391,10 @@ public class LivingMechanics {
 
         }
 
-        if (test_area_landside == false) {
+        // Basic Test
+        {
 
-            if (type.equals("special") == false) {
+            if (test_area_landside == false && type.equals("special") == false) {
 
                 if (land_biomes.containsKey(pos.atY(originalY)) == false || GameUtils.Misc.testCustomBiome(land_biomes.get(pos.atY(originalY)), data.get(id).get("biome")) == false) {
 
@@ -404,19 +404,19 @@ public class LivingMechanics {
 
             }
 
-        }
+            if (GameUtils.Misc.testCustomBlock(level_accessor.getBlockState(pos.below()), data.get(id).get("ground_block")) == false) {
 
-        if (GameUtils.Misc.testCustomBlock(level_accessor.getBlockState(pos.below()), data.get(id).get("ground_block")) == false) {
+                return "unsupported ground block";
 
-            return "unsupported ground block";
+            }
 
-        }
+            if (test_area_cave == true) {
 
-        if (test_area_cave == true) {
+                if (ceil_block != null && GameUtils.Misc.testCustomBlock(ceil_block, data.get(id).get("ground_block")) == false) {
 
-            if (ceil_block != null && GameUtils.Misc.testCustomBlock(ceil_block, data.get(id).get("ground_block")) == false) {
+                    return "unsupported cave ceiling block";
 
-                return "unsupported cave ceiling block";
+                }
 
             }
 
@@ -432,9 +432,9 @@ public class LivingMechanics {
 
         if (type.equals("terrestrial") == true) {
 
-            blacklist = "|waterside|emergent|";
+            blacklist = "|riparian|emergent|";
 
-        } else if (type.equals("waterside") == true) {
+        } else if (type.equals("riparian") == true) {
 
             blacklist = "|emergent|";
 
@@ -460,12 +460,14 @@ public class LivingMechanics {
 
         if (test_area_waterside == true || test_area_landside == true || test_area_cave == true) {
 
+            double distance_test = 0;
             double distance = 0.0;
 
             if (test_area_waterside == true) {
 
                 {
 
+                    distance_test = Double.parseDouble(data.get("distance_water"));
                     distance = water_locations.stream().min(Comparator.comparingDouble(sort -> sort.getCenter().distanceTo(pos.getCenter()))).get().getCenter().distanceTo(pos.getCenter());
 
                 }
@@ -474,6 +476,7 @@ public class LivingMechanics {
 
                 {
 
+                    distance_test = Double.parseDouble(data.get("distance_land"));
                     Map<Holder<Biome>, Double> nearest_land = new HashMap<>();
 
                     for (Map.Entry<BlockPos, Holder<Biome>> entry : land_biomes.entrySet()) {
@@ -545,24 +548,19 @@ public class LivingMechanics {
 
             }
 
-            // Range Test
-            {
+            distance_test = distance_test + 1;
 
-                double distance_test = Double.parseDouble(data.get("surrounding_area_distance")) + 1;
+            if (distance > distance_test) {
 
-                if (distance > distance_test) {
+                return "this area is too far from supported area";
 
-                    return "this area is too far from supported area";
+            } else {
 
-                } else {
+                if (test_chance == true) {
 
-                    if (test_chance == true) {
+                    if (Math.random() >= (1.0 - (distance / distance_test))) {
 
-                        if (Math.random() >= (1.0 - (distance / distance_test))) {
-
-                            return "chance";
-
-                        }
+                        return "chance";
 
                     }
 
@@ -573,32 +571,6 @@ public class LivingMechanics {
         }
 
         return "";
-
-    }
-
-    public static void place (LevelAccessor level_accessor, ServerLevel level_server, BlockPos pos, String id, boolean is_world_gen) {
-
-        if (PlantBlock.runCustomPlacement(level_accessor, level_server, pos, id) == false) {
-
-            int type = 0;
-
-            if (is_world_gen == false) {
-
-                type = 3;
-
-            }
-
-            BlockState block = GameUtils.Tile.fromText(id.replace("-", ":"));
-
-            if (level_accessor.isWaterAt(pos) == true) {
-
-                block = GameUtils.Tile.setPropertyLogic(block, "waterlogged", true);
-
-            }
-
-            level_accessor.setBlock(pos, block, type);
-
-        }
 
     }
 

@@ -9,13 +9,13 @@
     "duckweed": {
       "name": "duckweed",
       "map": {
-        "0": "plant_floating_duckweed"
+        "0": "plant_duckweed"
       }
     },
     "water_lily": {
       "name": "water_lily",
       "map": {
-        "0": "plant_submerged_water_lily"
+        "0": "plant_water_lily"
       }
     }
   }

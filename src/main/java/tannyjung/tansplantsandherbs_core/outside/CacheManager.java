@@ -7,13 +7,14 @@ import java.util.*;
 
 public class CacheManager {
 
-    public static final Object lock = new Object();
-    public static final Map<String, Map<String, String>> cache_map_text = new HashMap<>();
-    public static final Map<String, Map<String, List<String>>> cache_map_text_list = new HashMap<>();
-    public static final Map<String, Map<String, Boolean>> cache_map_logic = new HashMap<>();
-    public static final Map<String, Map<String, short[]>> cache_map_number_short_list = new HashMap<>();
-    public static final Map<String, Map<String, int[]>> cache_map_number_int_list = new HashMap<>();
-    public static final Map<String, List<String>> cache_list_text = new HashMap<>();
+    private static final Object lock = new Object();
+    private static final Map<String, Map<String, String>> cache_map_text = new HashMap<>();
+    private static final Map<String, Map<String, List<String>>> cache_map_text_list = new HashMap<>();
+    private static final Map<String, Map<String, Map<String, Map<String, String>>>> cache_map_text_text_text = new HashMap<>();
+    private static final Map<String, Map<String, Boolean>> cache_map_logic = new HashMap<>();
+    private static final Map<String, Map<String, short[]>> cache_map_number_short_list = new HashMap<>();
+    private static final Map<String, Map<String, int[]>> cache_map_number_int_list = new HashMap<>();
+    private static final Map<String, List<String>> cache_list_text = new HashMap<>();
 
     public static String clear () {
 
@@ -23,6 +24,9 @@ public class CacheManager {
         synchronized (lock) {
 
             {
+
+                size = size + SizeCalculation.getTextTextText(cache_map_text_text_text);
+                cache_map_text_text_text.clear();
 
                 size = size + SizeCalculation.getMapText(cache_map_text);
                 cache_map_text.clear();
@@ -68,75 +72,89 @@ public class CacheManager {
 
         public static int getMapByteBuffer (Map<String, ByteBuffer> test) {
 
-            int return_number = 0;
+            int size = 0;
 
             for (Map.Entry<String, ByteBuffer> entry : test.entrySet()) {
 
-                return_number = return_number + entry.getValue().capacity();
+                size = size + entry.getValue().capacity();
 
             }
 
-            return return_number;
+            return size;
 
         }
 
         public static int getMapNumberShort (Map<String, Map<String, short[]>> test) {
 
-            int return_number = 0;
+            int size = 0;
 
             for (Map.Entry<String, Map<String, short[]>> entry1 : test.entrySet()) {
 
                 for (Map.Entry<String, short[]> entry2 : entry1.getValue().entrySet()) {
 
-                    return_number = return_number + (entry2.getValue().length * Short.BYTES);
+                    size = size + (entry2.getValue().length * Short.BYTES);
 
                 }
 
             }
 
-            return return_number;
+            return size;
 
         }
 
         public static int getMapNumberInt (Map<String, Map<String, int[]>> test) {
 
-            int return_number = 0;
+            int size = 0;
 
             for (Map.Entry<String, Map<String, int[]>> entry1 : test.entrySet()) {
 
                 for (Map.Entry<String, int[]> entry2 : entry1.getValue().entrySet()) {
 
-                    return_number = return_number + (entry2.getValue().length * Integer.BYTES);
+                    size = size + (entry2.getValue().length * Integer.BYTES);
 
                 }
 
             }
 
-            return return_number;
+            return size;
+
+        }
+
+        public static int getMapLogic (Map<String, Map<String, Boolean>> test) {
+
+            int size = 0;
+
+            for (Map.Entry<String, Map<String, Boolean>> entry1 : test.entrySet()) {
+
+                size = size + entry1.getValue().size();
+
+            }
+
+            return size;
 
         }
 
         public static int getMapText (Map<String, Map<String, String>> test) {
 
-            int return_number = 0;
+            int size = 0;
 
             for (Map.Entry<String, Map<String, String>> entry1 : test.entrySet()) {
 
                 for (Map.Entry<String, String> entry2 : entry1.getValue().entrySet()) {
 
-                    return_number = return_number + (entry2.getValue().length() * Character.BYTES);
+                    size = size + (entry2.getValue().length() * Character.BYTES);
 
                 }
 
             }
 
-            return return_number;
+            return size;
 
         }
 
         public static int getMapTextList (Map<String, Map<String, List<String>>> test) {
 
-            int return_number = 0;
+            int size = 0;
 
             for (Map.Entry<String, Map<String, List<String>>> entry1 : test.entrySet()) {
 
@@ -144,7 +162,7 @@ public class CacheManager {
 
                     for (String read_all : entry2.getValue()) {
 
-                        return_number = return_number + (read_all.length() * Character.BYTES);
+                        size = size + (read_all.length() * Character.BYTES);
 
                     }
 
@@ -152,39 +170,51 @@ public class CacheManager {
 
             }
 
-            return return_number;
+            return size;
 
         }
 
-        public static int getListText (Map<String, List<String>> test) {
+        public static int getTextTextText (Map<String, Map<String, Map<String, Map<String, String>>>> test) {
 
-            int return_number = 0;
+            int size = 0;
 
-            for (Map.Entry<String, List<String>> entry : test.entrySet()) {
+            for (Map.Entry<String, Map<String, Map<String, Map<String, String>>>> entry1 : test.entrySet()) {
 
-                for (String read_all : entry.getValue()) {
+                for (Map.Entry<String, Map<String, Map<String, String>>> entry2 : entry1.getValue().entrySet()) {
 
-                    return_number = return_number + (read_all.length() * Character.BYTES);
+                    for (Map.Entry<String, Map<String, String>> entry3 : entry2.getValue().entrySet()) {
+
+                        for (Map.Entry<String, String> entry4 : entry3.getValue().entrySet()) {
+
+                            size = size + (entry4.getValue().length() * Character.BYTES);
+
+                        }
+
+                    }
 
                 }
 
             }
 
-            return return_number;
+            return size;
 
         }
 
-        public static int getMapLogic (Map<String, Map<String, Boolean>> test) {
+        public static int getListText (Map<String, List<String>> test) {
 
-            int return_number = 0;
+            int size = 0;
 
-            for (Map.Entry<String, Map<String, Boolean>> entry1 : test.entrySet()) {
+            for (Map.Entry<String, List<String>> entry : test.entrySet()) {
 
-                return_number = return_number + entry1.getValue().size();
+                for (String read_all : entry.getValue()) {
+
+                    size = size + (read_all.length() * Character.BYTES);
+
+                }
 
             }
 
-            return return_number;
+            return size;
 
         }
 
@@ -290,40 +320,6 @@ public class CacheManager {
 
     }
 
-    public static class Result {
-
-        public static boolean existLogic (String name, String key) {
-
-            synchronized (lock) {
-
-                return cache_map_logic.getOrDefault(name, new HashMap<>()).containsKey(key);
-
-            }
-
-        }
-
-        public static boolean getLogic (String name, String key) {
-
-            synchronized (lock) {
-
-                return cache_map_logic.getOrDefault(name, new HashMap<>()).getOrDefault(key, false);
-
-            }
-
-        }
-
-        public static void setLogic (String name, String key, boolean value) {
-
-            synchronized (lock) {
-
-                cache_map_logic.computeIfAbsent(name, test -> new HashMap<>()).put(key, value);
-
-            }
-
-        }
-
-    }
-
     public static class SaveMap {
 
         public static boolean existLogic (String name, String key) {
@@ -381,6 +377,36 @@ public class CacheManager {
             synchronized (lock) {
 
                 cache_map_text_list.computeIfAbsent(name, test -> new HashMap<>()).put(key, value);
+
+            }
+
+        }
+
+        public static boolean existTextTextText (String name) {
+
+            synchronized (lock) {
+
+                return cache_map_text_text_text.containsKey(name) == true;
+
+            }
+
+        }
+
+        public static Map<String, Map<String, Map<String, String>>> getTextTextText (String name) {
+
+            synchronized (lock) {
+
+                return cache_map_text_text_text.get(name);
+
+            }
+
+        }
+
+        public static void setTextTextText (String name, Map<String, Map<String, Map<String, String>>> value) {
+
+            synchronized (lock) {
+
+                cache_map_text_text_text.put(name, value);
 
             }
 

@@ -9,7 +9,7 @@
     "water_lily": {
       "name": "water_lily",
       "map": {
-        "0": "plant_submerged_water_lily"
+        "0": "plant_water_lily"
       }
     }
   }

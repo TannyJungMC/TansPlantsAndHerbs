@@ -195,120 +195,137 @@
       "path": "~/Plants and Mushrooms/Blocks"
     },
     {
-      "name": "PlantWatersideReed",
+      "name": "PlantFloatingLeavedNymphaea",
       "type": "block",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "plant_waterside_reed",
+      "registry_name": "plant_floating_leaved_nymphaea",
       "metadata": {
         "files": [
-          "src/main/resources/assets/tansplantsandherbs/models/block/plant_waterside_reed.json",
-          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_waterside_reed.json",
-          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_waterside_reed.json",
-          "src/main/java/tannyjung/tansplantsandherbs/block/PlantWatersideReedBlock.java",
-          "src/main/resources/assets/tansplantsandherbs/models/item/plant_waterside_reed.json"
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_floating_leaved_nymphaea.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_floating_leaved_nymphaea.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantFloatingLeavedNymphaeaBlock.java",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_floating_leaved_nymphaea.json",
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_floating_leaved_nymphaea.json"
         ]
       },
       "path": "~/Plants and Mushrooms/Blocks"
     },
     {
-      "name": "PlantWatersideGrass",
+      "name": "PlantFreeFloatingDuckweed",
       "type": "block",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "plant_waterside_grass",
+      "registry_name": "plant_free_floating_duckweed",
       "metadata": {
         "files": [
-          "src/main/resources/assets/tansplantsandherbs/models/block/plant_waterside_grass.json",
-          "src/main/java/tannyjung/tansplantsandherbs/block/PlantWatersideGrassBlock.java",
-          "src/main/resources/assets/tansplantsandherbs/models/item/plant_waterside_grass.json",
-          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_waterside_grass.json",
-          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_waterside_grass.json"
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantFreeFloatingDuckweedBlock.java",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_free_floating_duckweed.json",
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_free_floating_duckweed.json",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_free_floating_duckweed.json",
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_free_floating_duckweed.json"
         ]
       },
       "path": "~/Plants and Mushrooms/Blocks"
     },
     {
-      "name": "PlantFloatingDuckweed",
+      "name": "PlantRiparianGrass",
       "type": "block",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "plant_floating_duckweed",
+      "registry_name": "plant_riparian_grass",
       "metadata": {
         "files": [
-          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_floating_duckweed.json",
-          "src/main/java/tannyjung/tansplantsandherbs/block/PlantFloatingDuckweedBlock.java",
-          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_floating_duckweed.json",
-          "src/main/resources/assets/tansplantsandherbs/models/item/plant_floating_duckweed.json",
-          "src/main/resources/assets/tansplantsandherbs/models/block/plant_floating_duckweed.json"
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantRiparianGrassBlock.java",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_riparian_grass.json",
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_riparian_grass.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_riparian_grass.json",
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_riparian_grass.json"
         ]
       },
       "path": "~/Plants and Mushrooms/Blocks"
     },
     {
-      "name": "PlantSubmergedNymphaeaMiddle",
+      "name": "PlantRiparianReed",
       "type": "block",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "plant_submerged_nymphaea_middle",
+      "registry_name": "plant_riparian_reed",
       "metadata": {
         "files": [
-          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_submerged_nymphaea_middle.json",
-          "src/main/resources/assets/tansplantsandherbs/models/item/plant_submerged_nymphaea_middle.json",
-          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_submerged_nymphaea_middle.json",
-          "src/main/java/tannyjung/tansplantsandherbs/block/PlantSubmergedNymphaeaMiddleBlock.java",
-          "src/main/resources/assets/tansplantsandherbs/models/block/plant_submerged_nymphaea_middle.json"
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_riparian_reed.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_riparian_reed.json",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_riparian_reed.json",
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_riparian_reed.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantRiparianReedBlock.java"
         ]
       },
       "path": "~/Plants and Mushrooms/Blocks"
     },
     {
-      "name": "PlantSubmergedNymphaeaTop",
+      "name": "PlantFloatingLeavedNymphaeaMiddle",
       "type": "block",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "plant_submerged_nymphaea_top",
+      "registry_name": "plant_floating_leaved_nymphaea_middle",
       "metadata": {
         "files": [
-          "src/main/resources/assets/tansplantsandherbs/models/item/plant_submerged_nymphaea_top.json",
-          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_submerged_nymphaea_top.json",
-          "src/main/java/tannyjung/tansplantsandherbs/block/PlantSubmergedNymphaeaTopBlock.java",
-          "src/main/resources/assets/tansplantsandherbs/models/block/plant_submerged_nymphaea_top.json",
-          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_submerged_nymphaea_top.json"
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_floating_leaved_nymphaea_middle.json",
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_floating_leaved_nymphaea_middle.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_floating_leaved_nymphaea_middle.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantFloatingLeavedNymphaeaMiddleBlock.java",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_floating_leaved_nymphaea_middle.json"
         ]
       },
       "path": "~/Plants and Mushrooms/Blocks"
     },
     {
-      "name": "PlantSubmergedNymphaeaTopFlowering",
+      "name": "PlantFloatingLeavedNymphaeaTop",
       "type": "block",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "plant_submerged_nymphaea_top_flowering",
+      "registry_name": "plant_floating_leaved_nymphaea_top",
       "metadata": {
         "files": [
-          "src/main/resources/assets/tansplantsandherbs/models/block/plant_submerged_nymphaea_top_flowering.json",
-          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_submerged_nymphaea_top_flowering.json",
-          "src/main/java/tannyjung/tansplantsandherbs/block/PlantSubmergedNymphaeaTopFloweringBlock.java",
-          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_submerged_nymphaea_top_flowering.json",
-          "src/main/resources/assets/tansplantsandherbs/models/item/plant_submerged_nymphaea_top_flowering.json"
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_floating_leaved_nymphaea_top.json",
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_floating_leaved_nymphaea_top.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantFloatingLeavedNymphaeaTopBlock.java",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_floating_leaved_nymphaea_top.json",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_floating_leaved_nymphaea_top.json"
         ]
       },
       "path": "~/Plants and Mushrooms/Blocks"
     },
     {
-      "name": "PlantSubmergedNymphaea",
+      "name": "PlantFloatingLeavedNymphaeaTopFlowering",
       "type": "block",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "plant_submerged_nymphaea",
+      "registry_name": "plant_floating_leaved_nymphaea_top_flowering",
       "metadata": {
         "files": [
-          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_submerged_nymphaea.json",
-          "src/main/resources/assets/tansplantsandherbs/models/item/plant_submerged_nymphaea.json",
-          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_submerged_nymphaea.json",
-          "src/main/resources/assets/tansplantsandherbs/models/block/plant_submerged_nymphaea.json",
-          "src/main/java/tannyjung/tansplantsandherbs/block/PlantSubmergedNymphaeaBlock.java"
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_floating_leaved_nymphaea_top_flowering.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantFloatingLeavedNymphaeaTopFloweringBlock.java",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_floating_leaved_nymphaea_top_flowering.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_floating_leaved_nymphaea_top_flowering.json",
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_floating_leaved_nymphaea_top_flowering.json"
+        ]
+      },
+      "path": "~/Plants and Mushrooms/Blocks"
+    },
+    {
+      "name": "PlantEmergentTaro",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "plant_emergent_taro",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_emergent_taro.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_emergent_taro.json",
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_emergent_taro.json",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_emergent_taro.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantEmergentTaroBlock.java"
         ]
       },
       "path": "~/Plants and Mushrooms/Blocks"
@@ -332,13 +349,14 @@
       "block.tansplantsandherbs.garden_soil.description_2": "§8--------------------------------------------------",
       "block.tansplantsandherbs.garden_soil": "Garden Soil",
       "block.tansplantsandherbs.plant_emergent_cattail": "Cattail",
-      "block.tansplantsandherbs.plant_waterside_reed": "Reed",
-      "block.tansplantsandherbs.plant_waterside_grass": "Grass",
-      "block.tansplantsandherbs.plant_floating_duckweed": "Duckweed",
-      "block.tansplantsandherbs.plant_submerged_nymphaea_middle": "Nymphaea (Middle)",
-      "block.tansplantsandherbs.plant_submerged_nymphaea_top": "Nymphaea (Top)",
-      "block.tansplantsandherbs.plant_submerged_nymphaea_top_flowering": "Nymphaea (Top Flowering)",
-      "block.tansplantsandherbs.plant_submerged_nymphaea": "Nymphaea"
+      "block.tansplantsandherbs.plant_floating_leaved_nymphaea": "Nymphaea",
+      "block.tansplantsandherbs.plant_free_floating_duckweed": "Duckweed",
+      "block.tansplantsandherbs.plant_riparian_grass": "Grass",
+      "block.tansplantsandherbs.plant_riparian_reed": "Reed",
+      "block.tansplantsandherbs.plant_floating_leaved_nymphaea_middle": "Nymphaea (Middle)",
+      "block.tansplantsandherbs.plant_floating_leaved_nymphaea_top": "Nymphaea (Top)",
+      "block.tansplantsandherbs.plant_floating_leaved_nymphaea_top_flowering": "Nymphaea (Top Flowering)",
+      "block.tansplantsandherbs.plant_emergent_taro": "Taro"
     }
   },
   "metadata": {

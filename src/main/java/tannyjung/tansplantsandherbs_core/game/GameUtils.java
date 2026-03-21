@@ -87,7 +87,7 @@ public class GameUtils {
 
                 String biome_centerID = Space.getBiomeID(biome);
 
-				if (CacheManager.Result.existLogic("biome_test", biome + " | " + test) == false) {
+				if (CacheManager.SaveMap.existLogic("biome_test", biome + " | " + test) == false) {
 
 					boolean result = false;
 
@@ -147,11 +147,11 @@ public class GameUtils {
 
 					}
 
-					CacheManager.Result.setLogic("biome_test", biome + " | " + test, result);
+					CacheManager.SaveMap.setLogic("biome_test", biome + " | " + test, result);
 
 				}
 
-				return CacheManager.Result.getLogic("biome_test", biome + " | " + test);
+				return CacheManager.SaveMap.getLogic("biome_test", biome + " | " + test);
 
             }
 
@@ -165,7 +165,7 @@ public class GameUtils {
 
 			} else {
 
-				if (CacheManager.Result.existLogic("block_test", block + " | " + test) == false) {
+				if (CacheManager.SaveMap.existLogic("block_test", block + " | " + test) == false) {
 
 					boolean result = false;
 
@@ -270,11 +270,11 @@ public class GameUtils {
 
 					}
 
-					CacheManager.Result.setLogic("block_test", block + " | " + test, result);
+					CacheManager.SaveMap.setLogic("block_test", block + " | " + test, result);
 
 				}
 
-				return CacheManager.Result.getLogic("block_test", block + " | " + test);
+				return CacheManager.SaveMap.getLogic("block_test", block + " | " + test);
 
 			}
 
@@ -468,22 +468,50 @@ public class GameUtils {
 
 	public static class Tile {
 
-		public static void set (LevelAccessor level_accessor, BlockPos pos, BlockState block) {
+		public static void set (LevelAccessor level_accessor, BlockPos pos, BlockState block, boolean is_world_gen) {
 
-			level_accessor.setBlock(pos, block, 3);
+			// Waterlogged
+			{
+
+				if (level_accessor.isWaterAt(pos) == true) {
+
+					block = GameUtils.Tile.setPropertyLogic(block, "waterlogged", true);
+
+				}
+
+			}
+
+			int type = 0;
+
+			if (is_world_gen == false) {
+
+				type = 2;
+
+			}
+
+			level_accessor.setBlock(pos, block, type);
 
 		}
 
-		public static void remove (LevelAccessor level_accessor, BlockPos pos) {
+		public static void remove (LevelAccessor level_accessor, ServerLevel level_server, BlockPos pos, boolean is_world_gen) {
 
-			level_accessor.removeBlock(pos, false);
+			BlockState block = Blocks.AIR.defaultBlockState();
+
+			if (level_accessor.isWaterAt(pos) == true) {
+
+				block = Blocks.WATER.defaultBlockState();
+
+			}
+
+			set(level_accessor, pos, block, is_world_gen);
+			level_server.neighborChanged(pos.above(), level_server.getBlockState(pos.above()).getBlock(), pos);
 
 		}
 
 		public static void removeDrop (LevelAccessor level_accessor, ServerLevel level_server, BlockPos pos) {
 
 			GameUtils.Item.spawn(level_server, pos.getCenter(), level_accessor.getBlockState(pos).getBlock().asItem().getDefaultInstance());
-			remove(level_accessor, pos);
+			remove(level_accessor, level_server, pos, false);
 
 		}
 
@@ -590,6 +618,28 @@ public class GameUtils {
 		public static String[] toText (BlockState block) {
 
 			return block.toString().substring("Block{".length()).split("}");
+
+		}
+
+		public static BlockState randomRotation (BlockState block) {
+
+			if (Math.random() < 0.25) {
+
+				return GameUtils.Tile.setPropertyCustom(block, "facing", "north");
+
+			} else if (Math.random() < 0.25) {
+
+				return GameUtils.Tile.setPropertyCustom(block, "facing", "west");
+
+			} else if (Math.random() < 0.25) {
+
+				return GameUtils.Tile.setPropertyCustom(block, "facing", "east");
+
+			} else {
+
+				return GameUtils.Tile.setPropertyCustom(block, "facing", "south");
+
+			}
 
 		}
 

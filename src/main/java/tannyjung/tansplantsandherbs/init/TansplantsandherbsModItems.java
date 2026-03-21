@@ -17,23 +17,25 @@ public class TansplantsandherbsModItems {
 	public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, TansplantsandherbsMod.MODID);
 	public static final RegistryObject<Item> GARDEN_SOIL;
 	public static final RegistryObject<Item> PLANT_EMERGENT_CATTAIL;
-	public static final RegistryObject<Item> PLANT_WATERSIDE_REED;
-	public static final RegistryObject<Item> PLANT_WATERSIDE_GRASS;
-	public static final RegistryObject<Item> PLANT_FLOATING_DUCKWEED;
-	public static final RegistryObject<Item> PLANT_SUBMERGED_NYMPHAEA_MIDDLE;
-	public static final RegistryObject<Item> PLANT_SUBMERGED_NYMPHAEA_TOP;
-	public static final RegistryObject<Item> PLANT_SUBMERGED_NYMPHAEA_TOP_FLOWERING;
-	public static final RegistryObject<Item> PLANT_SUBMERGED_NYMPHAEA;
+	public static final RegistryObject<Item> PLANT_FLOATING_LEAVED_NYMPHAEA;
+	public static final RegistryObject<Item> PLANT_FREE_FLOATING_DUCKWEED;
+	public static final RegistryObject<Item> PLANT_RIPARIAN_GRASS;
+	public static final RegistryObject<Item> PLANT_RIPARIAN_REED;
+	public static final RegistryObject<Item> PLANT_FLOATING_LEAVED_NYMPHAEA_MIDDLE;
+	public static final RegistryObject<Item> PLANT_FLOATING_LEAVED_NYMPHAEA_TOP;
+	public static final RegistryObject<Item> PLANT_FLOATING_LEAVED_NYMPHAEA_TOP_FLOWERING;
+	public static final RegistryObject<Item> PLANT_EMERGENT_TARO;
 	static {
 		GARDEN_SOIL = block(TansplantsandherbsModBlocks.GARDEN_SOIL);
 		PLANT_EMERGENT_CATTAIL = block(TansplantsandherbsModBlocks.PLANT_EMERGENT_CATTAIL);
-		PLANT_WATERSIDE_REED = block(TansplantsandherbsModBlocks.PLANT_WATERSIDE_REED);
-		PLANT_WATERSIDE_GRASS = block(TansplantsandherbsModBlocks.PLANT_WATERSIDE_GRASS);
-		PLANT_FLOATING_DUCKWEED = block(TansplantsandherbsModBlocks.PLANT_FLOATING_DUCKWEED);
-		PLANT_SUBMERGED_NYMPHAEA_MIDDLE = block(TansplantsandherbsModBlocks.PLANT_SUBMERGED_NYMPHAEA_MIDDLE);
-		PLANT_SUBMERGED_NYMPHAEA_TOP = block(TansplantsandherbsModBlocks.PLANT_SUBMERGED_NYMPHAEA_TOP);
-		PLANT_SUBMERGED_NYMPHAEA_TOP_FLOWERING = block(TansplantsandherbsModBlocks.PLANT_SUBMERGED_NYMPHAEA_TOP_FLOWERING);
-		PLANT_SUBMERGED_NYMPHAEA = block(TansplantsandherbsModBlocks.PLANT_SUBMERGED_NYMPHAEA);
+		PLANT_FLOATING_LEAVED_NYMPHAEA = block(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA);
+		PLANT_FREE_FLOATING_DUCKWEED = block(TansplantsandherbsModBlocks.PLANT_FREE_FLOATING_DUCKWEED);
+		PLANT_RIPARIAN_GRASS = block(TansplantsandherbsModBlocks.PLANT_RIPARIAN_GRASS);
+		PLANT_RIPARIAN_REED = block(TansplantsandherbsModBlocks.PLANT_RIPARIAN_REED);
+		PLANT_FLOATING_LEAVED_NYMPHAEA_MIDDLE = block(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA_MIDDLE);
+		PLANT_FLOATING_LEAVED_NYMPHAEA_TOP = block(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA_TOP);
+		PLANT_FLOATING_LEAVED_NYMPHAEA_TOP_FLOWERING = block(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA_TOP_FLOWERING);
+		PLANT_EMERGENT_TARO = block(TansplantsandherbsModBlocks.PLANT_EMERGENT_TARO);
 	}
 
 	// Start of user code block custom items

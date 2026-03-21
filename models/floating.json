@@ -3,7 +3,7 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [6, 6],
 	"textures": {
-		"0": "plant_water_lily_top"
+		"0": "plant_water_lily"
 	},
 	"elements": [
 		{
@@ -15,8 +15,8 @@
 				"east": {"uv": [0, 0, 0, 0], "texture": "#0"},
 				"south": {"uv": [0, 0, 0, 0], "texture": "#0"},
 				"west": {"uv": [0, 0, 0, 0], "texture": "#0"},
-				"up": {"uv": [8, 0, 16, 8], "texture": "#0"},
-				"down": {"uv": [8, 0, 16, 8], "texture": "#0"}
+				"up": {"uv": [0, 8, 8, 16], "texture": "#0"},
+				"down": {"uv": [0, 8, 8, 16], "texture": "#0"}
 			}
 		}
 	],

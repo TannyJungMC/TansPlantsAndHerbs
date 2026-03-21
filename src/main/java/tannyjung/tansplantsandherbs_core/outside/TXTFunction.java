@@ -346,13 +346,7 @@ public class TXTFunction {
 
                                                                                         }
 
-                                                                                        if (level_accessor.isWaterAt(pos_convert) == true) {
-
-                                                                                            variable_block = GameUtils.Tile.setPropertyLogic(variable_block, "waterlogged", true);
-
-                                                                                        }
-
-                                                                                        level_accessor.setBlock(pos_convert, variable_block, 3);
+                                                                                        GameUtils.Tile.set(level_accessor, pos_convert, variable_block, false);
 
                                                                                     }
 

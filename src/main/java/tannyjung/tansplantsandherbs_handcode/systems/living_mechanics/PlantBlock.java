@@ -19,6 +19,7 @@ import tannyjung.tansplantsandherbs_core.outside.FileManager;
 import tannyjung.tansplantsandherbs_core.outside.TXTFunction;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +79,7 @@ public class PlantBlock {
 
                         if (level_accessor.getBlockState(pos.below()).getBlock() == Blocks.GRASS_BLOCK) {
 
-                            GameUtils.Tile.set(level_accessor, pos.below(), Blocks.DIRT.defaultBlockState());
+                            GameUtils.Tile.set(level_accessor, pos.below(), Blocks.DIRT.defaultBlockState(), false);
 
                         }
 
@@ -106,7 +107,7 @@ public class PlantBlock {
 
                     if (level_accessor.getBlockState(pos.below()).getBlock() == Blocks.GRASS_BLOCK) {
 
-                        GameUtils.Tile.set(level_accessor, pos.below(), Blocks.DIRT.defaultBlockState());
+                        GameUtils.Tile.set(level_accessor, pos.below(), Blocks.DIRT.defaultBlockState(), false);
 
                     }
 
@@ -130,7 +131,7 @@ public class PlantBlock {
 
             }
 
-            GameUtils.Tile.remove(level_accessor, pos);
+            GameUtils.Tile.remove(level_accessor, level_server, pos, false);
             GameUtils.Misc.spawnParticle(level_server, pos.getCenter().add(0.0, -0.25, 0.0), 0.25, 0.25, 0.25, 0.01, 10, "minecraft:campfire_cosy_smoke");
 
         }
@@ -150,7 +151,7 @@ public class PlantBlock {
         if (testPlace(level_accessor, pos, id, true, GameUtils.Mob.isCreativeMode(entity) == false) == true) {
 
             ServerLevel level_server = (ServerLevel) level_accessor;
-            runCustomPlacement(level_accessor, level_server, pos, id);
+            place(level_accessor, level_server, pos, id, false);
 
         }
 
@@ -196,7 +197,7 @@ public class PlantBlock {
             // Test
             {
 
-                Map<String, Map<String, String>> data = ConfigDynamic.getData("settings", "id").get("");
+                Map<String, Map<String, String>> data = ConfigDynamic.getData("settings", "").get("");
 
                 if (data.containsKey(id) == false) {
 
@@ -262,7 +263,7 @@ public class PlantBlock {
 
             } else {
 
-                GameUtils.Tile.remove(level_accessor, pos);
+                GameUtils.Tile.remove(level_accessor, level_server, pos, false);
 
             }
 
@@ -286,7 +287,7 @@ public class PlantBlock {
 
     }
 
-    public static boolean runCustomPlacement (LevelAccessor level_accessor, ServerLevel level_server, BlockPos pos, String id) {
+    private static boolean placeCustom (LevelAccessor level_accessor, ServerLevel level_server, BlockPos pos, String id) {
 
         if (CacheManager.SaveMap.existLogic("custom_placement", id) == false) {
 
@@ -303,6 +304,17 @@ public class PlantBlock {
         }
 
         return false;
+
+    }
+
+    public static void place (LevelAccessor level_accessor, ServerLevel level_server, BlockPos pos, String id, boolean is_world_gen) {
+
+        if (PlantBlock.placeCustom(level_accessor, level_server, pos, id) == false) {
+
+            BlockState block = GameUtils.Tile.fromText(id.replace("-", ":"));
+            GameUtils.Tile.set(level_accessor, pos, block, is_world_gen);
+
+        }
 
     }
 

@@ -3,8 +3,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [6, 6],
 	"textures": {
-		"0": "plant_water_lily_top",
-		"particle": "plant_water_lily_top"
+		"0": "plant_cattail",
+		"particle": "plant_cattail"
 	},
 	"elements": [
 		{
@@ -107,16 +107,17 @@
 			"translation": [0, 25, 0]
 		},
 		"gui": {
-			"rotation": [0, 90, 0],
-			"scale": [1, 0.3, 0.3]
+			"rotation": [0, 45, 0],
+			"scale": [0.25, 0.25, 0.25]
 		},
 		"head": {
 			"translation": [0, 16.25, 0],
 			"scale": [0.9, 0.9, 0.9]
 		},
 		"fixed": {
-			"translation": [0, 0, 1],
-			"scale": [0.4, 0.4, 0]
+			"rotation": [0, 45, 0],
+			"translation": [0, 0, 0.75],
+			"scale": [0.25, 0.25, 0.25]
 		},
 		"on_shelf": {
 			"translation": [0, 0, -4],

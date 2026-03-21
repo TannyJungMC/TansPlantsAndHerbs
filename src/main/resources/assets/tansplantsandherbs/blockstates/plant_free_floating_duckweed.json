@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "tansplantsandherbs:block/plant_free_floating_duckweed"
+    },
+    "facing=east": {
+      "model": "tansplantsandherbs:block/plant_free_floating_duckweed",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "tansplantsandherbs:block/plant_free_floating_duckweed",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tansplantsandherbs:block/plant_free_floating_duckweed",
+      "y": 270
+    }
+  }
+}

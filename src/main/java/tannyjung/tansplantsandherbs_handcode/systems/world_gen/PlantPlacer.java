@@ -9,6 +9,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import tannyjung.tansplantsandherbs_core.outside.ConfigDynamic;
 import tannyjung.tansplantsandherbs_handcode.systems.living_mechanics.LivingMechanics;
+import tannyjung.tansplantsandherbs_handcode.systems.living_mechanics.PlantBlock;
 
 import java.util.*;
 
@@ -65,7 +66,7 @@ public class PlantPlacer {
 
                                             if (LivingMechanics.test(level_accessor, data.get(type_test), height, water_locations, land_biomes, pos, ceil_block, entry.getKey(), true).isEmpty() == true) {
 
-                                                LivingMechanics.place(level_accessor, level_server, pos, entry.getKey(), true);
+                                                PlantBlock.place(level_accessor, level_server, pos, entry.getKey(), true);
 
                                             }
 

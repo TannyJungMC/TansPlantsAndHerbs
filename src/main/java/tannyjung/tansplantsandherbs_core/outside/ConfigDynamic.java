@@ -283,60 +283,67 @@ public class ConfigDynamic {
 
     public static Map<String, Map<String, Map<String, String>>> getData (String name, String by_category) {
 
-        Map<String, Map<String, Map<String, String>>> data = new HashMap<>();
-        Map<String, String> settings = new HashMap<>();
+        if (CacheManager.SaveMap.existTextTextText(by_category) == false) {
 
-        String[] value = new String[0];
-        String id = "";
-        boolean skip = true;
-        boolean after_this = false;
-        String category = "";
+            Map<String, Map<String, Map<String, String>>> data = new HashMap<>();
+            Map<String, String> settings = new HashMap<>();
+            String[] value = new String[0];
+            String id = "";
+            boolean skip = true;
+            boolean after_this = false;
+            String category = "";
 
-        if (CacheManager.SaveList.existText("config_" + name) == false) {
+            if (CacheManager.SaveList.existText("config_" + name) == false) {
 
-            CacheManager.SaveList.setText("config_" + name, FileManager.readTXT(Core.path_config + "/config_" + name + ".txt"));
+                CacheManager.SaveList.setText("config_" + name, FileManager.readTXT(Core.path_config + "/config_" + name + ".txt"));
 
-        }
+            }
 
-        for (String read_all : CacheManager.SaveList.getText("config_" + name)) {
+            for (String read_all : CacheManager.SaveList.getText("config_" + name)) {
 
-            if (read_all.isEmpty() == false) {
+                {
 
-                if (read_all.startsWith("[") == true) {
+                    if (read_all.isEmpty() == false) {
 
-                    if (read_all.startsWith("[INCOMPATIBLE]") == true) {
+                        if (read_all.startsWith("[") == true) {
 
-                        skip = true;
+                            if (read_all.startsWith("[INCOMPATIBLE]") == true) {
 
-                    } else {
+                                skip = true;
 
-                        skip = false;
-                        id = read_all.substring(read_all.indexOf("]") + 2);
+                            } else {
 
-                    }
-
-                } else {
-
-                    if (skip == false) {
-
-                        if (read_all.contains(" = ") == true) {
-
-                            after_this = true;
-                            value = read_all.split(" = ");
-
-                            if (by_category.equals(value[0]) == true) {
-
-                                category = value[1];
+                                skip = false;
+                                id = read_all.substring(read_all.indexOf("]") + 2);
 
                             }
 
-                            settings.put(value[0], value[1]);
+                        } else {
 
-                        } else if (after_this == true) {
+                            if (skip == false) {
 
-                            data.computeIfAbsent(category, test -> new HashMap<>()).put(id, new HashMap<>(settings));
-                            after_this = false;
-                            settings.clear();
+                                if (read_all.contains(" = ") == true) {
+
+                                    after_this = true;
+                                    value = read_all.split(" = ");
+
+                                    if (by_category.equals(value[0]) == true) {
+
+                                        category = value[1];
+
+                                    }
+
+                                    settings.put(value[0], value[1]);
+
+                                } else if (after_this == true) {
+
+                                    data.computeIfAbsent(category, test -> new HashMap<>()).put(id, new HashMap<>(settings));
+                                    after_this = false;
+                                    settings.clear();
+
+                                }
+
+                            }
 
                         }
 
@@ -346,9 +353,11 @@ public class ConfigDynamic {
 
             }
 
+            CacheManager.SaveMap.setTextTextText(by_category, data);
+
         }
 
-        return data;
+        return CacheManager.SaveMap.getTextTextText(by_category);
 
     }
 

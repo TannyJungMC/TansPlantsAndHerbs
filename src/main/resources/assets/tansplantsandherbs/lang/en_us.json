@@ -1,8 +1,16 @@
 {
   "item_group.tansplantsandherbs.tab": "Tan\u0027s Plants and Herbs",
-  "block.tansplantsandherbs.plant_large_cattail": "Cattail",
-  "block.tansplantsandherbs.plant_large_reed": "Reed",
-  "block.tansplantsandherbs.plant_large_grass": "Grass",
-  "block.tansplantsandherbs.plant_floating_duckweed": "Duckweed",
-  "block.tansplantsandherbs.test": "Test"
+  "block.tansplantsandherbs.garden_soil.description_1": "§8A soil block for Tan\u0027s Plants and Herbs mod. Use this to place plants for decoration.",
+  "block.tansplantsandherbs.garden_soil.description_0": "§8--------------------------------------------------",
+  "block.tansplantsandherbs.garden_soil.description_2": "§8--------------------------------------------------",
+  "block.tansplantsandherbs.garden_soil": "Garden Soil",
+  "block.tansplantsandherbs.plant_emergent_cattail": "Cattail",
+  "block.tansplantsandherbs.plant_floating_leaved_nymphaea": "Nymphaea",
+  "block.tansplantsandherbs.plant_free_floating_duckweed": "Duckweed",
+  "block.tansplantsandherbs.plant_riparian_grass": "Grass",
+  "block.tansplantsandherbs.plant_riparian_reed": "Reed",
+  "block.tansplantsandherbs.plant_floating_leaved_nymphaea_middle": "Nymphaea (Middle)",
+  "block.tansplantsandherbs.plant_floating_leaved_nymphaea_top": "Nymphaea (Top)",
+  "block.tansplantsandherbs.plant_floating_leaved_nymphaea_top_flowering": "Nymphaea (Top Flowering)",
+  "block.tansplantsandherbs.plant_emergent_taro": "Taro"
 }

@@ -19,12 +19,13 @@ public class TansplantsandherbsModTabs {
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.tansplantsandherbs.tab")).icon(() -> new ItemStack(TansplantsandherbsModBlocks.PLANT_EMERGENT_CATTAIL.get())).displayItems((parameters, tabData) -> {
 				tabData.accept(TansplantsandherbsModBlocks.GARDEN_SOIL.get().asItem());
 				tabData.accept(TansplantsandherbsModBlocks.PLANT_EMERGENT_CATTAIL.get().asItem());
-				tabData.accept(TansplantsandherbsModBlocks.PLANT_WATERSIDE_REED.get().asItem());
-				tabData.accept(TansplantsandherbsModBlocks.PLANT_WATERSIDE_GRASS.get().asItem());
-				tabData.accept(TansplantsandherbsModBlocks.PLANT_FLOATING_DUCKWEED.get().asItem());
-				tabData.accept(TansplantsandherbsModBlocks.PLANT_SUBMERGED_NYMPHAEA_MIDDLE.get().asItem());
-				tabData.accept(TansplantsandherbsModBlocks.PLANT_SUBMERGED_NYMPHAEA_TOP.get().asItem());
-				tabData.accept(TansplantsandherbsModBlocks.PLANT_SUBMERGED_NYMPHAEA_TOP_FLOWERING.get().asItem());
-				tabData.accept(TansplantsandherbsModBlocks.PLANT_SUBMERGED_NYMPHAEA.get().asItem());
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA.get().asItem());
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_FREE_FLOATING_DUCKWEED.get().asItem());
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_RIPARIAN_GRASS.get().asItem());
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_RIPARIAN_REED.get().asItem());
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA_MIDDLE.get().asItem());
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA_TOP.get().asItem());
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA_TOP_FLOWERING.get().asItem());
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_EMERGENT_TARO.get().asItem());
 			}).build());
 }
