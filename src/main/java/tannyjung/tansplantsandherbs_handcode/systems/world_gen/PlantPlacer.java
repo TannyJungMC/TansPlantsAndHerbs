@@ -21,10 +21,10 @@ public class PlantPlacer {
         int start_posZ = chunk_pos.z * 16;
 
         Map<String, Map<String, Map<String, String>>> data = ConfigDynamic.getData("settings", "type");
-        Object[] surrounding_area_data = LivingMechanics.getSurroundingAreaData(level_accessor, level_server, start_posX, start_posZ);
+        Object[] surrounding_area_data = PlantBlock.getSurroundingAreaData(level_accessor, level_server, start_posX, start_posZ);
         Map<String, Integer> height = (Map<String, Integer>) surrounding_area_data[0];
         List<BlockPos> water_locations = (List<BlockPos>) surrounding_area_data[1];
-        Map<BlockPos, Holder<Biome>> land_biomes = (Map<BlockPos, Holder<Biome>>) surrounding_area_data[2];
+        Map<BlockPos, Holder<Biome>> biomes = (Map<BlockPos, Holder<Biome>>) surrounding_area_data[2];
 
         BlockPos pos = null;
         int posX = 0;
@@ -44,7 +44,7 @@ public class PlantPlacer {
                 for (int scanY = 0; scanY > -32; scanY--) {
 
                     pos = new BlockPos(posX, originalY + scanY, posZ);
-                    type_area = LivingMechanics.getAreaType(level_accessor, pos, originalY, water_locations.isEmpty() == false, land_biomes.isEmpty() == false);
+                    type_area = PlantBlock.getAreaType(level_accessor, pos, originalY, water_locations.isEmpty() == false, biomes.isEmpty() == false);
 
                     if (level_accessor.getBlockState(pos.above()).getCollisionShape(level_accessor, pos.above()).isEmpty() == false) {
 
@@ -64,9 +64,10 @@ public class PlantPlacer {
 
                                         if (Math.random() < Double.parseDouble(entry.getValue().get("rarity"))) {
 
-                                            if (LivingMechanics.test(level_accessor, data.get(type_test), height, water_locations, land_biomes, pos, ceil_block, entry.getKey(), true).isEmpty() == true) {
+                                            if (PlantBlock.test(level_accessor, data.get(type_test), height, water_locations, biomes, pos, ceil_block, entry.getKey(), true).isEmpty() == true) {
 
-                                                PlantBlock.place(level_accessor, level_server, pos, entry.getKey(), true);
+                                                PlantBlock.place(level_accessor, level_server, pos, entry.getValue(), entry.getKey(), true);
+                                                break;
 
                                             }
 

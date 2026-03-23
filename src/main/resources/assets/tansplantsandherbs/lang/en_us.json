@@ -11,6 +11,8 @@
   "block.tansplantsandherbs.plant_riparian_reed": "Reed",
   "block.tansplantsandherbs.plant_floating_leaved_nymphaea_middle": "Nymphaea (Middle)",
   "block.tansplantsandherbs.plant_floating_leaved_nymphaea_top": "Nymphaea (Top)",
-  "block.tansplantsandherbs.plant_floating_leaved_nymphaea_top_flowering": "Nymphaea (Top Flowering)",
-  "block.tansplantsandherbs.plant_emergent_taro": "Taro"
+  "block.tansplantsandherbs.plant_emergent_taro": "Taro",
+  "block.tansplantsandherbs.plant_free_floating_water_hyacinth": "Water Hyacinth",
+  "block.tansplantsandherbs.plant_free_floating_water_hyacinth_flower": "Water Hyacinth",
+  "block.tansplantsandherbs.plant_floating_leaved_nymphaea_top_flower": "Nymphaea (Top Flowering)"
 }

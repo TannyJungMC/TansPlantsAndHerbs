@@ -9,7 +9,7 @@
     "textureRight": "",
     "textureBack": "",
     "renderType": 2,
-    "customModelName": "floating:duckweed",
+    "customModelName": "floating_cross:water_hyacinth_flower",
     "rotationMode": 1,
     "enablePitch": false,
     "emissiveRendering": false,
@@ -39,7 +39,7 @@
       }
     ],
     "customProperties": [],
-    "name": "Duckweed",
+    "name": "Water Hyacinth",
     "specialInformation": {
       "fixedValue": []
     },

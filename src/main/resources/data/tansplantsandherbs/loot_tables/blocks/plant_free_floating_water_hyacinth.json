@@ -1,6 +1,6 @@
 {
   "type": "minecraft:block",
-  "random_sequence": "tansplantsandherbs:blocks/plant_floating_leaved_nymphaea_top_flowering",
+  "random_sequence": "tansplantsandherbs:blocks/plant_free_floating_water_hyacinth",
   "pools": [
     {
       "rolls": 1.0,
@@ -12,7 +12,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "tansplantsandherbs:plant_floating_leaved_nymphaea_top_flowering"
+          "name": "tansplantsandherbs:plant_free_floating_water_hyacinth"
         }
       ]
     }

@@ -1,6 +1,7 @@
 package tannyjung.tansplantsandherbs.block;
 
 import tannyjung.tansplantsandherbs.procedures.PlantBlockWhenPlaceProcedure;
+import tannyjung.tansplantsandherbs.procedures.PlantBlockWhenPassThroughProcedure;
 import tannyjung.tansplantsandherbs.procedures.PlantBlockWhenNeighbourUpdateProcedure;
 import tannyjung.tansplantsandherbs.procedures.PlantBlockWhenClickProcedure;
 
@@ -25,16 +26,17 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
-public class PlantFloatingLeavedNymphaeaTopFloweringBlock extends Block implements SimpleWaterloggedBlock {
+public class PlantFreeFloatingWaterHyacinthFlowerBlock extends Block implements SimpleWaterloggedBlock {
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-	public PlantFloatingLeavedNymphaeaTopFloweringBlock() {
+	public PlantFreeFloatingWaterHyacinthFlowerBlock() {
 		super(BlockBehaviour.Properties.of().sound(SoundType.LILY_PAD).strength(1f, 0f).noCollission().noOcclusion().isRedstoneConductor((bs, br, bp) -> false).offsetType(Block.OffsetType.XYZ));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
 	}
@@ -102,6 +104,12 @@ public class PlantFloatingLeavedNymphaeaTopFloweringBlock extends Block implemen
 	public void neighborChanged(BlockState blockstate, Level world, BlockPos pos, Block neighborBlock, BlockPos fromPos, boolean moving) {
 		super.neighborChanged(blockstate, world, pos, neighborBlock, fromPos, moving);
 		PlantBlockWhenNeighbourUpdateProcedure.execute(world, pos.getX(), pos.getY(), pos.getZ());
+	}
+
+	@Override
+	public void entityInside(BlockState blockstate, Level world, BlockPos pos, Entity entity) {
+		super.entityInside(blockstate, world, pos, entity);
+		PlantBlockWhenPassThroughProcedure.execute(world, pos.getX(), pos.getY(), pos.getZ(), entity);
 	}
 
 	@Override

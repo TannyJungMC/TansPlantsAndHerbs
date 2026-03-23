@@ -23,8 +23,10 @@ public class TansplantsandherbsModItems {
 	public static final RegistryObject<Item> PLANT_RIPARIAN_REED;
 	public static final RegistryObject<Item> PLANT_FLOATING_LEAVED_NYMPHAEA_MIDDLE;
 	public static final RegistryObject<Item> PLANT_FLOATING_LEAVED_NYMPHAEA_TOP;
-	public static final RegistryObject<Item> PLANT_FLOATING_LEAVED_NYMPHAEA_TOP_FLOWERING;
 	public static final RegistryObject<Item> PLANT_EMERGENT_TARO;
+	public static final RegistryObject<Item> PLANT_FREE_FLOATING_WATER_HYACINTH;
+	public static final RegistryObject<Item> PLANT_FREE_FLOATING_WATER_HYACINTH_FLOWER;
+	public static final RegistryObject<Item> PLANT_FLOATING_LEAVED_NYMPHAEA_TOP_FLOWER;
 	static {
 		GARDEN_SOIL = block(TansplantsandherbsModBlocks.GARDEN_SOIL);
 		PLANT_EMERGENT_CATTAIL = block(TansplantsandherbsModBlocks.PLANT_EMERGENT_CATTAIL);
@@ -34,8 +36,10 @@ public class TansplantsandherbsModItems {
 		PLANT_RIPARIAN_REED = block(TansplantsandherbsModBlocks.PLANT_RIPARIAN_REED);
 		PLANT_FLOATING_LEAVED_NYMPHAEA_MIDDLE = block(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA_MIDDLE);
 		PLANT_FLOATING_LEAVED_NYMPHAEA_TOP = block(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA_TOP);
-		PLANT_FLOATING_LEAVED_NYMPHAEA_TOP_FLOWERING = block(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA_TOP_FLOWERING);
 		PLANT_EMERGENT_TARO = block(TansplantsandherbsModBlocks.PLANT_EMERGENT_TARO);
+		PLANT_FREE_FLOATING_WATER_HYACINTH = block(TansplantsandherbsModBlocks.PLANT_FREE_FLOATING_WATER_HYACINTH);
+		PLANT_FREE_FLOATING_WATER_HYACINTH_FLOWER = block(TansplantsandherbsModBlocks.PLANT_FREE_FLOATING_WATER_HYACINTH_FLOWER);
+		PLANT_FLOATING_LEAVED_NYMPHAEA_TOP_FLOWER = block(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA_TOP_FLOWER);
 	}
 
 	// Start of user code block custom items

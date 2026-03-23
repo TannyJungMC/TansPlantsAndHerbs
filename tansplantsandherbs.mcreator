@@ -297,23 +297,6 @@
       "path": "~/Plants and Mushrooms/Blocks"
     },
     {
-      "name": "PlantFloatingLeavedNymphaeaTopFlowering",
-      "type": "block",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "plant_floating_leaved_nymphaea_top_flowering",
-      "metadata": {
-        "files": [
-          "src/main/resources/assets/tansplantsandherbs/models/block/plant_floating_leaved_nymphaea_top_flowering.json",
-          "src/main/java/tannyjung/tansplantsandherbs/block/PlantFloatingLeavedNymphaeaTopFloweringBlock.java",
-          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_floating_leaved_nymphaea_top_flowering.json",
-          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_floating_leaved_nymphaea_top_flowering.json",
-          "src/main/resources/assets/tansplantsandherbs/models/item/plant_floating_leaved_nymphaea_top_flowering.json"
-        ]
-      },
-      "path": "~/Plants and Mushrooms/Blocks"
-    },
-    {
       "name": "PlantEmergentTaro",
       "type": "block",
       "compiles": true,
@@ -329,6 +312,92 @@
         ]
       },
       "path": "~/Plants and Mushrooms/Blocks"
+    },
+    {
+      "name": "PlantFreeFloatingWaterHyacinth",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "plant_free_floating_water_hyacinth",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_free_floating_water_hyacinth.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_free_floating_water_hyacinth.json",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_free_floating_water_hyacinth.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantFreeFloatingWaterHyacinthBlock.java",
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_free_floating_water_hyacinth.json"
+        ]
+      },
+      "path": "~/Plants and Mushrooms/Blocks"
+    },
+    {
+      "name": "PlantFreeFloatingWaterHyacinthFlower",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "plant_free_floating_water_hyacinth_flower",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_free_floating_water_hyacinth_flower.json",
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_free_floating_water_hyacinth_flower.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_free_floating_water_hyacinth_flower.json",
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_free_floating_water_hyacinth_flower.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantFreeFloatingWaterHyacinthFlowerBlock.java"
+        ]
+      },
+      "path": "~/Plants and Mushrooms/Blocks"
+    },
+    {
+      "name": "PlantFloatingLeavedNymphaeaTopFlower",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "plant_floating_leaved_nymphaea_top_flower",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/tansplantsandherbs/loot_tables/blocks/plant_floating_leaved_nymphaea_top_flower.json",
+          "src/main/resources/assets/tansplantsandherbs/blockstates/plant_floating_leaved_nymphaea_top_flower.json",
+          "src/main/resources/assets/tansplantsandherbs/models/item/plant_floating_leaved_nymphaea_top_flower.json",
+          "src/main/resources/assets/tansplantsandherbs/models/block/plant_floating_leaved_nymphaea_top_flower.json",
+          "src/main/java/tannyjung/tansplantsandherbs/block/PlantFloatingLeavedNymphaeaTopFlowerBlock.java"
+        ]
+      },
+      "path": "~/Plants and Mushrooms/Blocks"
+    },
+    {
+      "name": "PlantBlockWhenPassThrough",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "plant_block_when_pass_through",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/tannyjung/tansplantsandherbs/procedures/PlantBlockWhenPassThroughProcedure.java"
+        ]
+      },
+      "path": "~/Plants and Mushrooms"
     }
   ],
   "variable_elements": [],
@@ -355,8 +424,10 @@
       "block.tansplantsandherbs.plant_riparian_reed": "Reed",
       "block.tansplantsandherbs.plant_floating_leaved_nymphaea_middle": "Nymphaea (Middle)",
       "block.tansplantsandherbs.plant_floating_leaved_nymphaea_top": "Nymphaea (Top)",
-      "block.tansplantsandherbs.plant_floating_leaved_nymphaea_top_flowering": "Nymphaea (Top Flowering)",
-      "block.tansplantsandherbs.plant_emergent_taro": "Taro"
+      "block.tansplantsandherbs.plant_emergent_taro": "Taro",
+      "block.tansplantsandherbs.plant_free_floating_water_hyacinth": "Water Hyacinth",
+      "block.tansplantsandherbs.plant_free_floating_water_hyacinth_flower": "Water Hyacinth",
+      "block.tansplantsandherbs.plant_floating_leaved_nymphaea_top_flower": "Nymphaea (Top Flowering)"
     }
   },
   "metadata": {

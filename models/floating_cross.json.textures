@@ -1,0 +1,22 @@
+{
+  "mappings": {
+    "default": {
+      "name": "default",
+      "map": {
+        "0": "minecraft:beacon"
+      }
+    },
+    "water_hyacinth": {
+      "name": "water_hyacinth",
+      "map": {
+        "0": "plant_water_hyacinth"
+      }
+    },
+    "water_hyacinth_flower": {
+      "name": "water_hyacinth_flower",
+      "map": {
+        "0": "plant_water_hyacinth_flower"
+      }
+    }
+  }
+}

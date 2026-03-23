@@ -231,7 +231,7 @@ public class TXTFunction {
 
                                                                 pos_convert = pos.offset(offset_posX, offset_posY, offset_posZ);
 
-                                                                if (GameUtils.Misc.testCustomBiome(GameUtils.Space.getBiomeAt(level_accessor, level_server, pos_convert), variable_text) == true) {
+                                                                if (GameUtils.Misc.testBiome(GameUtils.Space.getBiomeAt(level_accessor, level_server, pos_convert), variable_text) == true) {
 
                                                                     continue;
 
@@ -262,7 +262,7 @@ public class TXTFunction {
 
                                                                 if (GameUtils.Space.testChunkStatus(level_accessor, new ChunkPos(pos_convert), ChunkStatus.SURFACE) == true) {
 
-                                                                    if (GameUtils.Misc.testCustomBlock(level_accessor.getBlockState(pos_convert), variable_text) == true) {
+                                                                    if (GameUtils.Misc.testBlock(level_accessor.getBlockState(pos_convert), variable_text) == true) {
 
                                                                         continue;
 
@@ -340,7 +340,7 @@ public class TXTFunction {
 
                                                                                     if (level_accessor.hasChunk(pos_convert.getX() >> 4, pos_convert.getZ() >> 4) == true) {
 
-                                                                                        if (GameUtils.Misc.testCustomBlock(level_accessor.getBlockState(pos_convert), variable_text) == false) {
+                                                                                        if (GameUtils.Misc.testBlock(level_accessor.getBlockState(pos_convert), variable_text) == false) {
 
                                                                                             continue;
 

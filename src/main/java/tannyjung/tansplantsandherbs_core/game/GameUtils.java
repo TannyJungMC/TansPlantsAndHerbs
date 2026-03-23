@@ -1,13 +1,10 @@
 package tannyjung.tansplantsandherbs_core.game;
 
-import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.*;
-import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -77,9 +74,13 @@ public class GameUtils {
 
         }
 
-        public static boolean testCustomBiome (Holder<Biome> biome, String test) {
+        public static boolean testBiome (Holder<Biome> biome, String test) {
 
-            if (test.equals("all") == true) {
+			if (test.equals("none") == true) {
+
+				return false;
+
+			} else if (test.equals("all") == true) {
 
                 return true;
 
@@ -157,9 +158,13 @@ public class GameUtils {
 
         }
 
-        public static boolean testCustomBlock (BlockState block, String test) {
+        public static boolean testBlock (BlockState block, String test) {
 
-			if (test.equals("all") == true) {
+			if (test.equals("none") == true) {
+
+				return false;
+
+			} else if (test.equals("all") == true) {
 
 				return true;
 
@@ -279,6 +284,30 @@ public class GameUtils {
 			}
 
         }
+
+		public static String testVariant (String test) {
+
+			if (test.equals("none") == false) {
+
+				String[] split = new String[0];
+
+				for (String variant : test.split(" \\| ")) {
+
+					split = variant.split(" / ");
+
+					if (Math.random() < Double.parseDouble(split[0])) {
+
+						return split[1];
+
+					}
+
+				}
+
+			}
+
+			return "";
+
+		}
 
 		public static void sendChatMessage (ServerLevel level_server, String target, String data) {
 
@@ -512,6 +541,12 @@ public class GameUtils {
 
 			GameUtils.Item.spawn(level_server, pos.getCenter(), level_accessor.getBlockState(pos).getBlock().asItem().getDefaultInstance());
 			remove(level_accessor, level_server, pos, false);
+
+		}
+
+		public static void update (ServerLevel level_server, BlockPos pos, BlockPos pos_update) {
+
+			level_server.neighborChanged(pos_update, level_server.getBlockState(pos_update).getBlock(), pos);
 
 		}
 
@@ -1137,7 +1172,7 @@ public class GameUtils {
 
 		public static Holder<Biome> getBiomeAt (LevelAccessor level_accessor, ServerLevel level_server, BlockPos pos) {
 
-			if (level_server.isLoaded(pos) == true || testChunkStatus(level_accessor, new ChunkPos(pos), ChunkStatus.BIOMES) == true) {
+			if (testChunkStatus(level_accessor, new ChunkPos(pos), ChunkStatus.FULL) == true) {
 
 				return level_server.getBiome(pos);
 

@@ -1,5 +1,5 @@
 {
-  "parent": "tansplantsandherbs:block/plant_floating_leaved_nymphaea_top_flowering",
+  "parent": "tansplantsandherbs:block/plant_free_floating_water_hyacinth",
   "display": {
     "thirdperson": {
       "rotation": [

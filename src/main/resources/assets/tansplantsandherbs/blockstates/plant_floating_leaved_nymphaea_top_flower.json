@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "tansplantsandherbs:block/plant_floating_leaved_nymphaea_top_flower"
+    },
+    "facing=east": {
+      "model": "tansplantsandherbs:block/plant_floating_leaved_nymphaea_top_flower",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "tansplantsandherbs:block/plant_floating_leaved_nymphaea_top_flower",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tansplantsandherbs:block/plant_floating_leaved_nymphaea_top_flower",
+      "y": 270
+    }
+  }
+}

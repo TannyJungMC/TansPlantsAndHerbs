@@ -25,7 +25,9 @@ public class TansplantsandherbsModTabs {
 				tabData.accept(TansplantsandherbsModBlocks.PLANT_RIPARIAN_REED.get().asItem());
 				tabData.accept(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA_MIDDLE.get().asItem());
 				tabData.accept(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA_TOP.get().asItem());
-				tabData.accept(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA_TOP_FLOWERING.get().asItem());
 				tabData.accept(TansplantsandherbsModBlocks.PLANT_EMERGENT_TARO.get().asItem());
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_FREE_FLOATING_WATER_HYACINTH.get().asItem());
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_FREE_FLOATING_WATER_HYACINTH_FLOWER.get().asItem());
+				tabData.accept(TansplantsandherbsModBlocks.PLANT_FLOATING_LEAVED_NYMPHAEA_TOP_FLOWER.get().asItem());
 			}).build());
 }
