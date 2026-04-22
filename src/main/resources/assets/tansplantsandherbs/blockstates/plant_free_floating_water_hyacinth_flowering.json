@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "tansplantsandherbs:block/plant_free_floating_water_hyacinth_flowering"
+    },
+    "facing=east": {
+      "model": "tansplantsandherbs:block/plant_free_floating_water_hyacinth_flowering",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "tansplantsandherbs:block/plant_free_floating_water_hyacinth_flowering",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tansplantsandherbs:block/plant_free_floating_water_hyacinth_flowering",
+      "y": 270
+    }
+  }
+}

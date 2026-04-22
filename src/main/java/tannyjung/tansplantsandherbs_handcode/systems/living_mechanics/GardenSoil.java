@@ -34,7 +34,7 @@ public class GardenSoil {
                 for (Entity entity_scan : entities) {
 
                     GameUtils.Item.spawn(level_server, vec3, GameUtils.Item.fromID(GameUtils.Data.getEntityText(entity_scan, "id")));
-                    GameUtils.Mob.remove(entity_scan, false);
+                    entity_scan.discard();
 
                 }
 

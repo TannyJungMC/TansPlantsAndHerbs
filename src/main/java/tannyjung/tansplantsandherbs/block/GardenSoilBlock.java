@@ -2,6 +2,8 @@ package tannyjung.tansplantsandherbs.block;
 
 import tannyjung.tansplantsandherbs.procedures.GardenSoilClickProcedure;
 
+import net.minecraftforge.common.IPlantable;
+
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -36,6 +38,11 @@ public class GardenSoilBlock extends Block {
 	@Override
 	public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
 		return 15;
+	}
+
+	@Override
+	public boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction direction, IPlantable plantable) {
+		return true;
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 {
   "parent": "tansplantsandherbs:custom/normal",
   "textures": {
-    "all": "minecraft:block/azalea_top",
+    "all": "minecraft:block/magenta_glazed_terracotta",
     "particle": "minecraft:block/azalea_top",
     "0": "tansplantsandherbs:block/plant_water_lily"
   },

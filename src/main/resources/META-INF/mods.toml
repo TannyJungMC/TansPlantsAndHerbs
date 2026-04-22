@@ -7,8 +7,10 @@ modId="tansplantsandherbs"
 version="1.0.0"
 displayName="Tan's Plants and Herbs"
 displayURL="https://legacy.curseforge.com/members/tannyjung/projects"
+logoFile="logo.png"
 credits="Created with IntelliJ and MCreator"
 authors="TannyJung"
+description="Generate plants, herbs, and some fungi around the world. With some detailed systems."
 
 # Start of user code block mod configuration
 # End of user code block mod configuration

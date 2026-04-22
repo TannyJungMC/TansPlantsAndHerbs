@@ -39,11 +39,11 @@
       }
     ],
     "customProperties": [],
-    "name": "Garden Soil",
+    "name": "Garden Soil (Not Available Yet)",
     "specialInformation": {
       "fixedValue": [
         "§8--------------------------------------------------",
-        "§8A soil block for Tan's Plants and Herbs mod. Use this to place plants for decoration.",
+        "§8A soil block for Tan's Plants and Herbs mod. Use this to place plants from this mod for farming and decoration purpose.",
         "§8--------------------------------------------------"
       ]
     },
@@ -70,7 +70,7 @@
     "useLootTableForDrops": false,
     "requiresCorrectTool": false,
     "enchantPowerBonus": 0.0,
-    "plantsGrowOn": false,
+    "plantsGrowOn": true,
     "canRedstoneConnect": false,
     "lightOpacity": 15,
     "tickRate": 0,

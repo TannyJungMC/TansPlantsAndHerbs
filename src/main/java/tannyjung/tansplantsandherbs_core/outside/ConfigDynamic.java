@@ -6,29 +6,32 @@ import tannyjung.tansplantsandherbs_core.Core;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ConfigDynamic {
 
-    public static void reorganize (String name, String scan_at) {
+    public static void reorganize (String name, String scan_at, String options) {
 
-        File file = new File(Core.path_config + "/config_" + name + ".txt");
-        File file_temp = new File(Core.path_config + "/config_" + name + "_temp.txt");
+        LinkedHashMap<String, String> default_values = new LinkedHashMap<>();
+        LinkedHashMap<String, String> description = new LinkedHashMap<>();
 
-        // Create Temp
+        // Get Default and Description
         {
 
-            if (file.exists() == true) {
+            String[] split = null;
+            String option_name = "";
 
-                try {
+            for (String scan : options.split("\n")) {
 
-                    Files.copy(file.toPath(), file_temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                if (scan.startsWith("# ") == false) {
 
-                } catch (Exception exception) {
+                    split = scan.split(" = ");
+                    default_values.put(split[0], split[1]);
+                    option_name = split[0];
 
-                    OutsideUtils.exception(new Exception(), exception, "");
+                } else {
+
+                    description.put(option_name, scan.substring("# ".length()));
 
                 }
 
@@ -36,312 +39,247 @@ public class ConfigDynamic {
 
         }
 
-        create(name, scan_at);
-
-        // Delete Temp
+        // Generate
         {
 
-            if (file_temp.exists() == true) {
+            StringBuilder write = new StringBuilder();
+            write.append("Important Notes");
+            write.append("\n");
+            write.append("\n");
+            write.append("- To apply this config and repair missing values, run this command [ /").append(Core.mod_id_big).append(" restart ] or restart the world.");
+            write.append("\n");
+            write.append("- Very important! You must lock the settings you have edited to prevent them from resetting. Do it by change [] at font of ID to [LOCK]. This is for keeping config values you haven't changed to always up to date.");
+            write.append("\n");
+            write.append("\n");
+            write.append("Config Description");
+            write.append("\n");
+            write.append("\n");
 
-                try {
-
-                    Files.delete(file_temp.toPath());
-
-                } catch (Exception exception) {
-
-                    OutsideUtils.exception(new Exception(), exception, "");
-
-                }
-
-            }
-
-        }
-
-    }
-
-    private static void create (String name, String scan_at) {
-
-        File file_organized = new File(Core.path_config + "/#dev/#temporary/" + scan_at);
-
-        if (file_organized.exists() == true && file_organized.isDirectory() == true) {
-
-            File file = new File(Core.path_config + "/config_" + name + ".txt");
-
-            // Re-Create The File
+            // Write Description
             {
 
-                StringBuilder write = new StringBuilder();
+                for (Map.Entry<String, String> entry : description.entrySet()) {
 
-                {
-
-                    write.append("""
-                            Important Notes
-                            
-                            - No need to run restart command to apply this config, as it's automatic applying.
-                            - To repair missing values, run this command [ /TANSHUGETREES restart ] or restart the world.
-                            - Very important! You must lock the trees you have edited to prevent them from resetting. Do it by change "[]" at font of ID to "[LOCK]". This is for keeping config values you haven't changed to always up to date.
-                            
-                            Config Description
-                            
-                            - world_gen : Enable world generation for that tree by set to [ true ], or disable by [ false ].
-                            - biome / ground_block : Change the biome and ground block that tree can place on. Supported both IDs and tags. These config supported multiple conditions, use [ / ] for [ OR ], use [ , ] for [ AND ]. For example, a tree that spawn in 2 main biomes. One is biomes tagged as forest, but not birch forest. Other one is taiga forest. It will be [ #minecraft:is_forest, !minecraft:birch_forest / minecraft:taiga ]. Important note for ground block, it not works with trees that one side farther than 48 blocks.
-                            - rarity : Change how common of that tree. Lower means rarer. Only supported number between 0 and 100 (can be non-integer number).
-                            - min_distance : Change distance of trees in the same species. This is distance in block with Y position ignored. Only supported number between 0 to 500.
-                            - group_size : Use other placement system to spawn that tree in group style. To use this, set min and max count of trees per group that upper than 1. For example, min 1 and max 5, will be [ 1 <> 5 ]. Be careful to use this, as it can affect scan time. This config also change the way other config options work. Rarity will be how common of the group. Min distance is between trees, not between groups. Waterside config will only detect once at spawn location of that group.
-                            - waterside_chance : Force that tree to only spawn near water biomes. If this chance is not full, it will spawn like normal for that chance left. For example, set this to 0.75, it will spawn like normal tree for 0.25 chance. When use this option with group spawning, it will only detect once at spawn location of that group.
-                            - dead_tree_chance : Set how common of that tree to spawn as dead tree. Note that this config only affect trees in their viable ecosystems, you may found some trees that become dead trees without this config, because that's by tree type inside tree settings. Land trees can't survive in water, etc.
-                            - dead_tree_level : Randomly select style of dead trees, make that tree looks more variants when it's dead tree. This config will be random select a number from the list, or use "auto" and "auto_pine" for automatic selection. Only supported numbers 1XX/2XX/3XX with sub numbers 10/20/30/40/50/60/70/80/90 and 11/21/31/41/51. Set to 1XX for normal dead trees, 2XX and 3XX for coarse woody debris style but with and without roots. For sub numbers 10/20/30/40/50 is no leaves, no sprig, no twig, no limb, and no branch. With random decay 10-50%. For 11/21/31/41/51 is the same as previous but no random decay. For 60/70 is only trunk with random length 50-100% and hollowed. For 80/90 is only trunk with random length 0-50% and hollowed.
-                            - start_height_offset : Randomly spawn that tree with custom height from the ground. To use this, set min and max height. For example, lowest -10 highest +10, will be [ -10 <> 10 ].
-                            - rotation : Set rotation of that tree. For random direction, use [ random ]. For specific direction, use [ north ], [ west ], [ east ], or [ south ]. Only supported one value per tree.
-                            - mirrored : Set mirror effect for that tree. For random value, use [ random ]. For specific value, use [ true ] or [ false ]. Only supported one value per tree.
-                            
-                            """);
-
-                }
-
-                FileManager.writeTXT(file.toPath().toString(), write.toString(), false);
-
-            }
-
-            // Scan Packs
-            {
-
-                try {
-
-                    Files.walk(file_organized.toPath()).forEach(source -> {
-
-                        if (source.toFile().isDirectory() == false) {
-
-                            write(name, scan_at, source);
-
-                        }
-
-                    });
-
-                } catch (Exception exception) {
-
-                    OutsideUtils.exception(new Exception(), exception, "");
+                    write.append("- ").append(entry.getKey()).append(" : ").append(description.get(entry.getKey()));
+                    write.append("\n");
 
                 }
 
             }
 
-            FileManager.writeTXT(file.toPath().toString(), "----------------------------------------------------------------------------------------------------", true);
+            write.append("\n");
+            File file_organized = new File(Core.path_config + "/dev/temporary/" + scan_at);
 
-        }
+            if (file_organized.exists() == false) {
 
-    }
+                write.append("----------------------------------------------------------------------------------------------------");
+                write.append("\n");
+                write.append("\n");
+                write.append("Nothing to show here. Try create a world and join in first.");
+                write.append("\n");
+                write.append("\n");
 
-    private static void write (String name, String scan_at, Path source) {
+            } else {
 
-        String path = Path.of(Core.path_config + "/#dev/#temporary/" + scan_at).relativize(source).toString().replace("\\", " > ").replace(".txt", "");;
-        boolean incompatible = false;
-
-        if (path.contains("[INCOMPATIBLE] ") == true) {
-
-            path = path.replace("[INCOMPATIBLE] ", "");
-            incompatible = true;
-
-        }
-
-        boolean replace = true;
-
-        // Test is it locked
-        {
-
-            for (String read_all : FileManager.readTXT(Core.path_config + "/config_" + name + "_temp.txt")) {
-
+                // Scan Packs
                 {
 
-                    if (read_all.startsWith("[") == true && read_all.endsWith("] " + path) == true) {
+                    Map<String, Map<String, String>> temp = read(default_values, name);
 
-                        if (read_all.replace("[INCOMPATIBLE] ", "").startsWith("[LOCK] ") == true) {
+                    try {
 
-                            replace = false;
+                        Files.walk(file_organized.toPath()).forEach(source -> {
 
-                        }
+                            if (source.toFile().isDirectory() == false) {
 
-                        break;
+                                write.append(write(default_values, temp, scan_at, source));
+
+                            }
+
+                        });
+
+                    } catch (Exception exception) {
+
+                        OutsideUtils.exception(new Exception(), exception, "");
 
                     }
 
                 }
 
             }
+
+            write.append("----------------------------------------------------------------------------------------------------");
+            FileManager.writeTXT(Core.path_config + "/config_" + name + ".txt", write.toString(), false);
+
+        }
+
+        // Apply
+        {
+
+            Map<String, Map<String, String>> data = read(default_values, name);
+
+            for (Map.Entry<String, Map<String, String>> entry : data.entrySet()) {
+
+                CacheManager.DataText.setMap("config_" + name, entry.getKey(), entry.getValue());
+
+            }
+
+        }
+
+    }
+
+    private static String write (LinkedHashMap<String, String> default_values, Map<String, Map<String, String>> temp, String scan_at, Path source) {
+
+        String id = Path.of(Core.path_config + "/dev/temporary/" + scan_at).relativize(source).toString().replace("\\", "/").replace(".txt", "");;
+        boolean incompatible = false;
+
+        if (id.contains("[INCOMPATIBLE] ") == true) {
+
+            id = id.replace("[INCOMPATIBLE] ", "");
+            incompatible = true;
+
+        }
+
+        boolean lock = false;
+
+        if (temp.containsKey(id) == true) {
+
+            lock = temp.get(id).get("lock").equals("true") == true;
 
         }
 
         StringBuilder write = new StringBuilder();
 
-        // Write
+        // Name
         {
 
-            // Name
-            {
+            write.append("----------------------------------------------------------------------------------------------------");
+            write.append("\n");
 
-                write.append("----------------------------------------------------------------------------------------------------");
-                write.append("\n");
+            if (incompatible == true) {
 
-                if (incompatible == true) {
-
-                    write.append("[INCOMPATIBLE] ");
-
-                }
-
-                if (replace == false) {
-
-                    write.append("[LOCK] ");
-
-                } else {
-
-                    write.append("[] ");
-
-                }
-
-                write.append(path);
-                write.append("\n");
-                write.append("----------------------------------------------------------------------------------------------------");
-                write.append("\n");
+                write.append("[INCOMPATIBLE] ");
 
             }
 
-            String option = "";
+            if (lock == true) {
 
-            for (String read_all : FileManager.readTXT(source.toString())) {
+                write.append("[LOCK] ");
 
-                {
+            } else {
 
-                    if (read_all.isEmpty() == false) {
-
-                        if (replace == true) {
-
-                            write.append(read_all);
-
-                        } else {
-
-                            // Get Old Value
-                            {
-
-                                File file_temp = new File(Core.path_config + "/config_" + name + "_temp.txt");
-                                boolean thisID = false;
-                                option = read_all.substring(0, read_all.indexOf(" = "));
-
-                                for (String read_all_temp : FileManager.readTXT(file_temp.getPath())) {
-
-                                    {
-
-                                        if (thisID == false) {
-
-                                            if (read_all_temp.startsWith("[") == true) {
-
-                                                if (read_all_temp.endsWith(path) == true) {
-
-                                                    thisID = true;
-
-                                                }
-
-                                            }
-
-                                        } else {
-
-                                            if (read_all_temp.startsWith(option) == true) {
-
-                                                write.append(read_all_temp);
-                                                break;
-
-                                            } else if (read_all_temp.startsWith("[") == true) {
-
-                                                // If not found this option in temp file
-                                                write.append(read_all_temp);
-                                                break;
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-
-                        }
-
-                        write.append("\n");
-
-                    }
-
-                }
+                write.append("[] ");
 
             }
+
+            write.append(id.replace("/", " > "));
+            write.append("\n");
+            write.append("----------------------------------------------------------------------------------------------------");
+            write.append("\n");
 
         }
 
-        FileManager.writeTXT(Core.path_config + "/config_" + name + ".txt", write.toString(), true);
+        Map<String, String> options = OutsideUtils.convertFileToDataMap(source.toString());
+        String value = "";
 
-    }
+        for (Map.Entry<String, String> entry : default_values.entrySet()) {
 
-    public static Map<String, Map<String, Map<String, String>>> getData (String name, String by_category) {
+            if (options.containsKey(entry.getKey()) == true) {
 
-        if (CacheManager.SaveMap.existTextTextText(by_category) == false) {
+                value = options.get(entry.getKey());
 
-            Map<String, Map<String, Map<String, String>>> data = new HashMap<>();
-            Map<String, String> settings = new HashMap<>();
-            String[] value = new String[0];
-            String id = "";
-            boolean skip = true;
-            boolean after_this = false;
-            String category = "";
+                if (value.isEmpty() == true) {
 
-            if (CacheManager.SaveList.existText("config_" + name) == false) {
+                    value = "none";
 
-                CacheManager.SaveList.setText("config_" + name, FileManager.readTXT(Core.path_config + "/config_" + name + ".txt"));
+                }
+
+                if (temp.containsKey(id) == true && temp.get(id).containsKey(entry.getKey()) == true) {
+
+                    if (lock == true) {
+
+                        write.append(entry.getKey()).append(" = ").append(temp.get(id).get(entry.getKey()));
+
+                    } else {
+
+                        write.append(entry.getKey()).append(" = ").append(value);
+
+                    }
+
+                } else {
+
+                    write.append(entry.getKey()).append(" = ").append(value);
+
+                }
+
+            } else {
+
+                write.append(entry.getKey()).append(" = ").append(entry.getValue());
 
             }
 
-            for (String read_all : CacheManager.SaveList.getText("config_" + name)) {
+            write.append("\n");
 
-                {
+        }
 
-                    if (read_all.isEmpty() == false) {
+        return write.toString();
 
-                        if (read_all.startsWith("[") == true) {
+    }
 
-                            if (read_all.startsWith("[INCOMPATIBLE]") == true) {
+    private static Map<String, Map<String, String>> read (Map<String, String> default_values, String name) {
+
+        Map<String, Map<String, String>> data = new HashMap<>();
+        String[] split = null;
+        String id = "";
+        boolean skip = true;
+
+        for (String scan : FileManager.readTXT(Core.path_config + "/config_" + name + ".txt")) {
+
+            {
+
+                if (scan.isEmpty() == false) {
+
+                    if (scan.startsWith("[") == true) {
+
+                        // First Data
+                        {
+
+                            if (scan.startsWith("[INCOMPATIBLE] ") == true) {
 
                                 skip = true;
+                                scan = scan.substring("[INCOMPATIBLE] ".length());
 
                             } else {
 
                                 skip = false;
-                                id = read_all.substring(read_all.indexOf("]") + 2);
 
                             }
 
+                            id = scan.substring(scan.indexOf("]") + 2).replace(" > ", "/");
+                            data.computeIfAbsent(id, create -> new HashMap<>()).put("lock", String.valueOf(scan.startsWith("[LOCK] ") == true));
+
+                        }
+
+                    } else if (scan.contains(" = ") == true) {
+
+                        split = scan.split(" = ");
+
+                        if (skip == false) {
+
+                            if (split[1].equals("none") == true) {
+
+                                split[1] = "";
+
+                            }
+
+                            data.computeIfAbsent(id, create -> new HashMap<>()).put(split[0], split[1]);
+
                         } else {
 
-                            if (skip == false) {
+                            if (default_values.containsKey(split[0]) == true) {
 
-                                if (read_all.contains(" = ") == true) {
-
-                                    after_this = true;
-                                    value = read_all.split(" = ");
-
-                                    if (by_category.equals(value[0]) == true) {
-
-                                        category = value[1];
-
-                                    }
-
-                                    settings.put(value[0], value[1]);
-
-                                } else if (after_this == true) {
-
-                                    data.computeIfAbsent(category, test -> new HashMap<>()).put(id, new HashMap<>(settings));
-                                    after_this = false;
-                                    settings.clear();
-
-                                }
+                                split[1] = default_values.get(split[0]);
+                                data.computeIfAbsent(id, create -> new HashMap<>()).put(split[0], split[1]);
 
                             }
 
@@ -353,11 +291,15 @@ public class ConfigDynamic {
 
             }
 
-            CacheManager.SaveMap.setTextTextText(by_category, data);
-
         }
 
-        return CacheManager.SaveMap.getTextTextText(by_category);
+        return data;
+
+    }
+
+    public static Map<String, Map<String, String>> getData (String name) {
+
+        return CacheManager.DataText.getMap("config_" + name);
 
     }
 

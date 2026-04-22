@@ -7,12 +7,12 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.MessageArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import tannyjung.tansplantsandherbs_core.Core;
 import tannyjung.tansplantsandherbs_core.outside.OutsideUtils;
 import tannyjung.tansplantsandherbs_core.outside.TannyPackManager;
+import tannyjung.tansplantsandherbs_core.outside.TXTFunction;
 
 import java.util.function.Consumer;
 
@@ -23,7 +23,6 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 */
 import net.minecraftforge.event.RegisterCommandsEvent;
-import tannyjung.tansplantsandherbs_core.outside.TXTFunction;
 
 public class CommandMaker {
 
@@ -210,10 +209,9 @@ public class CommandMaker {
                     } catch (Exception exception) {
 
                         OutsideUtils.exception(new Exception(), exception, "");
+                        return "";
 
                     }
-
-                    return "";
 
                 }
 
@@ -227,13 +225,11 @@ public class CommandMaker {
 
     public static boolean testPermission (CommandContext<CommandSourceStack> data, int permission) {
 
-        Entity entity = data.getSource().getEntity();
-
-        if (entity instanceof Player player) {
+        if (data.getSource().getEntity() instanceof Player player) {
 
             if (player.hasPermissions(permission) == false) {
 
-                GameUtils.Misc.sendChatMessage(data.getSource().getLevel(), "@s", "You must have server permission minimum level " + permission + " to use this command. If you're in singleplayer, try enable cheat mode or temporary open LAN. If you're in multiplayer, try give yourself OP or contact server admin. / red");
+                GameUtils.Misc.sendChatMessagePrivate(player, "You must have server permission minimum level " + permission + " to use this command. If you're in singleplayer, try enable cheat mode or temporary open LAN. If you're in multiplayer, try give yourself OP or contact server admin. / red");
                 return false;
 
             }
@@ -264,7 +260,7 @@ public class CommandMaker {
                     LevelAccessor level_accessor = data.getSource().getLevel();
                     ServerLevel level_server = data.getSource().getLevel();
                     BlockPos pos = new BlockPos((int) Math.floor(data.getSource().getPosition().x()), (int) Math.floor(data.getSource().getPosition().y()), (int) Math.floor(data.getSource().getPosition().z()));
-                    String variable_text = CommandMaker.Argument.getText(data);
+                    String variable_text = Argument.getText(data);
                     TXTFunction.run(level_accessor, level_server, pos, variable_text, true);
 
                 }
@@ -274,7 +270,7 @@ public class CommandMaker {
             private static void restart (CommandContext<CommandSourceStack> data) {
 
                 ServerLevel level_server = data.getSource().getLevel();
-                Core.Restart.run(level_server, "config / world", true);
+                Core.restart(level_server, true, true);
 
             }
 

@@ -1,19 +1,21 @@
 package tannyjung.tansplantsandherbs_core;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import org.apache.logging.log4j.Logger;
 import tannyjung.tansplantsandherbs_core.game.GameUtils;
+import tannyjung.tansplantsandherbs_core.game.world_gen.FeatureAreaDirt;
+import tannyjung.tansplantsandherbs_core.game.world_gen.FeatureAreaGrass;
 import tannyjung.tansplantsandherbs_core.game.world_gen.WorldGenStepBeforePlants;
 import tannyjung.tansplantsandherbs_core.game.world_gen.WorldGenStepLast;
-import tannyjung.tansplantsandherbs_core.outside.CacheManager;
-import tannyjung.tansplantsandherbs_core.outside.CustomPackOrganizing;
-import tannyjung.tansplantsandherbs_core.outside.OutsideUtils;
+import tannyjung.tansplantsandherbs_core.outside.*;
 import tannyjung.tansplantsandherbs_handcode.Handcode;
-import tannyjung.tansplantsandherbs_handcode.data.DataMigration;
-import tannyjung.tansplantsandherbs_handcode.data.DataRepair;
+import tannyjung.tansplantsandherbs_handcode.systems.Loops;
 
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
@@ -37,15 +39,14 @@ import net.minecraftforge.registries.DeferredRegister;
 public class Core {
 
     /*
+
+    Use replace-all tool to replace these words, without "___" by the way. Note that you need to enable match cases and match words as well.
+
     (1.20.1)
     ___ForgeData___
     (1.21.1) (1.21.8)
     ___NeoForgeData___
 
-    (1.20.1)
-    ___@Mod.EventBusSubscriber___
-    (1.21.1) (1.21.8)
-    ___@EventBusSubscriber___
     */
     
     public static String mod_name = "";
@@ -62,15 +63,16 @@ public class Core {
     public static String github_pack = "";
     public static String wiki = "";
 
+    public static boolean have_world_data_cleaner = false;
+
     public static Logger logger = null;
     public static String path_game = FMLPaths.GAMEDIR.get().toString();
     public static String path_config = path_game + "/" + mod_id + "_error";
-    public static String path_world = path_game + "/" + mod_id + "_error";
     public static String path_world_core = path_game + "/" + mod_id + "_error";
     public static String path_world_mod = path_game + "/" + mod_id + "_error";
     public static final ExecutorService thread_main = Executors.newFixedThreadPool(1, name -> { Thread thread = new Thread(name); thread.setName(Core.mod_name); return thread; });
 
-    public static boolean in_restarting = false;
+    public static boolean global_locking = false;
 
     public static void start (IEventBus bus) {
 
@@ -80,94 +82,163 @@ public class Core {
         logger = LogManager.getLogger(mod_id);
         path_config = path_game + "/config/" + mod_id;
 
-        Registries.start(bus);
-        DataMigration.run("config");
-        Restart.run(null, "config", true);
+        Registry.start(bus);
+        DataMigration.run(false);
+        restart(null, true, true);
 
     }
 
-    public static class Restart {
+    public static void restart (ServerLevel level_server, boolean message, boolean config) {
 
-        private static final Object lock = new Object();
+        Runnable runnable = () -> {
 
-        public static void run (ServerLevel level_server, String type, boolean detail_info) {
+            // Start Message
+            {
 
-            Runnable runnable = () -> {
+                if (message == true && config == true) {
 
-                if (type.contains("config") == true) {
+                    if (level_server == null) {
 
-                    DataRepair.start();
-                    CustomPackOrganizing.sendErrorMessage(level_server);
+                        logger.info("Restarting the mod...");
 
-                }
+                    } else {
 
-                if (type.contains("world") == true) {
-
-                    GameUtils.Score.create(level_server, mod_id_big);
-
-                }
-
-            };
-
-            if (level_server == null) {
-
-                runnable.run();
-                CacheManager.clear();
-
-            } else {
-
-                thread_main.submit(() -> {
-
-                    Restart.runLock();
-
-                    if (detail_info == true) {
-
-                        GameUtils.Misc.sendChatMessage(level_server, "@a", "Restarting the mod... / gray");
+                        GameUtils.Misc.sendChatMessage(level_server, "Restarting the mod... / gray");
 
                     }
 
-                    DelayedWorks.create(true, 20, () -> {
+                }
 
-                        runnable.run();
+            }
 
-                        if (detail_info == true) {
+            String cache_size = "";
 
-                            GameUtils.Misc.sendChatMessage(level_server, "@a", "Restarted and cleared main caches, about " + CacheManager.clear() + ". / gray");
+            if (config == true) {
 
-                        }
+                cache_size = CacheManager.clear();
+                Handcode.Config.repair();
+                Handcode.Config.apply();
 
-                        Restart.runUnlock();
+                if (Handcode.Config.wip_version == true) {
 
-                    });
+                    Core.tanny_pack_type = "WIP";
+
+                } else {
+
+                    Core.tanny_pack_type = Core.tanny_pack_type_original;
+
+                }
+
+                Handcode.repairData();
+
+            }
+
+            // End Message
+            {
+
+                if (message == true && config == true) {
+
+                    CustomPackOrganizing.Error.sendMessage(level_server);
+
+                    if (level_server == null) {
+
+                        logger.info("Restarted and cleared main caches about {}", cache_size);
+
+                    } else {
+
+                        GameUtils.Misc.sendChatMessage(level_server, "Restarted and cleared main caches about " + cache_size + " / gray");
+
+                    }
+
+                }
+
+            }
+
+        };
+
+        if (level_server == null) {
+
+            runnable.run();
+
+        } else {
+
+            thread_main.submit(() -> {
+
+                GlobalLocking.test();
+                GlobalLocking.lock();
+
+                DelayedWork.create(true, 20, () -> {
+
+                    runnable.run();
+                    GameUtils.Score.create(level_server, mod_id_big);
+
+                    GlobalLocking.unlock();
 
                 });
+
+            });
+
+        }
+
+    }
+
+    public static class Registry {
+
+        public static Map<String, Supplier<Feature<?>>> features = new HashMap<>();
+
+        public static void start (IEventBus bus) {
+
+            features.put("world_gen_before_plants", WorldGenStepBeforePlants::new);
+            features.put("world_gen_last", WorldGenStepLast::new);
+            features.put("area_grass", FeatureAreaGrass::new);
+            features.put("area_dirt", FeatureAreaDirt::new);
+
+            // Feature
+            {
+
+                DeferredRegister<Feature<?>> deferred = DeferredRegister.create(Registries.FEATURE, mod_id);
+
+                for (Map.Entry<String, Supplier<Feature<?>>> entry : features.entrySet()) {
+
+                    deferred.register(entry.getKey(), entry.getValue());
+
+                }
+
+                deferred.register(bus);
+                features.clear();
 
             }
 
         }
 
-        private static void runLock () {
+    }
+    
+    public static class GlobalLocking {
 
-            in_restarting = true;
+        private static final Object lock = new Object();
+
+        public static void lock () {
+
+            global_locking = true;
 
         }
 
-        private static void runUnlock () {
+        public static void unlock () {
 
             synchronized (lock) {
 
-                in_restarting = false;
+                global_locking = false;
                 lock.notifyAll();
 
             }
 
         }
 
-        public static void testLock () {
+        public static void test () {
 
             synchronized (lock) {
 
-                while (in_restarting == true) {
+                while (global_locking == true) {
 
                     try {
 
@@ -176,6 +247,7 @@ public class Core {
                     } catch (Exception exception) {
 
                         OutsideUtils.exception(new Exception(), exception, "");
+                        return;
 
                     }
 
@@ -187,20 +259,20 @@ public class Core {
 
     }
 
-    public static class DelayedWorks {
+    public static class DelayedWork {
 
         private static final Collection<AbstractMap.SimpleEntry<Runnable, Integer>> delayed_works = new ConcurrentLinkedQueue<>();
         private static final ScheduledExecutorService thread_delay = Executors.newScheduledThreadPool(1);
 
         public static void create (boolean async, int tick, Runnable work) {
 
-            if (async == false) {
+            if (async == true) {
 
-                delayed_works.add(new AbstractMap.SimpleEntry<>(work, tick));
+                thread_delay.schedule(work, tick * 50L, TimeUnit.MILLISECONDS);
 
             } else {
 
-                thread_delay.schedule(work, tick * 50L, TimeUnit.MILLISECONDS);
+                delayed_works.add(new AbstractMap.SimpleEntry<>(work, tick));
 
             }
 
@@ -225,14 +297,14 @@ public class Core {
 
     }
 
-    public static class Loops {
+    public static class Loop {
 
         private static int second = 0;
         private static int minute = 0;
 
         public static void loopTick (LevelAccessor level_accessor, ServerLevel level_server) {
 
-            tannyjung.tansplantsandherbs_handcode.systems.Loops.tick(level_accessor, level_server);
+            Loops.tick(level_accessor, level_server);
             second = second + 1;
 
             if (second > 20) {
@@ -246,7 +318,23 @@ public class Core {
 
         private static void loopSecond (LevelAccessor level_accessor, ServerLevel level_server) {
 
-            tannyjung.tansplantsandherbs_handcode.systems.Loops.second(level_accessor, level_server);
+            // Developer Mode
+            {
+
+                if (Handcode.Config.developer_mode == true) {
+
+                    for (Entity entity : GameUtils.Mob.getAtEverywhere(level_server, "", Core.mod_id_big)) {
+
+                        GameUtils.Misc.spawnParticle(level_server, entity.position(), 0, 0, 0, 0, 1, "minecraft:end_rod");
+
+                    }
+
+                }
+
+            }
+
+            TXTFunction.loop(level_server);
+            Loops.second(level_accessor, level_server);
             minute = minute + 1;
 
             if (minute > 60) {
@@ -260,35 +348,81 @@ public class Core {
 
         private static void loopMinute (LevelAccessor level_accessor, ServerLevel level_server) {
 
-            tannyjung.tansplantsandherbs_handcode.systems.Loops.minute(level_accessor, level_server);
+            Loops.minute(level_accessor, level_server);
 
         }
 
     }
 
-    public static class Registries {
+    public static class DataMigration {
 
-        public static Map<String, Supplier<Feature<?>>> features = new HashMap<>();
+        public static void run(boolean is_world) {
 
-        public static void start (IEventBus bus) {
+            if (is_world == false) {
 
-            Handcode.registry();
-            features.put("world_gen_before_plants", WorldGenStepBeforePlants::new);
-            features.put("world_gen_last", WorldGenStepLast::new);
+                String path = Core.path_config + "/dev/version.txt";
+                File test_exist = new File(Core.path_config);
+                String version = "";
 
-            // Feature
-            {
+                // Get Version
+                {
 
-                DeferredRegister<Feature<?>> deferred = DeferredRegister.create(net.minecraft.core.registries.Registries.FEATURE, mod_id);
+                    if (test_exist.exists() == true) {
 
-                for (Map.Entry<String, Supplier<Feature<?>>> entry : features.entrySet()) {
+                        for (String scan : FileManager.readTXT(path)) {
 
-                    deferred.register(entry.getKey(), entry.getValue());
+                            version = scan;
+
+                        }
+
+                    } else {
+
+                        version = "not found";
+
+                    }
 
                 }
 
-                deferred.register(bus);
-                features.clear();
+                if (version.equals("not found") == false) {
+
+                    Handcode.DataMigration.runConfig(version);
+
+                }
+
+                FileManager.writeTXT(path, Core.data_structure_version_mod, false);
+
+            } else {
+
+                String path = Core.path_world_mod + "/version.txt";
+                File test_exist = new File(Core.path_world_mod);
+                String version = "";
+
+                // Get Version
+                {
+
+                    if (test_exist.exists() == true) {
+
+                        for (String scan : FileManager.readTXT(path)) {
+
+                            version = scan;
+
+                        }
+
+                    } else {
+
+                        version = "not found";
+
+                    }
+
+                }
+
+                if (version.equals("not found") == false) {
+
+                    Handcode.DataMigration.runWorld(version);
+
+                }
+
+                FileManager.writeTXT(path, Core.data_structure_version_mod, false);
 
             }
 

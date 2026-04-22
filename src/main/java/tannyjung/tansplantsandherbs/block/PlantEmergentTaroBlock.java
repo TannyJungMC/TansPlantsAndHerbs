@@ -24,21 +24,33 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+
+import java.util.List;
 
 public class PlantEmergentTaroBlock extends Block implements SimpleWaterloggedBlock {
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
 	public PlantEmergentTaroBlock() {
-		super(BlockBehaviour.Properties.of().sound(SoundType.LILY_PAD).strength(2.5f, 0f).noCollission().noOcclusion().isRedstoneConductor((bs, br, bp) -> false).offsetType(Block.OffsetType.XYZ));
+		super(BlockBehaviour.Properties.of().sound(SoundType.LILY_PAD).strength(1f, 0f).noCollission().noOcclusion().isRedstoneConductor((bs, br, bp) -> false).replaceable().offsetType(Block.OffsetType.XYZ).ignitedByLava());
 		this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
+	}
+
+	@Override
+	public void appendHoverText(ItemStack itemstack, BlockGetter level, List<Component> list, TooltipFlag flag) {
+		super.appendHoverText(itemstack, level, list, flag);
+		list.add(Component.translatable("block.tansplantsandherbs.plant_emergent_taro.description_0"));
+		list.add(Component.translatable("block.tansplantsandherbs.plant_emergent_taro.description_1"));
+		list.add(Component.translatable("block.tansplantsandherbs.plant_emergent_taro.description_2"));
 	}
 
 	@Override
@@ -85,6 +97,16 @@ public class PlantEmergentTaroBlock extends Block implements SimpleWaterloggedBl
 			world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
 		return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+	}
+
+	@Override
+	public int getFlammability(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
+		return 1;
+	}
+
+	@Override
+	public int getFireSpreadSpeed(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
+		return 100;
 	}
 
 	@Override

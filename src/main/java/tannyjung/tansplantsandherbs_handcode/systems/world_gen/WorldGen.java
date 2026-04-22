@@ -7,15 +7,15 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 
 public class WorldGen {
 
-    public static void stepBeforePlants (LevelAccessor level_accessor, ServerLevel level_server, ChunkGenerator chunk_generator, String dimension, int chunkX, int chunkZ) {
+    public static void stepBeforePlants (LevelAccessor level_accessor, ServerLevel level_server, ChunkGenerator chunk_generator, String dimension, ChunkPos chunk_pos) {
 
 
 
     }
 
-    public static void stepLast (LevelAccessor level_accessor, ServerLevel level_server, ChunkGenerator chunk_generator, String dimension, int chunkX, int chunkZ) {
+    public static void stepLast (LevelAccessor level_accessor, ServerLevel level_server, ChunkGenerator chunk_generator, String dimension, ChunkPos chunk_pos) {
 
-        PlantPlacer.start(level_accessor, level_server, new ChunkPos(chunkX, chunkZ));
+        PlantPlacer.start(level_accessor, level_server, chunk_pos);
 
     }
 

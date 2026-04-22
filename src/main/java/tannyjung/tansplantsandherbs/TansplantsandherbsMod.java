@@ -1,6 +1,7 @@
 package tannyjung.tansplantsandherbs;
 
 import tannyjung.tansplantsandherbs.init.TansplantsandherbsModTabs;
+import tannyjung.tansplantsandherbs.init.TansplantsandherbsModMenus;
 import tannyjung.tansplantsandherbs.init.TansplantsandherbsModItems;
 import tannyjung.tansplantsandherbs.init.TansplantsandherbsModBlocks;
 
@@ -43,6 +44,7 @@ public class TansplantsandherbsMod {
 		TansplantsandherbsModBlocks.REGISTRY.register(bus);
 		TansplantsandherbsModItems.REGISTRY.register(bus);
 		TansplantsandherbsModTabs.REGISTRY.register(bus);
+		TansplantsandherbsModMenus.REGISTRY.register(bus);
 		// Start of user code block mod init
 		tannyjung.tansplantsandherbs_core.Core.start(bus);
 		// End of user code block mod init

@@ -22,7 +22,7 @@ public class OverlayMaker {
     private static final Map<String, String> status = new HashMap<>();
     private static int online_image_count = 0;
 
-    public static void createText (GuiGraphics graphic, int screen_width, int screen_height, String pos_style, int posX, int posZ, double scale, int color, boolean shadow, String text) {
+    public static void createText (GuiGraphics graphic, int screen_width, int screen_height, String pos_style, int posX, int posZ, double scale, boolean shadow, String text) {
 
         int[] pos = convertPos(screen_width, screen_height, posX, posZ, pos_style, scale);
         posX = pos[0];
@@ -32,17 +32,17 @@ public class OverlayMaker {
         (1.20.1) (1.21.1)
         graphic.pose().pushPose();
         graphic.pose().scale((float) scale, (float) scale, 1.0f);
-        graphic.drawString(Minecraft.getInstance().font, text, posX, posZ, color, shadow);
+        graphic.drawString(Minecraft.getInstance().font, text, posX, posZ, 0, shadow);
         graphic.pose().popPose();
         (1.21.8)
         graphic.pose().pushMatrix();
         graphic.pose().scale((float) scale, (float) scale);
-        graphic.drawString(Minecraft.getInstance().font, text, posX, posZ, color, shadow);
+        graphic.drawString(Minecraft.getInstance().font, text, posX, posZ, 0, shadow);
         graphic.pose().popMatrix();
         */
         graphic.pose().pushPose();
         graphic.pose().scale((float) scale, (float) scale, 1.0f);
-        graphic.drawString(Minecraft.getInstance().font, text, posX, posZ, color, shadow);
+        graphic.drawString(Minecraft.getInstance().font, text, posX, posZ, 0, shadow);
         graphic.pose().popPose();
 
     }
@@ -121,12 +121,12 @@ public class OverlayMaker {
                                                     b = (argb) & 0xFF;
                                                     abgr = (a << 24) | (b << 16) | (g << 8) | r;
 
-                                        /*
-                                        (1.20.1) (1.21.1)
-                                        native_image.setPixelRGBA(scanX, scanY, abgr);
-                                        (1.21.8)
-                                        native_image.setPixelABGR(scanX, scanY, abgr);
-                                        */
+                                                    /*
+                                                    (1.20.1) (1.21.1)
+                                                    native_image.setPixelRGBA(scanX, scanY, abgr);
+                                                    (1.21.8)
+                                                    native_image.setPixelABGR(scanX, scanY, abgr);
+                                                    */
                                                     native_image.setPixelRGBA(scanX, scanY, abgr);
 
                                                 }
@@ -135,20 +135,20 @@ public class OverlayMaker {
 
                                         }
 
-                                    /*
-                                    (1.20.1) (1.21.1)
-                                    Minecraft.getInstance().getTextureManager().register(location, new DynamicTexture(native_image));
-                                    (1.21.8)
-                                    Minecraft.getInstance().getTextureManager().register(location, new DynamicTexture(() -> "test", native_image));
-                                    */
+                                        /*
+                                        (1.20.1) (1.21.1)
+                                        Minecraft.getInstance().getTextureManager().register(location, new DynamicTexture(native_image));
+                                        (1.21.8)
+                                        Minecraft.getInstance().getTextureManager().register(location, new DynamicTexture(() -> "test", native_image));
+                                        */
                                         Minecraft.getInstance().getTextureManager().register(ResourceLocation.parse(name_final), new DynamicTexture(native_image));
 
                                         status.put(name_final, "available");
 
                                     } catch (Exception exception) {
 
-                                        status.put(name_final, "fail");
                                         OutsideUtils.exception(new Exception(), exception, "");
+                                        status.put(name_final, "fail");
 
                                     }
 

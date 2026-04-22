@@ -1,20 +1,4 @@
 {
   "type": "minecraft:block",
-  "random_sequence": "tansplantsandherbs:blocks/plant_free_floating_water_hyacinth",
-  "pools": [
-    {
-      "rolls": 1.0,
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "tansplantsandherbs:plant_free_floating_water_hyacinth"
-        }
-      ]
-    }
-  ]
+  "random_sequence": "tansplantsandherbs:blocks/plant_free_floating_water_hyacinth"
 }

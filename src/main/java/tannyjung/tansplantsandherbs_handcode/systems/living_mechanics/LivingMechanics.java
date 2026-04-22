@@ -9,8 +9,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.phys.Vec3;
 import tannyjung.tansplantsandherbs_core.game.GameUtils;
 import tannyjung.tansplantsandherbs_core.outside.ConfigDynamic;
 
@@ -53,11 +51,11 @@ public class LivingMechanics {
 
             if (level_server.isPositionEntityTicking(pos) == true) {
 
-                Map<String, Map<String, String>> data = ConfigDynamic.getData("settings", "enable_living_mechanics").get("true");
-                Object[] surrounding_area_data = PlantBlock.getSurroundingAreaData(level_accessor, level_server, start_posX, start_posZ);
-                Map<String, Integer> height = (Map<String, Integer>) surrounding_area_data[0];
-                List<BlockPos> water_locations = (List<BlockPos>) surrounding_area_data[1];
-                Map<BlockPos, Holder<Biome>> biomes = (Map<BlockPos, Holder<Biome>>) surrounding_area_data[2];
+                Map<String, Map<String, String>> data = ConfigDynamic.getData("settings");
+                Object[] surrounding_area_data = PlantBlock.getSurroundingAreaData(level_accessor, start_posX, start_posZ);
+                Map<BlockPos, Holder<Biome>> biomes = (Map<BlockPos, Holder<Biome>>) surrounding_area_data[0];
+                Map<String, Integer> height = (Map<String, Integer>) surrounding_area_data[1];
+                Set<BlockPos> water_locations = (Set<BlockPos>) surrounding_area_data[2];
 
                 BlockPos pos_move = null;
                 int posX = 0;
@@ -68,7 +66,7 @@ public class LivingMechanics {
                 int originalY = 0;
                 BlockState ceil_block = null;
 
-                for (int loop = 16; loop > 0; loop--) {
+                for (int loop = 4; loop > 0; loop--) {
 
                     posX = start_posX + Mth.nextInt(RandomSource.create(), 0, 16);
                     posZ = start_posZ + Mth.nextInt(RandomSource.create(), 0, 16);
@@ -78,7 +76,7 @@ public class LivingMechanics {
                         pos = new BlockPos(posX, height.get(posX + "/" + posZ) + scanY, posZ);
                         id = GameUtils.Tile.toText(level_accessor.getBlockState(pos))[0].replace(":", "-");
 
-                        if (level_accessor.getBlockState(pos.above()).getCollisionShape(level_accessor, pos.above()).isEmpty() == false) {
+                        if (level_accessor.getBlockState(pos.above()).canBeReplaced() == false) {
 
                             ceil_block = level_accessor.getBlockState(pos.above());
 
@@ -86,62 +84,82 @@ public class LivingMechanics {
 
                         if (data.containsKey(id) == true) {
 
-                            // Spread
-                            {
+                            if (data.get(id).get("enable_living_mechanics").equals("true") == true) {
 
-                                for (int count = Integer.parseInt(data.get(id).get("spread_count")); count > 0; count--) {
+                                // Spread
+                                {
 
-                                    if (Math.random() < Double.parseDouble(data.get(id).get("spread_chance"))) {
+                                    for (int count = Integer.parseInt(data.get(id).get("spread_count")); count > 0; count--) {
 
-                                        // Move Pos
-                                        {
+                                        if (Math.random() < Double.parseDouble(data.get(id).get("spread_chance"))) {
 
-                                            pos_move = pos.offset(Mth.nextInt(RandomSource.create(), -2, 2), 0, Mth.nextInt(RandomSource.create(), -2, 2));
-
-                                            // Up-Down
+                                            // Move Pos
                                             {
 
-                                                if (data.get(id).get("type").equals("free_floating") == false) {
+                                                pos_move = pos.offset(Mth.nextInt(RandomSource.create(), -2, 2), 0, Mth.nextInt(RandomSource.create(), -2, 2));
 
-                                                    while (level_accessor.getBlockState(pos_move.below()).getCollisionShape(level_accessor, pos_move.below()).isEmpty() == true) {
+                                                // Up-Down
+                                                {
 
-                                                        pos_move = pos_move.below();
+                                                    if (data.get(id).get("type").equals("free_floating") == false) {
 
-                                                    }
+                                                        for (int scan = 5; scan > 0; scan--) {
 
-                                                    while (level_accessor.getBlockState(pos_move).getCollisionShape(level_accessor, pos_move).isEmpty() == false) {
+                                                            if (level_accessor.getBlockState(pos_move.below()).canBeReplaced() == true) {
 
-                                                        pos_move = pos_move.above();
+                                                                pos_move = pos_move.below();
 
-                                                    }
+                                                            } else {
 
-                                                    if (Math.abs(pos.getY() - pos_move.getY()) > 3) {
+                                                                break;
 
-                                                        continue;
+                                                            }
+
+                                                        }
+
+                                                        for (int scan = 5; scan > 0; scan--) {
+
+                                                            if (level_accessor.getBlockState(pos_move).canBeReplaced() == false) {
+
+                                                                pos_move = pos_move.above();
+
+                                                            } else {
+
+                                                                break;
+
+                                                            }
+
+                                                        }
+
+                                                        if (Math.abs(pos.getY() - pos_move.getY()) > 3) {
+
+                                                            continue;
+
+                                                        }
 
                                                     }
 
                                                 }
 
+                                                originalY = height.get(pos_move.getX() + "/" + pos_move.getZ());
+
                                             }
 
-                                            originalY = height.get(pos_move.getX() + "/" + pos_move.getZ());
+                                            if (level_server.isPositionEntityTicking(pos_move) == true) {
 
-                                        }
+                                                // Place
+                                                {
 
-                                        if (level_server.isPositionEntityTicking(pos_move) == true) {
+                                                    type = data.get(id).get("type");
+                                                    type_area = PlantBlock.getAreaType(level_accessor, pos_move, originalY, water_locations);
 
-                                            // Place
-                                            {
+                                                    if (type.isEmpty() == false && type_area.contains("|" + type + "|") == true) {
 
-                                                type = data.get(id).get("type");
-                                                type_area = PlantBlock.getAreaType(level_accessor, pos_move, originalY, water_locations.isEmpty() == false, biomes.isEmpty() == false);
+                                                        if (PlantBlock.test(level_accessor, data, height, water_locations, biomes, pos_move, ceil_block, id, true).isEmpty() == true) {
 
-                                                if (type.isEmpty() == false && type_area.contains("|" + type + "|") == true) {
+                                                            PlantBlock.place(level_accessor, level_server, pos_move, data.get(id), id, false);
 
-                                                    if (PlantBlock.test(level_accessor, data, height, water_locations, biomes, pos_move, ceil_block, id, true).isEmpty() == true) {
-
-                                                        PlantBlock.place(level_accessor, level_server, pos_move, data.get(id), id, false);
+                                                        }
 
                                                     }
 
@@ -155,14 +173,14 @@ public class LivingMechanics {
 
                                 }
 
-                            }
+                                // Dead
+                                {
 
-                            // Dead
-                            {
+                                    if (Math.random() < Double.parseDouble(data.get(id).get("dead_chance"))) {
 
-                                if (Math.random() < Double.parseDouble(data.get(id).get("dead_chance"))) {
+                                        GameUtils.Tile.remove(level_accessor, level_server, pos, false);
 
-                                    GameUtils.Tile.remove(level_accessor, level_server, pos, false);
+                                    }
 
                                 }
 

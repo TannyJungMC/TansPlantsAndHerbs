@@ -2,196 +2,125 @@ package tannyjung.tansplantsandherbs_core.outside;
 
 import tannyjung.tansplantsandherbs_core.Core;
 
-import java.nio.ByteBuffer;
 import java.util.*;
 
 public class CacheManager {
 
-    private static final Object lock = new Object();
-    private static final Map<String, Map<String, String>> cache_map_text = new HashMap<>();
-    private static final Map<String, Map<String, List<String>>> cache_map_text_list = new HashMap<>();
-    private static final Map<String, Map<String, Map<String, Map<String, String>>>> cache_map_text_text_text = new HashMap<>();
-    private static final Map<String, Map<String, Boolean>> cache_map_logic = new HashMap<>();
-    private static final Map<String, Map<String, short[]>> cache_map_number_short_list = new HashMap<>();
-    private static final Map<String, Map<String, int[]>> cache_map_number_int_list = new HashMap<>();
-    private static final Map<String, List<String>> cache_list_text = new HashMap<>();
-
     public static String clear () {
 
-        String convert = "";
         int size = 0;
-
-        synchronized (lock) {
-
-            {
-
-                size = size + SizeCalculation.getTextTextText(cache_map_text_text_text);
-                cache_map_text_text_text.clear();
-
-                size = size + SizeCalculation.getMapText(cache_map_text);
-                cache_map_text.clear();
-
-                size = size + SizeCalculation.getMapTextList(cache_map_text_list);
-                cache_map_text_list.clear();
-
-                size = size + SizeCalculation.getMapLogic(cache_map_logic);
-                cache_map_logic.clear();
-
-                size = size + SizeCalculation.getMapNumberShort(cache_map_number_short_list);
-                cache_map_number_short_list.clear();
-
-                size = size + SizeCalculation.getMapNumberInt(cache_map_number_int_list);
-                cache_map_number_int_list.clear();
-
-                size = size + SizeCalculation.getListText(cache_list_text);
-                cache_list_text.clear();
-
-            }
-
-        }
+        size = size + DataLogic.clear();
+        size = size + DataText.clear();
+        size = size + DataShort.clear();
+        size = size + DataInt.clear();
 
         if (size < 1024) {
 
-            convert = size + " B";
+            return size + " B";
 
         } else if (size < 1048576) {
 
-            convert = String.format(Locale.US, "%.2f", (double) size / 1024.0) + " KB";
+            return String.format(Locale.US, "%.2f", (double) size / 1024.0) + " KB";
 
         } else {
 
-            convert = String.format(Locale.US, "%.2f", (double) size / 1048576.0) + " MB";
+            return String.format(Locale.US, "%.2f", (double) size / 1048576.0) + " MB";
 
         }
-
-        return convert;
 
     }
 
-    public static class SizeCalculation {
+    public static class DataLogic {
 
-        public static int getMapByteBuffer (Map<String, ByteBuffer> test) {
+        private static final Map<String, Map<String, Boolean>> normal = new HashMap<>();
+        private static final Map<String, Map<String, boolean[]>> array = new HashMap<>();
+        private static final Map<String, Map<String, List<Boolean>>> list = new HashMap<>();
+        private static final Map<String, Map<String, Map<String, Boolean>>> map = new HashMap<>();
+        private static final Object lock_normal = new Object();
+        private static final Object lock_array = new Object();
+        private static final Object lock_list = new Object();
+        private static final Object lock_map = new Object();
 
-            int size = 0;
-
-            for (Map.Entry<String, ByteBuffer> entry : test.entrySet()) {
-
-                size = size + entry.getValue().capacity();
-
-            }
-
-            return size;
-
-        }
-
-        public static int getMapNumberShort (Map<String, Map<String, short[]>> test) {
+        private static int clear () {
 
             int size = 0;
 
-            for (Map.Entry<String, Map<String, short[]>> entry1 : test.entrySet()) {
+            // Normal
+            {
 
-                for (Map.Entry<String, short[]> entry2 : entry1.getValue().entrySet()) {
+                synchronized (lock_normal) {
 
-                    size = size + (entry2.getValue().length * Short.BYTES);
+                    for (Map.Entry<String, Map<String, Boolean>> entry : normal.entrySet()) {
 
-                }
-
-            }
-
-            return size;
-
-        }
-
-        public static int getMapNumberInt (Map<String, Map<String, int[]>> test) {
-
-            int size = 0;
-
-            for (Map.Entry<String, Map<String, int[]>> entry1 : test.entrySet()) {
-
-                for (Map.Entry<String, int[]> entry2 : entry1.getValue().entrySet()) {
-
-                    size = size + (entry2.getValue().length * Integer.BYTES);
-
-                }
-
-            }
-
-            return size;
-
-        }
-
-        public static int getMapLogic (Map<String, Map<String, Boolean>> test) {
-
-            int size = 0;
-
-            for (Map.Entry<String, Map<String, Boolean>> entry1 : test.entrySet()) {
-
-                size = size + entry1.getValue().size();
-
-            }
-
-            return size;
-
-        }
-
-        public static int getMapText (Map<String, Map<String, String>> test) {
-
-            int size = 0;
-
-            for (Map.Entry<String, Map<String, String>> entry1 : test.entrySet()) {
-
-                for (Map.Entry<String, String> entry2 : entry1.getValue().entrySet()) {
-
-                    size = size + (entry2.getValue().length() * Character.BYTES);
-
-                }
-
-            }
-
-            return size;
-
-        }
-
-        public static int getMapTextList (Map<String, Map<String, List<String>>> test) {
-
-            int size = 0;
-
-            for (Map.Entry<String, Map<String, List<String>>> entry1 : test.entrySet()) {
-
-                for (Map.Entry<String, List<String>> entry2 : entry1.getValue().entrySet()) {
-
-                    for (String read_all : entry2.getValue()) {
-
-                        size = size + (read_all.length() * Character.BYTES);
+                        size = size + entry.getValue().size();
 
                     }
 
+                    normal.clear();
+
                 }
 
             }
 
-            return size;
+            // Array
+            {
 
-        }
+                synchronized (lock_array) {
 
-        public static int getTextTextText (Map<String, Map<String, Map<String, Map<String, String>>>> test) {
+                    for (Map.Entry<String, Map<String, boolean[]>> entry1 : array.entrySet()) {
 
-            int size = 0;
+                        for (Map.Entry<String, boolean[]> entry2 : entry1.getValue().entrySet()) {
 
-            for (Map.Entry<String, Map<String, Map<String, Map<String, String>>>> entry1 : test.entrySet()) {
-
-                for (Map.Entry<String, Map<String, Map<String, String>>> entry2 : entry1.getValue().entrySet()) {
-
-                    for (Map.Entry<String, Map<String, String>> entry3 : entry2.getValue().entrySet()) {
-
-                        for (Map.Entry<String, String> entry4 : entry3.getValue().entrySet()) {
-
-                            size = size + (entry4.getValue().length() * Character.BYTES);
+                            size = size + entry2.getValue().length;
 
                         }
 
                     }
 
+                    array.clear();
+
+                }
+
+            }
+
+            // List
+            {
+
+                synchronized (lock_list) {
+
+                    for (Map.Entry<String, Map<String, List<Boolean>>> entry1 : list.entrySet()) {
+
+                        for (Map.Entry<String, List<Boolean>> entry2 : entry1.getValue().entrySet()) {
+
+                            size = size + entry2.getValue().size();
+
+                        }
+
+                    }
+
+                    list.clear();
+
+                }
+
+            }
+
+            // Map
+            {
+
+                synchronized (lock_map) {
+
+                    for (Map.Entry<String, Map<String, Map<String, Boolean>>> entry1 : map.entrySet()) {
+
+                        for (Map.Entry<String, Map<String, Boolean>> entry2 : entry1.getValue().entrySet()) {
+
+                            size = size + entry2.getValue().size();
+
+                        }
+
+                    }
+
+                    map.clear();
+
                 }
 
             }
@@ -200,108 +129,1020 @@ public class CacheManager {
 
         }
 
-        public static int getListText (Map<String, List<String>> test) {
+        public static boolean existNormal (String name, String key) {
 
-            int size = 0;
+            synchronized (lock_normal) {
 
-            for (Map.Entry<String, List<String>> entry : test.entrySet()) {
+                return normal.getOrDefault(name, new HashMap<>()).containsKey(key) == true;
 
-                for (String read_all : entry.getValue()) {
+            }
 
-                    size = size + (read_all.length() * Character.BYTES);
+        }
+
+        public static Map<String, Boolean> getNormal (String name) {
+
+            synchronized (lock_normal) {
+
+                return normal.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setNormal (String name, String key, boolean value) {
+
+            synchronized (lock_normal) {
+
+                if (key == null) {
+
+                    normal.put(name, new HashMap<>());
+
+                } else {
+
+                    normal.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
 
                 }
 
             }
 
-            return size;
+        }
+
+        public static Map<String, boolean[]> getArray (String name) {
+
+            synchronized (lock_array) {
+
+                return array.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setArray (String name, String key, boolean[] value) {
+
+            synchronized (lock_array) {
+
+                if (key == null) {
+
+                    array.put(name, new HashMap<>());
+
+                } else {
+
+                    array.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+        public static Map<String, List<Boolean>> getList (String name) {
+
+            synchronized (lock_list) {
+
+                return list.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setList (String name, String key, List<Boolean> value) {
+
+            synchronized (lock_list) {
+
+                if (key == null) {
+
+                    list.put(name, new HashMap<>());
+
+                } else {
+
+                    list.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+        public static Map<String, Map<String, Boolean>> getMap (String name) {
+
+            synchronized (lock_map) {
+
+                return map.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setMap (String name, String key, Map<String, Boolean> value) {
+
+            synchronized (lock_map) {
+
+                if (key == null) {
+
+                    map.put(name, new HashMap<>());
+
+                } else {
+
+                    map.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
 
         }
 
     }
 
-    public static List<String> getFunction (String path) {
+    public static class DataText {
 
-        synchronized (lock) {
+        private static final Map<String, Map<String, String>> normal = new HashMap<>();
+        private static final Map<String, Map<String, String[]>> array = new HashMap<>();
+        private static final Map<String, Map<String, Set<String>>> set = new HashMap<>();
+        private static final Map<String, Map<String, List<String>>> list = new HashMap<>();
+        private static final Map<String, Map<String, Map<String, String>>> map = new HashMap<>();
+        private static final Object lock_normal = new Object();
+        private static final Object lock_array = new Object();
+        private static final Object lock_set = new Object();
+        private static final Object lock_list = new Object();
+        private static final Object lock_map = new Object();
 
-            if (cache_map_text_list.containsKey("functions") == false) {
+        private static int clear () {
 
-                cache_map_text_list.put("functions", new HashMap<>());
+            int size = 0;
+
+            // Normal
+            {
+
+                synchronized (lock_normal) {
+
+                    for (Map.Entry<String, Map<String, String>> entry1 : normal.entrySet()) {
+
+                        for (Map.Entry<String, String> entry2 : entry1.getValue().entrySet()) {
+
+                            size = size + (entry2.getValue().length() * Character.BYTES);
+
+                        }
+
+                    }
+
+                    normal.clear();
+
+                }
 
             }
 
-            if (cache_map_text_list.get("functions").containsKey(path) == false) {
+            // Array
+            {
 
-                List<String> data = FileManager.readTXT(Core.path_config + "/#dev/#temporary/" + path + ".txt");
-                cache_map_text_list.get("functions").put(path, data);
+                synchronized (lock_array) {
+
+                    for (Map.Entry<String, Map<String, String[]>> entry1 : array.entrySet()) {
+
+                        for (Map.Entry<String, String[]> entry2 : entry1.getValue().entrySet()) {
+
+                            for (String scan : entry2.getValue()) {
+
+                                size = size + (scan.length() * Character.BYTES);
+
+                            }
+
+                        }
+
+                    }
+
+                    array.clear();
+
+                }
+
+            }
+
+            // Set
+            {
+
+                synchronized (lock_set) {
+
+                    for (Map.Entry<String, Map<String, Set<String>>> entry1 : set.entrySet()) {
+
+                        for (Map.Entry<String, Set<String>> entry2 : entry1.getValue().entrySet()) {
+
+                            for (String scan : entry2.getValue()) {
+
+                                size = size + (scan.length() * Character.BYTES);
+
+                            }
+
+                        }
+
+                    }
+
+                    set.clear();
+
+                }
+
+            }
+
+            // List
+            {
+
+                synchronized (lock_list) {
+
+                    for (Map.Entry<String, Map<String, List<String>>> entry1 : list.entrySet()) {
+
+                        for (Map.Entry<String, List<String>> entry2 : entry1.getValue().entrySet()) {
+
+                            for (String scan : entry2.getValue()) {
+
+                                size = size + (scan.length() * Character.BYTES);
+
+                            }
+
+                        }
+
+                    }
+
+                    list.clear();
+
+                }
+
+            }
+
+            // Map
+            {
+
+                synchronized (lock_map) {
+
+                    for (Map.Entry<String, Map<String, Map<String, String>>> entry1 : map.entrySet()) {
+
+                        for (Map.Entry<String, Map<String, String>> entry2 : entry1.getValue().entrySet()) {
+
+                            for (Map.Entry<String, String> entry3 : entry2.getValue().entrySet()) {
+
+                                size = size + (entry3.getValue().length() * Character.BYTES);
+
+                            }
+
+                        }
+
+                    }
+
+                    map.clear();
+
+                }
+
+            }
+
+            return size;
+
+        }
+
+        public static boolean existNormal (String name, String key) {
+
+            synchronized (lock_normal) {
+
+                return normal.getOrDefault(name, new HashMap<>()).containsKey(key) == true;
 
             }
 
         }
 
-        return cache_map_text_list.get("functions").get(path);
+        public static Map<String, String> getNormal (String name) {
+
+            synchronized (lock_normal) {
+
+                return normal.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setNormal (String name, String key, String value) {
+
+            synchronized (lock_normal) {
+
+                if (key == null) {
+
+                    normal.put(name, new HashMap<>());
+
+                } else {
+
+                    normal.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+        public static Map<String, String[]> getArray (String name) {
+
+            synchronized (lock_array) {
+
+                return array.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setArray (String name, String key, String[] value) {
+
+            synchronized (lock_array) {
+
+                if (key == null) {
+
+                    array.put(name, new HashMap<>());
+
+                } else {
+
+                    array.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+        public static Map<String, Set<String>> getSet (String name) {
+
+            synchronized (lock_set) {
+
+                return set.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setSet (String name, String key, Set<String> value) {
+
+            synchronized (lock_set) {
+
+                if (key == null) {
+
+                    set.put(name, new HashMap<>());
+
+                } else {
+
+                    set.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+        public static Map<String, List<String>> getList (String name) {
+
+            synchronized (lock_list) {
+
+                return list.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setList (String name, String key, List<String> value) {
+
+            synchronized (lock_list) {
+
+                if (key == null) {
+
+                    list.put(name, new HashMap<>());
+
+                } else {
+
+                    list.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+        public static Map<String, Map<String, String>> getMap (String name) {
+
+            synchronized (lock_map) {
+
+                return map.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setMap (String name, String key, Map<String, String> value) {
+
+            synchronized (lock_map) {
+
+                if (key == null) {
+
+                    map.put(name, new HashMap<>());
+
+                } else {
+
+                    map.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+    }
+
+    public static class DataShort {
+
+        private static final Map<String, Map<String, Short>> normal = new HashMap<>();
+        private static final Map<String, Map<String, short[]>> array = new HashMap<>();
+        private static final Map<String, Map<String, Set<Short>>> set = new HashMap<>();
+        private static final Map<String, Map<String, List<Short>>> list = new HashMap<>();
+        private static final Map<String, Map<String, Map<String, Short>>> map = new HashMap<>();
+        private static final Object lock_normal = new Object();
+        private static final Object lock_array = new Object();
+        private static final Object lock_set = new Object();
+        private static final Object lock_list = new Object();
+        private static final Object lock_map = new Object();
+
+        private static int clear () {
+
+            int size = 0;
+
+            // Normal
+            {
+
+                synchronized (lock_normal) {
+
+                    for (Map.Entry<String, Map<String, Short>> entry : normal.entrySet()) {
+
+                        size = size + (entry.getValue().size() * Short.BYTES);
+
+                    }
+
+                    normal.clear();
+
+                }
+
+            }
+
+            // Array
+            {
+
+                synchronized (lock_array) {
+
+                    for (Map.Entry<String, Map<String, short[]>> entry1 : array.entrySet()) {
+
+                        for (Map.Entry<String, short[]> entry2 : entry1.getValue().entrySet()) {
+
+                            size = size + (entry2.getValue().length * Short.BYTES);
+
+                        }
+
+                    }
+
+                    array.clear();
+
+                }
+
+            }
+
+            // Set
+            {
+
+                synchronized (lock_set) {
+
+                    for (Map.Entry<String, Map<String, Set<Short>>> entry1 : set.entrySet()) {
+
+                        for (Map.Entry<String, Set<Short>> entry2 : entry1.getValue().entrySet()) {
+
+                            size = size + (entry2.getValue().size() * Short.BYTES);
+
+                        }
+
+                    }
+
+                    set.clear();
+
+                }
+
+            }
+
+            // List
+            {
+
+                synchronized (lock_list) {
+
+                    for (Map.Entry<String, Map<String, List<Short>>> entry1 : list.entrySet()) {
+
+                        for (Map.Entry<String, List<Short>> entry2 : entry1.getValue().entrySet()) {
+
+                            size = size + (entry2.getValue().size() * Short.BYTES);
+
+                        }
+
+                    }
+
+                    list.clear();
+
+                }
+
+            }
+
+            // Map
+            {
+
+                synchronized (lock_map) {
+
+                    for (Map.Entry<String, Map<String, Map<String, Short>>> entry1 : map.entrySet()) {
+
+                        for (Map.Entry<String, Map<String, Short>> entry2 : entry1.getValue().entrySet()) {
+
+                            size = size + (entry2.getValue().size() * Short.BYTES);
+
+                        }
+
+                    }
+
+                    map.clear();
+
+                }
+
+            }
+
+            return size;
+
+        }
+
+        public static boolean existNormal (String name) {
+
+            synchronized (lock_normal) {
+
+                return normal.containsKey(name);
+
+            }
+
+        }
+
+        public static Map<String, Short> getNormal (String name) {
+
+            synchronized (lock_normal) {
+
+                return normal.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setNormal (String name, String key, short value) {
+
+            synchronized (lock_normal) {
+
+                if (key == null) {
+
+                    normal.put(name, new HashMap<>());
+
+                } else {
+
+                    normal.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+        public static Map<String, short[]> getArray (String name) {
+
+            synchronized (lock_array) {
+
+                return array.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setArray (String name, String key, short[] value) {
+
+            synchronized (lock_array) {
+
+                if (key == null) {
+
+                    array.put(name, new HashMap<>());
+
+                } else {
+
+                    array.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+        public static Map<String, Set<Short>> getSet (String name) {
+
+            synchronized (lock_set) {
+
+                return set.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setSet (String name, String key, Set<Short> value) {
+
+            synchronized (lock_set) {
+
+                if (key == null) {
+
+                    set.put(name, new HashMap<>());
+
+                } else {
+
+                    set.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+        public static Map<String, List<Short>> getList (String name) {
+
+            synchronized (lock_list) {
+
+                return list.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setList (String name, String key, List<Short> value) {
+
+            synchronized (lock_list) {
+
+                if (key == null) {
+
+                    list.put(name, new HashMap<>());
+
+                } else {
+
+                    list.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+        public static Map<String, Map<String, Short>> getMap (String name) {
+
+            synchronized (lock_map) {
+
+                return map.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setMap (String name, String key, Map<String, Short> value) {
+
+            synchronized (lock_map) {
+
+                if (key == null) {
+
+                    map.put(name, new HashMap<>());
+
+                } else {
+
+                    map.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+    }
+
+    public static class DataInt {
+
+        private static final Map<String, Map<String, Integer>> normal = new HashMap<>();
+        private static final Map<String, Map<String, int[]>> array = new HashMap<>();
+        private static final Map<String, Map<String, Set<Integer>>> set = new HashMap<>();
+        private static final Map<String, Map<String, List<Integer>>> list = new HashMap<>();
+        private static final Map<String, Map<String, Map<String, Integer>>> map = new HashMap<>();
+        private static final Object lock_normal = new Object();
+        private static final Object lock_array = new Object();
+        private static final Object lock_set = new Object();
+        private static final Object lock_list = new Object();
+        private static final Object lock_map = new Object();
+
+        private static int clear () {
+
+            int size = 0;
+
+            // Normal
+            {
+
+                synchronized (lock_normal) {
+
+                    for (Map.Entry<String, Map<String, Integer>> entry : normal.entrySet()) {
+
+                        size = size + (entry.getValue().size() * Integer.BYTES);
+
+                    }
+
+                    normal.clear();
+
+                }
+
+            }
+
+            // Array
+            {
+
+                synchronized (lock_array) {
+
+                    for (Map.Entry<String, Map<String, int[]>> entry1 : array.entrySet()) {
+
+                        for (Map.Entry<String, int[]> entry2 : entry1.getValue().entrySet()) {
+
+                            size = size + (entry2.getValue().length * Integer.BYTES);
+
+                        }
+
+                    }
+
+                    array.clear();
+
+                }
+
+            }
+
+            // Set
+            {
+
+                synchronized (lock_set) {
+
+                    for (Map.Entry<String, Map<String, Set<Integer>>> entry1 : set.entrySet()) {
+
+                        for (Map.Entry<String, Set<Integer>> entry2 : entry1.getValue().entrySet()) {
+
+                            size = size + (entry2.getValue().size() * Integer.BYTES);
+
+                        }
+
+                    }
+
+                    set.clear();
+
+                }
+
+            }
+
+            // List
+            {
+
+                synchronized (lock_list) {
+
+                    for (Map.Entry<String, Map<String, List<Integer>>> entry1 : list.entrySet()) {
+
+                        for (Map.Entry<String, List<Integer>> entry2 : entry1.getValue().entrySet()) {
+
+                            size = size + (entry2.getValue().size() * Integer.BYTES);
+
+                        }
+
+                    }
+
+                    list.clear();
+
+                }
+
+            }
+
+            // Map
+            {
+
+                synchronized (lock_map) {
+
+                    for (Map.Entry<String, Map<String, Map<String, Integer>>> entry1 : map.entrySet()) {
+
+                        for (Map.Entry<String, Map<String, Integer>> entry2 : entry1.getValue().entrySet()) {
+
+                            size = size + (entry2.getValue().size() * Integer.BYTES);
+
+                        }
+
+                    }
+
+                    map.clear();
+
+                }
+
+            }
+
+            return size;
+
+        }
+
+        public static boolean existNormal (String name) {
+
+            synchronized (lock_normal) {
+
+                return normal.containsKey(name);
+
+            }
+
+        }
+
+        public static Map<String, Integer> getNormal (String name) {
+
+            synchronized (lock_normal) {
+
+                return normal.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setNormal (String name, String key, int value) {
+
+            synchronized (lock_normal) {
+
+                if (key == null) {
+
+                    normal.put(name, new HashMap<>());
+
+                } else {
+
+                    normal.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+        public static Map<String, int[]> getArray (String name) {
+
+            synchronized (lock_array) {
+
+                return array.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setArray (String name, String key, int[] value) {
+
+            synchronized (lock_array) {
+
+                if (key == null) {
+
+                    array.put(name, new HashMap<>());
+
+                } else {
+
+                    array.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+        public static Map<String, Set<Integer>> getSet (String name) {
+
+            synchronized (lock_set) {
+
+                return set.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setSet (String name, String key, Set<Integer> value) {
+
+            synchronized (lock_set) {
+
+                if (key == null) {
+
+                    set.put(name, new HashMap<>());
+
+                } else {
+
+                    set.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+        public static Map<String, List<Integer>> getList (String name) {
+
+            synchronized (lock_list) {
+
+                return list.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setList (String name, String key, List<Integer> value) {
+
+            synchronized (lock_list) {
+
+                if (key == null) {
+
+                    list.put(name, new HashMap<>());
+
+                } else {
+
+                    list.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+        public static Map<String, Map<String, Integer>> getMap (String name) {
+
+            synchronized (lock_map) {
+
+                return map.getOrDefault(name, new HashMap<>());
+
+            }
+
+        }
+
+        public static void setMap (String name, String key, Map<String, Integer> value) {
+
+            synchronized (lock_map) {
+
+                if (key == null) {
+
+                    map.put(name, new HashMap<>());
+
+                } else {
+
+                    map.computeIfAbsent(name, create -> new HashMap<>()).put(key, value);
+
+                }
+
+            }
+
+        }
+
+    }
+
+    public static String[] getFunction (String path) {
+
+        String[] data = DataText.getArray("functions").get(path);
+
+        if (data == null) {
+
+            data = FileManager.readTXT(Core.path_config + "/dev/temporary/" + path + ".txt");
+            DataText.setArray("functions", path, data);
+
+        }
+
+        return data;
 
     }
 
     public static String getDictionary (String key, boolean is_number) {
 
-        synchronized (lock) {
+        String get = DataText.getNormal("dictionary").get(key);
 
-            if (cache_map_text.containsKey("dictionary") == false) {
+        if (get == null) {
 
-                cache_map_text.put("dictionary", new HashMap<>());
-
-            }
-
-            if (cache_map_text.get("dictionary").containsKey(key) == false) {
+            // Write New
+            {
 
                 String value_id = "";
                 String value_text = "";
+                String path = Core.path_world_mod + "/dictionary.txt";
+                String[] data = FileManager.readTXT(path);
 
-                // Get Data
-                {
+                for (String scan : data) {
 
-                    String path = Core.path_world_mod + "/dictionary.txt";
-                    List<String> data = FileManager.readTXT(path);
+                    if (is_number == true) {
 
-                    for (String read_all : data) {
+                        if (scan.startsWith(key + "|") == true) {
 
-                        if (is_number == true) {
-
-                            if (read_all.startsWith(key + "|") == true) {
-
-                                value_id = key;
-                                value_text = read_all.substring(read_all.indexOf("|") + 1);
-                                break;
-
-                            }
-
-                        } else {
-
-                            if (read_all.endsWith("|" + key) == true) {
-
-                                value_id = read_all.substring(0, read_all.indexOf("|"));
-                                value_text = key;
-                                break;
-
-                            }
+                            value_id = key;
+                            value_text = scan.substring(scan.indexOf("|") + 1);
+                            break;
 
                         }
 
-                    }
+                    } else {
 
-                    if (value_id.isEmpty() == true && value_text.isEmpty() == true) {
+                        if (scan.endsWith("|" + key) == true) {
 
-                        if (is_number == false) {
-
+                            value_id = scan.substring(0, scan.indexOf("|"));
                             value_text = key;
-
-                        }
-
-                        if (value_text.isEmpty() == false) {
-
-                            value_id = String.valueOf(data.size() + 1);
-                            FileManager.writeTXT(path, value_id + "|" + value_text + "\n", true);
+                            break;
 
                         }
 
@@ -309,142 +1150,41 @@ public class CacheManager {
 
                 }
 
-                cache_map_text.get("dictionary").put(value_id, value_text);
-                cache_map_text.get("dictionary").put(value_text, value_id);
+                if (value_id.isEmpty() == true && value_text.isEmpty() == true) {
+
+                    if (is_number == false) {
+
+                        value_text = key;
+
+                    }
+
+                    if (value_text.isEmpty() == false) {
+
+                        value_id = String.valueOf(data.length + 1);
+                        FileManager.writeTXT(path, value_id + "|" + value_text + "\n", true);
+
+                    }
+
+                }
+
+                DataText.setNormal("dictionary", value_id, value_text);
+                DataText.setNormal("dictionary", value_text, value_id);
+
+                if (is_number == true) {
+
+                    get = value_text;
+
+                } else {
+
+                    get = value_id;
+
+                }
 
             }
 
         }
 
-        return cache_map_text.get("dictionary").get(key);
-
-    }
-
-    public static class SaveMap {
-
-        public static boolean existLogic (String name, String key) {
-
-            synchronized (lock) {
-
-                return cache_map_logic.containsKey(name) == true && cache_map_logic.get(name).containsKey(key) == true;
-
-            }
-
-        }
-
-        public static boolean getLogic (String name, String key) {
-
-            synchronized (lock) {
-
-                return cache_map_logic.get(name).get(key);
-
-            }
-
-        }
-
-        public static void setLogic (String name, String key, boolean value) {
-
-            synchronized (lock) {
-
-                cache_map_logic.computeIfAbsent(name, test -> new HashMap<>()).put(key, value);
-
-            }
-
-        }
-
-        public static boolean existTextList (String name, String key) {
-
-            synchronized (lock) {
-
-                return cache_map_text_list.containsKey(name) == true && cache_map_text_list.get(name).containsKey(key) == true;
-
-            }
-
-        }
-
-        public static List<String> getTextList (String name, String key) {
-
-            synchronized (lock) {
-
-                return cache_map_text_list.get(name).get(key);
-
-            }
-
-        }
-
-        public static void setTextList (String name, String key, List<String> value) {
-
-            synchronized (lock) {
-
-                cache_map_text_list.computeIfAbsent(name, test -> new HashMap<>()).put(key, value);
-
-            }
-
-        }
-
-        public static boolean existTextTextText (String name) {
-
-            synchronized (lock) {
-
-                return cache_map_text_text_text.containsKey(name) == true;
-
-            }
-
-        }
-
-        public static Map<String, Map<String, Map<String, String>>> getTextTextText (String name) {
-
-            synchronized (lock) {
-
-                return cache_map_text_text_text.get(name);
-
-            }
-
-        }
-
-        public static void setTextTextText (String name, Map<String, Map<String, Map<String, String>>> value) {
-
-            synchronized (lock) {
-
-                cache_map_text_text_text.put(name, value);
-
-            }
-
-        }
-
-    }
-
-    public static class SaveList {
-
-        public static boolean existText (String name) {
-
-            synchronized (lock) {
-
-                return cache_list_text.containsKey(name) == true;
-
-            }
-
-        }
-
-        public static List<String> getText (String name) {
-
-            synchronized (lock) {
-
-                return cache_list_text.get(name);
-
-            }
-
-        }
-
-        public static void setText (String name, List<String> value) {
-
-            synchronized (lock) {
-
-                cache_list_text.computeIfAbsent(name, test -> new ArrayList<>()).addAll(value);
-
-            }
-
-        }
+        return get;
 
     }
 

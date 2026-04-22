@@ -2,7 +2,7 @@
   "_fv": 79,
   "_type": "block",
   "definition": {
-    "texture": "minecraft:azalea_top",
+    "texture": "minecraft:brown_glazed_terracotta",
     "textureTop": "",
     "textureLeft": "",
     "textureFront": "",
@@ -16,7 +16,7 @@
     "displayFluidOverlay": false,
     "animations": [],
     "itemTexture": "",
-    "particleTexture": "",
+    "particleTexture": "minecraft:azalea_top",
     "blockSetType": "OAK",
     "pottedPlant": {
       "value": ""
@@ -41,9 +41,13 @@
     "customProperties": [],
     "name": "Grass",
     "specialInformation": {
-      "fixedValue": []
+      "fixedValue": [
+        "§8--------------------------------------------------",
+        "§8Type : Riparian",
+        "§8--------------------------------------------------"
+      ]
     },
-    "hardness": 2.5,
+    "hardness": 1.0,
     "resistance": 0.0,
     "hasGravity": false,
     "isWaterloggable": true,
@@ -60,7 +64,7 @@
     "customDrop": {
       "value": ""
     },
-    "dropAmount": 1,
+    "dropAmount": 0,
     "xpAmountMin": 0,
     "xpAmountMax": 0,
     "useLootTableForDrops": false,
@@ -71,7 +75,7 @@
     "lightOpacity": 0,
     "tickRate": 0,
     "tickRandomly": false,
-    "isReplaceable": false,
+    "isReplaceable": true,
     "canProvidePower": false,
     "emittedRedstonePower": {
       "fixedValue": 15.0
@@ -86,9 +90,9 @@
     "strippingResult": {
       "value": ""
     },
-    "ignitedByLava": false,
-    "flammability": 0,
-    "fireSpreadSpeed": 0,
+    "ignitedByLava": true,
+    "flammability": 1,
+    "fireSpreadSpeed": 100,
     "isLadder": false,
     "slipperiness": 0.6,
     "speedFactor": 1.0,
@@ -150,9 +154,6 @@
     },
     "onBlockPlayedBy": {
       "name": "PlantBlockWhenPlace"
-    },
-    "onEntityFallsOn": {
-      "name": "PlantBlockWhenFallOn"
     },
     "generateFeature": false,
     "restrictionBiomes": [],

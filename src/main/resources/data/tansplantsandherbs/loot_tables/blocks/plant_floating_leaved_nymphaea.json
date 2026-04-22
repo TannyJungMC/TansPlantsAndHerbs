@@ -1,20 +1,4 @@
 {
   "type": "minecraft:block",
-  "random_sequence": "tansplantsandherbs:blocks/plant_floating_leaved_nymphaea",
-  "pools": [
-    {
-      "rolls": 1.0,
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "tansplantsandherbs:plant_floating_leaved_nymphaea"
-        }
-      ]
-    }
-  ]
+  "random_sequence": "tansplantsandherbs:blocks/plant_floating_leaved_nymphaea"
 }

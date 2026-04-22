@@ -13,13 +13,11 @@ public class WorldGenStepEnd {
 
     public static void start (String dimension, ChunkPos chunk_pos) {
 
-        // World Gen Folder Cleaner
-        {
+        if (Core.have_world_data_cleaner == true) {
 
-            WorldGen.stepEnd(dimension, chunk_pos);
             String path_suffix = dimension + "/" + (chunk_pos.x >> 5) + "," + (chunk_pos.z >> 5) + ".bin";
 
-            File file = new File(Core.path_world_mod + "/world_gen/#regions/" + path_suffix);
+            File file = new File(Core.path_world_mod + "/world_gen/regions/" + path_suffix);
             List<String> test = new ArrayList<>();
             test.add("b0");
             FileManager.writeBIN(file.getPath(), test, true);
@@ -29,8 +27,7 @@ public class WorldGenStepEnd {
                 test.clear();
                 test.add("b0");
                 FileManager.writeBIN(file.getPath(), test, false);
-
-                new File(Core.path_world_mod + "/world_gen/blacklist_chunks/" + path_suffix).delete();
+                WorldGen.stepEnd(dimension, chunk_pos);
 
             }
 

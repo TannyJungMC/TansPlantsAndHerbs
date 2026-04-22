@@ -1,5 +1,7 @@
 package tannyjung.tansplantsandherbs_core.outside;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
 import tannyjung.tansplantsandherbs_core.Core;
 
 import java.io.BufferedInputStream;
@@ -11,6 +13,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,11 +27,10 @@ public class OutsideUtils {
 
             StackTraceElement from_get = from.getStackTrace()[0];
             Core.logger.error("Found an error reported from {} -> {} -> {}", from_get.getClassName(), from_get.getMethodName(), from_get.getLineNumber());
-            Core.logger.error(exception.getMessage());
 
-            for (StackTraceElement get : exception.getStackTrace()) {
+            if (details.isEmpty() == false) {
 
-                if (get.toString().contains("tannyjung") == true) {
+                for (String get : details.split(" / ")) {
 
                     Core.logger.error(get);
 
@@ -36,9 +38,11 @@ public class OutsideUtils {
 
             }
 
-            if (details.isEmpty() == false) {
+            Core.logger.error(exception.getMessage());
 
-                for (String get : details.split(" / ")) {
+            for (StackTraceElement get : exception.getStackTrace()) {
+
+                if (get.toString().contains("tannyjung") == true) {
 
                     Core.logger.error(get);
 
@@ -130,78 +134,75 @@ public class OutsideUtils {
 
     public static boolean download (String url, String to) {
 
-        boolean complete = false;
         FileManager.createEmptyFile(to, false);
 
-        // Download
-        {
+        try (FileOutputStream output = new FileOutputStream(to)) {
 
-            try (FileOutputStream output = new FileOutputStream(to)) {
+            BufferedInputStream input = new BufferedInputStream(new URI(url).toURL().openStream());
+            byte[] buffer = new byte[1024];
+            int bytesRead;
 
-                BufferedInputStream input = new BufferedInputStream(new URI(url).toURL().openStream());
-                byte[] buffer = new byte[1024];
-                int bytesRead;
+            while ((bytesRead = input.read(buffer, 0, 1024)) != -1) {
 
-                while ((bytesRead = input.read(buffer, 0, 1024)) != -1) {
-
-                    output.write(buffer, 0, bytesRead);
-
-                }
-
-                complete = true;
-
-            } catch (Exception exception) {
-
-                OutsideUtils.exception(new Exception(), exception, "");
+                output.write(buffer, 0, bytesRead);
 
             }
 
-        }
-
-        if (complete == false) {
-
             FileManager.delete(to);
+            return true;
+
+        } catch (Exception exception) {
+
+            exception(new Exception(), exception, "");
+            return false;
 
         }
-
-        return complete;
 
     }
 
-    public static int[] convertPosRotationMirrored (int rotation, boolean mirrored, int posX, int posZ) {
+    public static BlockPos convertPosRotationMirrored (BlockPos pos, int[] rotation_mirrored) {
 
+        int posX = pos.getX();
+        int posZ = pos.getZ();
         int save_posX = posX;
         int save_posZ = posZ;
 
-        if (mirrored == true) {
-
-            posX = save_posX * (-1);
-
-        }
-
-        if (rotation == 2) {
+        if (rotation_mirrored[0] == 2) {
 
             posX = save_posZ;
-            posZ = save_posX * (-1);
+            posZ = -save_posX;
 
-        } else if (rotation == 3) {
+        } else if (rotation_mirrored[0] == 3) {
 
-            posX = save_posX * (-1);
-            posZ = save_posZ * (-1);
+            posX = -save_posX;
+            posZ = -save_posZ;
 
-        } else if (rotation == 4) {
+        } else if (rotation_mirrored[0] == 4) {
 
-            posX = save_posZ * (-1);
+            posX = -save_posZ;
             posZ = save_posX;
 
         }
 
-        return new int[]{posX, posZ};
+        if (rotation_mirrored[1] == 1) {
+
+            posX = -posX;
+
+        } else if (rotation_mirrored[1] == 2) {
+
+            posZ = -posZ;
+
+        }
+
+        return new BlockPos(posX, pos.getY(), posZ);
 
     }
 
-    public static int[] convertPosFallen (int fallen_direction, int posX, int posY, int posZ) {
+    public static BlockPos convertPosFallen (BlockPos pos, int fallen_direction) {
 
+        int posX = pos.getX();
+        int posY = pos.getY();
+        int posZ = pos.getZ();
         int posX_save = posX;
         int posY_save = posY;
         int posZ_save = posZ;
@@ -228,41 +229,45 @@ public class OutsideUtils {
 
         }
 
-        return new int[]{posX, posY, posZ};
+        return new BlockPos(posX, posY, posZ);
 
     }
 
-    public static int[] convertSizeRotationMirrored (int rotation, boolean mirrored, int sizeX, int sizeZ, int center_sizeX, int center_sizeZ) {
+    public static int[] convertSizeRotationMirrored (int[] rotation_mirrored, int sizeX, int sizeZ, int center_sizeX, int center_sizeZ) {
 
         int save_sizeX = sizeX;
         int save_sizeZ = sizeZ;
         int save_center_sizeX = center_sizeX;
         int save_center_sizeZ = center_sizeZ;
 
-        if (mirrored == true) {
-
-            center_sizeX = save_sizeX - save_center_sizeX;
-
-        }
-
-        if (rotation == 2) {
+        if (rotation_mirrored[0] == 2) {
 
             sizeX = save_sizeZ;
             sizeZ = save_sizeX;
             center_sizeX = save_center_sizeZ;
             center_sizeZ = save_sizeX - save_center_sizeX;
 
-        } else if (rotation == 3) {
+        } else if (rotation_mirrored[0] == 3) {
 
             center_sizeX = save_sizeX - save_center_sizeX;
             center_sizeZ = save_sizeZ - save_center_sizeZ;
 
-        } else if (rotation == 4) {
+        } else if (rotation_mirrored[0] == 4) {
 
             sizeX = save_sizeZ;
             sizeZ = save_sizeX;
             center_sizeX = save_sizeZ - save_center_sizeZ;
             center_sizeZ = save_center_sizeX;
+
+        }
+
+        if (rotation_mirrored[1] == 1) {
+
+            center_sizeX = sizeX - center_sizeX;
+
+        } else if (rotation_mirrored[1] == 2) {
+
+            center_sizeZ = sizeZ - center_sizeZ;
 
         }
 
@@ -313,76 +318,199 @@ public class OutsideUtils {
 
     }
 
-    public static String[] convertListToArray (List<String> list) {
+    public static String convertRegionQuadtree (ChunkPos chunk_pos, int level) {
 
-        String[] array = new String[list.size()];
+        StringBuilder write = new StringBuilder();
+        int localX = chunk_pos.x & 31;
+        int localZ = chunk_pos.z & 31;
 
-        for (int count = 0; count < list.size(); count++) {
+        for (int step = 1; step <= level; step++) {
 
-            array[count] = list.get(count);
+            int size = 32 >> step;
+            int posX = (localX / size) % 2;
+            int posZ = (localZ / size) % 2;
 
-        }
+            if (posX == 0 && posZ == 0) {
 
-        return array;
+                write.append("/NW");
 
-    }
+            } else if (posX == 1 && posZ == 0) {
 
-    public static String getQuardtree (int level, int chunkX, int chunkZ) {
+                write.append("/NE");
 
-        StringBuilder return_text = new StringBuilder();
+            } else if (posX == 0) {
 
-        {
+                write.append("/SW");
 
-            int localX = chunkX & 31;
-            int localZ = chunkZ & 31;
+            } else {
 
-            for (int step = 1; step <= level; step++) {
-
-                int size = 32 >> step;
-                int posX = (localX / size) % 2;
-                int posZ = (localZ / size) % 2;
-
-                if (posX == 0 && posZ == 0) return_text.append("-NW");
-                else if (posX == 1 && posZ == 0) return_text.append("-NE");
-                else if (posX == 0) return_text.append("-SW");
-                else return_text.append("-SE");
+                write.append("/SE");
 
             }
 
         }
 
-        return return_text.substring(1);
+        return write.substring(1);
 
     }
 
     public static String[] readOnlineTXT (String url) {
 
-        List<String> data = new ArrayList<>();
-
         if (OutsideUtils.isURLAvailable(url) == true) {
 
             try {
 
-                BufferedReader buffered_reader = new BufferedReader(new InputStreamReader(new URI(url).toURL().openStream()), 65536);
-                String read_all = "";
+                List<String> data = new ArrayList<>();
 
-                while ((read_all = buffered_reader.readLine()) != null) {
+                {
 
-                    data.add(read_all);
+                    BufferedReader buffered_reader = new BufferedReader(new InputStreamReader(new URI(url).toURL().openStream()), 65536);
+                    String scan = "";
+
+                    while ((scan = buffered_reader.readLine()) != null) {
+
+                        data.add(scan);
+
+                    }
+
+                    buffered_reader.close();
 
                 }
 
-                buffered_reader.close();
+                return data.toArray(new String[0]);
 
             } catch (Exception exception) {
 
-                OutsideUtils.exception(new Exception(), exception, "");
+                exception(new Exception(), exception, "");
 
             }
 
         }
 
-        return convertListToArray(data);
+        return new String[0];
+
+    }
+
+    public static Map<String, String> convertFileToDataMap (String path) {
+
+        Map<String, String> data = new HashMap<>();
+        String[] split = null;
+
+        for (String scan : FileManager.readTXT(path)) {
+
+            {
+
+                if (scan.isEmpty() == false) {
+
+                    if (scan.contains(" = ") == true) {
+
+                        split = scan.split(" = ");
+
+                        if (split[1].equals("none") == true) {
+
+                            split[1] = "";
+
+                        }
+
+                        data.put(split[0], split[1]);
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        return data;
+
+    }
+
+    public static class Data {
+
+        public static byte[] convertShortToArrayByte (short value) {
+
+            return ByteBuffer.allocate(Short.BYTES).putShort(value).array();
+
+        }
+
+        public static byte[] convertIntToArrayByte (int value) {
+
+            return ByteBuffer.allocate(Integer.BYTES).putInt(value).array();
+
+        }
+
+        public static byte[] convertDoubleToArrayByte (double value) {
+
+            return ByteBuffer.allocate(Double.BYTES).putDouble(value).array();
+
+        }
+
+        public static short[] convertListShortToArrayShort (List<Short> data) {
+
+            short[] convert = new short[data.size()];
+
+            for (int scan = 0; scan < convert.length; scan++) {
+
+                convert[scan] = data.get(scan);
+
+            }
+
+            return convert;
+
+        }
+
+        public static int[] convertListIntToArrayInt (List<Integer> data) {
+
+            int[] convert = new int[data.size()];
+
+            for (int scan = 0; scan < convert.length; scan++) {
+
+                convert[scan] = data.get(scan);
+
+            }
+
+            return convert;
+
+        }
+
+    }
+
+    public static class Math {
+
+        public static boolean isNumberStartWith (int number, int test) {
+
+            int base = 1;
+
+            while (base <= test) {
+
+                base = base * 10;
+
+            }
+
+            while (number >= base) {
+
+                number = number / 10;
+
+            }
+
+            return number == test;
+
+        }
+
+        public static boolean isNumberEndWith (int number, int test) {
+
+            int base = 1;
+
+            while ((base * 10) <= test) {
+
+                base = base * 10;
+
+            }
+
+            return number % base == test;
+
+        }
 
     }
 

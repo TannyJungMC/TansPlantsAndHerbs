@@ -11,7 +11,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import tannyjung.tansplantsandherbs_core.Core;
 import tannyjung.tansplantsandherbs_core.game.GameUtils;
@@ -42,7 +41,9 @@ public class PlantBlock {
 
             {
 
-                if (getLootData(id).isEmpty() == true) {
+                String[] data_loot = getDataLoot(id);
+
+                if (data_loot.length == 0) {
 
                     GameUtils.Misc.summonText(level_server, pos.above().getCenter(), 0.5, "There is no loot for this / red", true);
 
@@ -50,7 +51,7 @@ public class PlantBlock {
 
                     String[] split = new String[0];
 
-                    for (String read_all : CacheManager.SaveMap.getTextList("loot", id)) {
+                    for (String read_all : data_loot) {
 
                         split = read_all.split(" \\| ");
 
@@ -69,45 +70,15 @@ public class PlantBlock {
 
             }
 
-        } else {
+        } else if (GameUtils.Item.isTaggedAs(item, "minecraft:shovels") == true) {
 
-            if (GameUtils.Item.isTaggedAs(item, "minecraft:shovels") == true) {
+            {
 
-                {
+                if (ConfigDynamic.getData("settings").containsKey(id) == false) {
 
-                    if (getLootData(id).isEmpty() == true) {
+                    GameUtils.Misc.summonText(level_server, pos.above().getCenter(), 0.5, "You can not pick up this / red", true);
 
-                        GameUtils.Misc.summonText(level_server, pos.above().getCenter(), 0.5, "You can not pick up this / red", true);
-
-                    } else {
-
-                        if (level_accessor.getBlockState(pos.below()).getBlock() == Blocks.GRASS_BLOCK) {
-
-                            GameUtils.Tile.set(level_accessor, pos.below(), Blocks.DIRT.defaultBlockState(), false);
-
-                        }
-
-                        GameUtils.Item.spawn(level_server, pos.getCenter(), level_accessor.getBlockState(pos).getBlock().asItem().getDefaultInstance());
-                        GameUtils.Misc.playSound(level_server, pos, 2.0, 0.0, "minecraft:item.shovel.flatten");
-                        pass = true;
-
-                    }
-
-                }
-
-            } else if (GameUtils.Item.isTaggedAs(item, "minecraft:swords") == true) {
-
-                {
-
-                    GameUtils.Misc.playSound(level_server, pos, 2.0, 2.0, "minecraft:entity.player.attack.sweep");
-                    GameUtils.Misc.playSound(level_server, pos, 2.0, 0.75, "minecraft:block.grass.break");
-                    pass = true;
-
-                }
-
-            } else if (GameUtils.Item.isTaggedAs(item, "minecraft:hoes") == true) {
-
-                {
+                } else {
 
                     if (level_accessor.getBlockState(pos.below()).getBlock() == Blocks.GRASS_BLOCK) {
 
@@ -115,11 +86,37 @@ public class PlantBlock {
 
                     }
 
-                    GameUtils.Misc.playSound(level_server, pos, 2.0, 0.0, "minecraft:item.hoe.till");
-                    GameUtils.Misc.playSound(level_server, pos, 2.0, 0.75, "minecraft:block.grass.break");
+                    GameUtils.Item.spawn(level_server, pos.getCenter(), level_accessor.getBlockState(pos).getBlock().asItem().getDefaultInstance());
+                    GameUtils.Misc.playSound(level_server, pos, 2.0, 0.0, "minecraft:item.shovel.flatten");
                     pass = true;
 
                 }
+
+            }
+
+        } else if (GameUtils.Item.isTaggedAs(item, "minecraft:swords") == true) {
+
+            {
+
+                GameUtils.Misc.playSound(level_server, pos, 2.0, 2.0, "minecraft:entity.player.attack.sweep");
+                GameUtils.Misc.playSound(level_server, pos, 2.0, 0.75, "minecraft:block.grass.break");
+                pass = true;
+
+            }
+
+        } else if (GameUtils.Item.isTaggedAs(item, "minecraft:hoes") == true) {
+
+            {
+
+                if (level_accessor.getBlockState(pos.below()).getBlock() == Blocks.GRASS_BLOCK) {
+
+                    GameUtils.Tile.set(level_accessor, pos.below(), Blocks.DIRT.defaultBlockState(), false);
+
+                }
+
+                GameUtils.Misc.playSound(level_server, pos, 2.0, 0.0, "minecraft:item.hoe.till");
+                GameUtils.Misc.playSound(level_server, pos, 2.0, 0.75, "minecraft:block.grass.break");
+                pass = true;
 
             }
 
@@ -150,7 +147,7 @@ public class PlantBlock {
         }
 
         String id = GameUtils.Tile.toText(level_accessor.getBlockState(pos))[0].replace(":", "-");
-        Map<String, String> data = ConfigDynamic.getData("settings", "").get("").get(id);
+        Map<String, String> data = ConfigDynamic.getData("settings").get(id);
 
         if (testPlace(level_accessor, pos, id, true, GameUtils.Mob.isCreativeMode(entity) == false) == true) {
 
@@ -165,15 +162,15 @@ public class PlantBlock {
 
         ServerLevel level_server = (ServerLevel) level_accessor;
 
-        if (GameUtils.Mob.canTickingAt(level_server, pos) == false) {
+        if (level_server.isPositionEntityTicking(pos) == false) {
 
             return;
 
         }
 
-        Core.DelayedWorks.create(false, 5, () -> {
+        String id = GameUtils.Tile.toText(level_accessor.getBlockState(pos))[0].replace(":", "-");
 
-            String id = GameUtils.Tile.toText(level_accessor.getBlockState(pos))[0].replace(":", "-");
+        Core.DelayedWork.create(false, 5, () -> {
 
             if (testPlace(level_accessor, pos, id, false, false) == false) {
 
@@ -204,7 +201,7 @@ public class PlantBlock {
                 double distanceZ = Math.round(pos.getCenter().z - entity.position().z);
                 BlockPos pos_move = BlockPos.containing(pos.getCenter().add(distanceX, 0.0, distanceZ));
 
-                if (level_accessor.getBlockState(pos_move).getCollisionShape(level_accessor, pos_move).isEmpty() == true) {
+                if (level_accessor.getBlockState(pos_move).canBeReplaced() == true) {
 
                     GameUtils.Tile.set(level_accessor, pos_move, level_accessor.getBlockState(pos), false);
 
@@ -224,7 +221,7 @@ public class PlantBlock {
 
                 boolean pass = false;
 
-                if (entity.getDeltaMovement().y < -0.75) {
+                if (entity.getDeltaMovement().y < -0.75 || Math.random() < entity.getDeltaMovement().y * 0.1) {
 
                     pass = true;
 
@@ -259,7 +256,7 @@ public class PlantBlock {
 
                     } else {
 
-                        GameUtils.Misc.playSound(level_server, pos, 1.0, 0.0, "minecraft:block.grass.break");
+                        GameUtils.Misc.playSound(level_server, pos, 0.5, 0.0, "minecraft:block.grass.break");
                         GameUtils.Misc.spawnParticle(level_server, pos.getCenter().add(0.0, -0.25, 0.0), 0.25, 0.25, 0.25, 0.01, 10, "minecraft:campfire_cosy_smoke");
 
                     }
@@ -292,18 +289,19 @@ public class PlantBlock {
         // Test
         {
 
-            Map<String, Map<String, String>> data = ConfigDynamic.getData("settings", "").get("");
-            Object[] surrounding_area_data = getSurroundingAreaData(level_accessor, level_server, (pos.getX() >> 4) * 16, (pos.getZ() >> 4) * 16);
-            Map<String, Integer> height = (Map<String, Integer>) surrounding_area_data[0];
-            List<BlockPos> water_locations = (List<BlockPos>) surrounding_area_data[1];
-            Map<BlockPos, Holder<Biome>> biomes = (Map<BlockPos, Holder<Biome>>) surrounding_area_data[2];
+            Map<String, Map<String, String>> data = ConfigDynamic.getData("settings");
+            Object[] surrounding_area_data = getSurroundingAreaData(level_accessor, (pos.getX() >> 4) * 16, (pos.getZ() >> 4) * 16);
+            Map<BlockPos, Holder<Biome>> biomes = (Map<BlockPos, Holder<Biome>>) surrounding_area_data[0];
+            Map<String, Integer> height = (Map<String, Integer>) surrounding_area_data[1];
+            Set<BlockPos> water_locations = (Set<BlockPos>) surrounding_area_data[2];
 
             if (data.containsKey(id) == true) {
 
+                // Non-Special
                 {
 
                     String type = data.get(id).get("type");
-                    String type_area = getAreaType(level_accessor, pos, height.get(pos.getX() + "/" + pos.getZ()), water_locations.isEmpty() == false, biomes.isEmpty() == false);
+                    String type_area = getAreaType(level_accessor, pos, height.get(pos.getX() + "/" + pos.getZ()), water_locations);
 
                     if (type_area.contains("|" + type + "|") == false) {
 
@@ -312,17 +310,17 @@ public class PlantBlock {
                     } else {
 
                         BlockState ceil_block = null;
-                        BlockPos cail_pos = null;
+                        BlockPos ceil_pos = null;
 
                         if (type.equals("cave") == true) {
 
                             for (int scan = 1; scan < 32; scan++) {
 
-                                cail_pos = new BlockPos(pos.getX(), pos.getY() + scan, pos.getZ());
+                                ceil_pos = new BlockPos(pos.getX(), pos.getY() + scan, pos.getZ());
 
-                                if (level_accessor.getBlockState(cail_pos).getCollisionShape(level_accessor, cail_pos).isEmpty() == false) {
+                                if (level_accessor.getBlockState(ceil_pos).canBeReplaced() == false) {
 
-                                    ceil_block = level_accessor.getBlockState(cail_pos);
+                                    ceil_block = level_accessor.getBlockState(ceil_pos);
                                     break;
 
                                 }
@@ -339,7 +337,37 @@ public class PlantBlock {
 
             } else {
 
-                error = test(level_accessor, data, height, water_locations, biomes, pos, null, id, false);
+                // Special
+                {
+
+                    int index = id.indexOf("_part_");
+
+                    if (index != -1) {
+
+                        String id_main = id.substring(0, index);
+                        String id_below = GameUtils.Tile.toText(level_accessor.getBlockState(pos.below()))[0].replace(":", "-");
+
+                        if (id.endsWith("_part_middle") == true) {
+
+                            if (id_below.equals(id_main) == false && id_below.equals(id) == false) {
+
+                                error = "unsupported ground block";
+
+                            }
+
+                        } else if (id.endsWith("_part_top") == true || id.endsWith("_part_top_flowering") == true) {
+
+                            if (id_below.equals(id_main) == false && id_below.equals(id_main + "_part_middle") == false) {
+
+                                error = "unsupported ground block";
+
+                            }
+
+                        }
+
+                    }
+
+                }
 
             }
 
@@ -378,14 +406,14 @@ public class PlantBlock {
 
     public static void place (LevelAccessor level_accessor, ServerLevel level_server, BlockPos pos, Map<String, String> data, String id, boolean is_world_gen) {
 
-        if (CacheManager.SaveMap.existLogic("custom_placement", id) == false) {
+        if (CacheManager.DataLogic.existNormal("custom_placement", id) == false) {
 
-            boolean exist = new File(Core.path_config + "/#dev/#temporary/custom_placement/" + id + ".txt").exists() == true;
-            CacheManager.SaveMap.setLogic("custom_placement", id, exist);
+            boolean exist = new File(Core.path_config + "/dev/temporary/custom_placement/" + id + ".txt").exists() == true;
+            CacheManager.DataLogic.setNormal("custom_placement", id, exist);
 
         }
 
-        if (CacheManager.SaveMap.getLogic("custom_placement", id) == true) {
+        if (CacheManager.DataLogic.getNormal("custom_placement").get(id) == true) {
 
             TXTFunction.run(level_accessor, level_server, pos, "custom_placement/" + id, true);
 
@@ -431,7 +459,7 @@ public class PlantBlock {
 
                             } else {
 
-                                block = GameUtils.Tile.fromText(block_id + "_middle");
+                                block = GameUtils.Tile.fromText(block_id + "_part_middle");
 
                             }
 
@@ -447,7 +475,7 @@ public class PlantBlock {
 
                             } else {
 
-                                block = GameUtils.Tile.fromText(block_id + "_top");
+                                block = GameUtils.Tile.fromText(block_id + "_part_top");
 
                             }
 
@@ -472,23 +500,27 @@ public class PlantBlock {
 
     }
 
-    private static List<String> getLootData (String id) {
+    private static String[] getDataLoot (String id) {
 
-        if (CacheManager.SaveMap.existTextList("loot", id) == false) {
+        String[] data = CacheManager.DataText.getArray("loot").get(id);
 
-            CacheManager.SaveMap.setTextList("loot", id, FileManager.readTXT(Core.path_config + "/#dev/#temporary/loots/" + id + ".txt"));
+        if (data == null) {
+
+            data = FileManager.readTXT(Core.path_config + "/dev/temporary/loots/" + id + ".txt");
+            CacheManager.DataText.setArray("loot", id, data);
 
         }
 
-        return CacheManager.SaveMap.getTextList("loot", id);
+        return data;
 
     }
 
-    public static Object[] getSurroundingAreaData (LevelAccessor level_accessor, ServerLevel level_server, int start_posX, int start_posZ) {
+    public static Object[] getSurroundingAreaData (LevelAccessor level_accessor, int start_posX, int start_posZ) {
 
         Map<String, Integer> height = new HashMap<>();
-        List<BlockPos> water_locations = new ArrayList<>();
+        Set<BlockPos> water_locations = new HashSet<>();
         Map<BlockPos, Holder<Biome>> biomes = new HashMap<>();
+
         BlockPos pos = null;
         int posX = 0;
         int posY = 0;
@@ -500,7 +532,7 @@ public class PlantBlock {
 
                 posX = start_posX + scanX;
                 posZ = start_posZ + scanZ;
-                posY = level_accessor.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, posX, posZ);
+                posY = GameUtils.Space.getHeight(level_accessor, posX, posZ, "MOTION_BLOCKING_NO_LEAVES");
                 pos = new BlockPos(posX, posY, posZ);
                 height.put(posX + "/" + posZ, posY);
 
@@ -510,25 +542,27 @@ public class PlantBlock {
 
                 }
 
-                biomes.put(pos, GameUtils.Space.getBiomeAt(level_accessor, level_server, pos));
+                biomes.put(pos, GameUtils.Environment.getAt(level_accessor, pos));
 
             }
 
         }
 
-        return new Object[]{height, water_locations, biomes};
+        return new Object[]{biomes, height, water_locations};
 
     }
 
-    public static String getAreaType (LevelAccessor level_accessor, BlockPos pos, int originalY, boolean have_water_nearby, boolean have_land_nearby) {
+    public static String getAreaType (LevelAccessor level_accessor, BlockPos pos, int originalY, Set<BlockPos> water_locations) {
 
-        if (level_accessor.getBlockState(pos.below()).isAir() == false && level_accessor.getBlockState(pos).getCollisionShape(level_accessor, pos).isEmpty() == true) {
+        if (level_accessor.getBlockState(pos).canBeReplaced() == true) {
+
+            boolean have_land_nearby = water_locations.size() != 2304;
 
             if (pos.getY() < originalY) {
 
                 if (level_accessor.isWaterAt(pos.below()) == false) {
 
-                    if (level_accessor.getBlockState(pos.below()).getCollisionShape(level_accessor, pos.below()).isEmpty() == false) {
+                    if (level_accessor.getBlockState(pos.below()).canBeReplaced() == false) {
 
                         if (level_accessor.isWaterAt(pos) == true) {
 
@@ -543,7 +577,7 @@ public class PlantBlock {
 
                                     } else {
 
-                                        return "|marine|";
+                                        return "|submergent|floating_leaved|marine|";
 
                                     }
 
@@ -596,14 +630,14 @@ public class PlantBlock {
 
                         }
 
-                    } else if (level_accessor.getBlockState(pos.below()).getCollisionShape(level_accessor, pos.below()).isEmpty() == false) {
+                    } else if (level_accessor.getBlockState(pos.below()).canBeReplaced() == false) {
 
                         // On Land
                         {
 
                             if (level_accessor.getBlockState(pos.above()).isAir() == true) {
 
-                                if (have_water_nearby == true) {
+                                if (water_locations.isEmpty() == false) {
 
                                     return "|terrestrial|riparian|emergent|";
 
@@ -629,148 +663,123 @@ public class PlantBlock {
 
     }
 
-    public static String test (LevelAccessor level_accessor, Map<String, Map<String, String>> data, Map<String, Integer> height, List<BlockPos> water_locations, Map<BlockPos, Holder<Biome>> biomes, BlockPos pos, BlockState ceil_block, String id, boolean test_chance) {
+    public static String test (LevelAccessor level_accessor, Map<String, Map<String, String>> data, Map<String, Integer> height, Set<BlockPos> water_locations, Map<BlockPos, Holder<Biome>> biomes, BlockPos pos, BlockState ceil_block, String id, boolean test_chance) {
 
-        if (data.containsKey(id) == true) {
+        String type = data.get(id).get("type");
 
-            String type = data.get(id).get("type");
+        // Prioritization
+        {
 
-            // Non-Special
-            {
+            String blacklist = "";
 
-                if (testPrioritization(level_accessor, data, pos, type) == false) {
+            if (type.equals("terrestrial") == true) {
 
-                    return "prioritization";
+                blacklist = "|riparian|emergent|";
 
-                }
+            } else if (type.equals("riparian") == true) {
 
-                boolean test_area_waterside = false;
-                boolean test_area_landside = false;
-                boolean test_area_cave = false;
-                boolean test_center_biome = false;
-                boolean test_ground_block = true;
-                boolean test_deep = false;
-
-                // Get What To Test
-                {
-
-                    if (type.equals("emergent") == true) {
-
-                        if (level_accessor.isWaterAt(pos) == true) {
-
-                            test_area_landside = true;
-
-                        } else {
-
-                            if (water_locations.isEmpty() == false) {
-
-                                test_area_waterside = true;
-                                test_center_biome = true;
-
-                            }
-
-                        }
-
-                    } else if (type.equals("cave") == true) {
-
-                        test_area_cave = true;
-                        test_center_biome = true;
-
-                    } else if (type.equals("riparian") == true) {
-
-                        if (water_locations.isEmpty() == false) {
-
-                            test_area_waterside = true;
-                            test_center_biome = true;
-
-                        }
-
-                    } else if (type.equals("submergent") == true) {
-
-                        test_area_landside = true;
-
-                    } else if (type.equals("floating_leaved") == true) {
-
-                        test_area_landside = true;
-                        test_deep = true;
-
-                    } else if (type.equals("free_floating") == true) {
-
-                        test_area_landside = true;
-                        test_ground_block = false;
-
-                    }
-
-                }
-
-                if (test_center_biome == true) {
-
-                    {
-
-                        int originalY = height.get(pos.getX() + "/" + pos.getZ());
-
-                        if (biomes.containsKey(pos.atY(originalY)) == false || GameUtils.Misc.testBiome(biomes.get(pos.atY(originalY)), data.get(id).get("biome")) == false) {
-
-                            return "unsupported biome";
-
-                        }
-
-                    }
-
-                }
-
-                if (test_ground_block == true) {
-
-                    {
-
-                        if (GameUtils.Misc.testBlock(level_accessor.getBlockState(pos.below()), data.get(id).get("ground_block")) == false) {
-
-                            return "unsupported ground block";
-
-                        }
-
-                    }
-
-                }
-
-                if (test_area_cave == true) {
-
-                    {
-
-                        if (ceil_block != null && GameUtils.Misc.testBlock(ceil_block, data.get(id).get("ground_block")) == false) {
-
-                            return "unsupported cave ceiling block";
-
-                        }
-
-                    }
-
-                }
-
-                if (test_deep == true) {
-
-                    {
-
-                        if (height.get(pos.getX() + "/" + pos.getZ()) - pos.getY() > Integer.parseInt(data.get(id).get("deep"))) {
-
-                            return "too deep";
-
-                        }
-
-                    }
-
-                }
-
-                return testAreaDistance(data.get(id), height, water_locations, biomes, pos, test_area_waterside, test_area_landside, test_area_cave, test_chance);
+                blacklist = "|emergent|";
 
             }
 
-        } else {
+            if (blacklist.isEmpty() == false) {
 
-            // Special
+                String block = GameUtils.Tile.toText(level_accessor.getBlockState(pos))[0].replace(":", "-");
+
+                if (data.containsKey(block) == true) {
+
+                    if (blacklist.contains("|" + data.get(block).get("type") + "|") == true) {
+
+                        return "prioritization";
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        boolean test_area_waterside = false;
+        boolean test_area_landside = false;
+        boolean test_area_cave = false;
+        boolean test_center_biome = false;
+        boolean test_ground_block = true;
+        boolean test_deep = false;
+
+        // Get What To Test
+        {
+
+            if (type.equals("emergent") == true) {
+
+                if (level_accessor.isWaterAt(pos) == true) {
+
+                    test_area_landside = true;
+
+                } else {
+
+                    if (water_locations.isEmpty() == false) {
+
+                        test_area_waterside = true;
+                        test_center_biome = true;
+
+                    }
+
+                }
+
+            } else if (type.equals("cave") == true) {
+
+                test_area_cave = true;
+                test_center_biome = true;
+
+            } else if (type.equals("riparian") == true) {
+
+                if (water_locations.isEmpty() == false) {
+
+                    test_area_waterside = true;
+                    test_center_biome = true;
+
+                }
+
+            } else if (type.equals("submergent") == true) {
+
+                test_area_landside = true;
+
+            } else if (type.equals("floating_leaved") == true) {
+
+                test_area_landside = true;
+                test_deep = true;
+
+            } else if (type.equals("free_floating") == true) {
+
+                test_area_landside = true;
+                test_ground_block = false;
+
+            }
+
+        }
+
+        if (test_center_biome == true) {
+
             {
 
-                if (level_accessor.getBlockState(pos.below()).canBeReplaced() == true) {
+                int originalY = height.get(pos.getX() + "/" + pos.getZ());
+
+                if (biomes.containsKey(pos.atY(originalY)) == false || GameUtils.Environment.test(biomes.get(pos.atY(originalY)), data.get(id).get("biome")) == false) {
+
+                    return "unsupported biome";
+
+                }
+
+            }
+
+        }
+
+        if (test_ground_block == true) {
+
+            {
+
+                if (GameUtils.Tile.test(level_accessor.getBlockState(pos.below()), data.get(id).get("ground_block")) == false) {
 
                     return "unsupported ground block";
 
@@ -780,67 +789,56 @@ public class PlantBlock {
 
         }
 
-        return "";
+        if (test_area_cave == true) {
 
-    }
+            {
 
-    private static boolean testPrioritization (LevelAccessor level_accessor, Map<String, Map<String, String>> data, BlockPos pos, String type) {
+                if (ceil_block != null && GameUtils.Tile.test(ceil_block, data.get(id).get("ground_block")) == false) {
 
-        String blacklist = "";
+                    return "unsupported cave ceiling block";
 
-        if (type.equals("terrestrial") == true) {
-
-            blacklist = "|riparian|emergent|";
-
-        } else if (type.equals("riparian") == true) {
-
-            blacklist = "|emergent|";
-
-        }
-
-        if (blacklist.isEmpty() == false) {
-
-            String id = GameUtils.Tile.toText(level_accessor.getBlockState(pos))[0].replace(":", "-");
-
-            if (data.containsKey(id) == true) {
-
-                return blacklist.contains("|" + data.get(id).get("type") + "|") == false;
+                }
 
             }
 
         }
 
-        return true;
+        if (test_deep == true) {
 
-    }
+            {
 
-    private static String testAreaDistance (Map<String, String> data, Map<String, Integer> height, List<BlockPos> water_locations, Map<BlockPos, Holder<Biome>> biomes, BlockPos pos, boolean test_area_waterside, boolean test_area_landside, boolean test_area_cave, boolean test_chance) {
+                if (height.get(pos.getX() + "/" + pos.getZ()) - pos.getY() > Integer.parseInt(data.get(id).get("deep"))) {
 
-        if (test_area_waterside == true || test_area_landside == true || test_area_cave == true) {
+                    return "too deep";
 
-            double distance_test = 0;
-            double distance = 0.0;
+                }
 
-            if (test_area_waterside == true) {
+            }
 
-                {
+        }
 
-                    if (data.containsKey("distance_water") == true) {
+        // Test Area Distance
+        {
 
-                        distance_test = Double.parseDouble(data.get("distance_water"));
+            if (test_area_waterside == true || test_area_landside == true || test_area_cave == true) {
+
+                double distance_test = 0;
+                double distance = 0.0;
+
+                if (test_area_waterside == true) {
+
+                    {
+
+                        distance_test = Double.parseDouble(data.get(id).get("distance_water"));
                         distance = water_locations.stream().min(Comparator.comparingDouble(sort -> sort.getCenter().distanceTo(pos.getCenter()))).get().getCenter().distanceTo(pos.getCenter());
 
                     }
 
-                }
+                } else if (test_area_landside == true) {
 
-            } else if (test_area_landside == true) {
+                    {
 
-                {
-
-                    if (data.containsKey("distance_land") == true) {
-
-                        distance_test = Double.parseDouble(data.get("distance_land"));
+                        distance_test = Double.parseDouble(data.get(id).get("distance_biome"));
                         Map<Holder<Biome>, Double> nearest_land = new HashMap<>();
 
                         for (Map.Entry<BlockPos, Holder<Biome>> entry : biomes.entrySet()) {
@@ -859,7 +857,7 @@ public class PlantBlock {
 
                         for (Holder<Biome> biome : nearest_land.keySet()) {
 
-                            if (GameUtils.Misc.testBiome(biome, data.get("biome")) == true) {
+                            if (GameUtils.Environment.test(biome, data.get(id).get("biome")) == true) {
 
                                 distance = Math.min(distance, nearest_land.get(biome));
 
@@ -875,58 +873,58 @@ public class PlantBlock {
 
                     }
 
-                }
+                } else {
 
-            } else {
+                    {
 
-                {
+                        String[] split = new String[0];
+                        int posX = 0;
+                        int posY = 0;
+                        int posZ = 0;
+                        double test = 0;
+                        distance = 64.0;
 
-                    String[] split = new String[0];
-                    int posX = 0;
-                    int posY = 0;
-                    int posZ = 0;
-                    double test = 0;
-                    distance = 64.0;
+                        for (Map.Entry<String, Integer> entry : height.entrySet()) {
 
-                    for (Map.Entry<String, Integer> entry : height.entrySet()) {
+                            split = entry.getKey().split("/");
+                            posX = Integer.parseInt(split[0]);
+                            posZ = Integer.parseInt(split[1]);
+                            posY = entry.getValue();
+                            test = pos.getCenter().distanceTo(new Vec3(posX, posY, posZ));
 
-                        split = entry.getKey().split("/");
-                        posX = Integer.parseInt(split[0]);
-                        posZ = Integer.parseInt(split[1]);
-                        posY = entry.getValue();
-                        test = pos.getCenter().distanceTo(new Vec3(posX, posY, posZ));
+                            if (distance > test) {
 
-                        if (distance > test) {
+                                distance = test;
 
-                            distance = test;
+                            }
+
+                        }
+
+                        if (distance == 64.0) {
+
+                            return "too deep";
 
                         }
 
                     }
 
-                    if (distance == 64.0) {
-
-                        return "this area is too deep";
-
-                    }
-
                 }
 
-            }
+                distance_test = distance_test + 1;
 
-            distance_test = distance_test + 1;
+                if (distance > distance_test) {
 
-            if (distance > distance_test) {
+                    return "too far from supported area";
 
-                return "this area is too far from supported area";
+                } else {
 
-            } else {
+                    if (test_chance == true) {
 
-                if (test_chance == true) {
+                        if (Math.random() >= (1.0 - (distance / distance_test))) {
 
-                    if (Math.random() >= (1.0 - (distance / distance_test))) {
+                            return "chance";
 
-                        return "chance";
+                        }
 
                     }
 
@@ -939,6 +937,5 @@ public class PlantBlock {
         return "";
 
     }
-
 
 }
